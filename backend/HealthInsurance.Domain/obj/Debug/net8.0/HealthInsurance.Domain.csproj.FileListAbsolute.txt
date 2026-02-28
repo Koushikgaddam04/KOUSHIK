@@ -1,0 +1,12 @@
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Domain\bin\Debug\net8.0\HealthInsurance.Domain.deps.json
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Domain\bin\Debug\net8.0\HealthInsurance.Domain.dll
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Domain\bin\Debug\net8.0\HealthInsurance.Domain.pdb
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Domain\obj\Debug\net8.0\HealthInsurance.Domain.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Domain\obj\Debug\net8.0\HealthInsurance.Domain.AssemblyInfoInputs.cache
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Domain\obj\Debug\net8.0\HealthInsurance.Domain.AssemblyInfo.cs
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Domain\obj\Debug\net8.0\HealthInsurance.Domain.csproj.CoreCompileInputs.cache
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Domain\obj\Debug\net8.0\HealthInsurance.Domain.sourcelink.json
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Domain\obj\Debug\net8.0\HealthInsurance.Domain.dll
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Domain\obj\Debug\net8.0\refint\HealthInsurance.Domain.dll
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Domain\obj\Debug\net8.0\HealthInsurance.Domain.pdb
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Domain\obj\Debug\net8.0\ref\HealthInsurance.Domain.dll

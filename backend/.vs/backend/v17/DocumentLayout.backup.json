@@ -1,0 +1,151 @@
+{
+  "Version": 1,
+  "WorkspaceRootPath": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\",
+  "Documents": [
+    {
+      "AbsoluteMoniker": "D:0:0:{A32B64CF-96E6-4C9E-8527-FB633CAE7FB3}|HealthInsurance.Domain\\HealthInsurance.Domain.csproj|c:\\users\\koushik gaddam\\onedrive\\desktop\\koushik\\backend\\healthinsurance.domain\\entities\\claim.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A32B64CF-96E6-4C9E-8527-FB633CAE7FB3}|HealthInsurance.Domain\\HealthInsurance.Domain.csproj|solutionrelative:healthinsurance.domain\\entities\\claim.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{4E88B974-8DE6-42BD-B3A3-44EE35148593}|HealthInsurance.Application\\HealthInsurance.Application.csproj|c:\\users\\koushik gaddam\\onedrive\\desktop\\koushik\\backend\\healthinsurance.application\\services\\claimservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{4E88B974-8DE6-42BD-B3A3-44EE35148593}|HealthInsurance.Application\\HealthInsurance.Application.csproj|solutionrelative:healthinsurance.application\\services\\claimservices.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A32B64CF-96E6-4C9E-8527-FB633CAE7FB3}|HealthInsurance.Domain\\HealthInsurance.Domain.csproj|c:\\users\\koushik gaddam\\onedrive\\desktop\\koushik\\backend\\healthinsurance.domain\\entities\\policy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A32B64CF-96E6-4C9E-8527-FB633CAE7FB3}|HealthInsurance.Domain\\HealthInsurance.Domain.csproj|solutionrelative:healthinsurance.domain\\entities\\policy.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Infrastructure\\Migrations\\20260228125341_Initial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A2FE74E1-B743-11D0-AE1A-00A0C90FFFC3}|\u003CMiscFiles\u003E|solutionrelative:HealthInsurance.Infrastructure\\Migrations\\20260228125341_Initial.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A32B64CF-96E6-4C9E-8527-FB633CAE7FB3}|HealthInsurance.Domain\\HealthInsurance.Domain.csproj|c:\\users\\koushik gaddam\\onedrive\\desktop\\koushik\\backend\\healthinsurance.domain\\enums\\userrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A32B64CF-96E6-4C9E-8527-FB633CAE7FB3}|HealthInsurance.Domain\\HealthInsurance.Domain.csproj|solutionrelative:healthinsurance.domain\\enums\\userrole.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{A32B64CF-96E6-4C9E-8527-FB633CAE7FB3}|HealthInsurance.Domain\\HealthInsurance.Domain.csproj|c:\\users\\koushik gaddam\\onedrive\\desktop\\koushik\\backend\\healthinsurance.domain\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{A32B64CF-96E6-4C9E-8527-FB633CAE7FB3}|HealthInsurance.Domain\\HealthInsurance.Domain.csproj|solutionrelative:healthinsurance.domain\\entities\\user.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    },
+    {
+      "AbsoluteMoniker": "D:0:0:{3340231A-98FF-4E25-BE83-2C82A8C38D2B}|HealthInsurance.API\\HealthInsurance.API.csproj|c:\\users\\koushik gaddam\\onedrive\\desktop\\koushik\\backend\\healthinsurance.api\\controllers\\claimcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}",
+      "RelativeMoniker": "D:0:0:{3340231A-98FF-4E25-BE83-2C82A8C38D2B}|HealthInsurance.API\\HealthInsurance.API.csproj|solutionrelative:healthinsurance.api\\controllers\\claimcontroller.cs||{A6C744A8-0E4A-4FC6-886A-064283054674}"
+    }
+  ],
+  "DocumentGroupContainers": [
+    {
+      "Orientation": 1,
+      "VerticalTabListWidth": 256,
+      "DocumentGroups": [
+        {
+          "DockedHeight": 283,
+          "SelectedChildIndex": 3,
+          "Children": [
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{d78612c7-9962-4b83-95d9-268046dad23a}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{0ad07096-bba9-4900-a651-0598d26f6d24}"
+            },
+            {
+              "$type": "Bookmark",
+              "Name": "ST:0:0:{34e76e81-ee4a-11d0-ae2e-00a0c90fffc3}"
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 0,
+              "Title": "Claim.cs",
+              "DocumentMoniker": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Domain\\Entities\\Claim.cs",
+              "RelativeDocumentMoniker": "HealthInsurance.Domain\\Entities\\Claim.cs",
+              "ToolTip": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Domain\\Entities\\Claim.cs",
+              "RelativeToolTip": "HealthInsurance.Domain\\Entities\\Claim.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAA8AAAAuAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-28T19:10:56.243Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 1,
+              "Title": "ClaimServices.cs",
+              "DocumentMoniker": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Application\\Services\\ClaimServices.cs",
+              "RelativeDocumentMoniker": "HealthInsurance.Application\\Services\\ClaimServices.cs",
+              "ToolTip": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Application\\Services\\ClaimServices.cs*",
+              "RelativeToolTip": "HealthInsurance.Application\\Services\\ClaimServices.cs*",
+              "ViewState": "AgIAADUAAAAAAAAAAAAowDwAAAAjAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-28T18:53:01.841Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 2,
+              "Title": "Policy.cs",
+              "DocumentMoniker": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Domain\\Entities\\Policy.cs",
+              "RelativeDocumentMoniker": "HealthInsurance.Domain\\Entities\\Policy.cs",
+              "ToolTip": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Domain\\Entities\\Policy.cs",
+              "RelativeToolTip": "HealthInsurance.Domain\\Entities\\Policy.cs",
+              "ViewState": "AgIAAAkAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-28T18:43:12.786Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 3,
+              "Title": "20260228125341_Initial.cs",
+              "DocumentMoniker": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Infrastructure\\Migrations\\20260228125341_Initial.cs",
+              "RelativeDocumentMoniker": "HealthInsurance.Infrastructure\\Migrations\\20260228125341_Initial.cs",
+              "ToolTip": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Infrastructure\\Migrations\\20260228125341_Initial.cs",
+              "RelativeToolTip": "HealthInsurance.Infrastructure\\Migrations\\20260228125341_Initial.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAcAAAAWAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-28T12:53:42.051Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 4,
+              "Title": "UserRole.cs",
+              "DocumentMoniker": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Domain\\Enums\\UserRole.cs",
+              "RelativeDocumentMoniker": "HealthInsurance.Domain\\Enums\\UserRole.cs",
+              "ToolTip": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Domain\\Enums\\UserRole.cs",
+              "RelativeToolTip": "HealthInsurance.Domain\\Enums\\UserRole.cs",
+              "ViewState": "AgIAAAAAAAAAAAAAAAAAAAgAAAAUAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-28T12:23:32.538Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 5,
+              "Title": "User.cs",
+              "DocumentMoniker": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Domain\\Entities\\User.cs",
+              "RelativeDocumentMoniker": "HealthInsurance.Domain\\Entities\\User.cs",
+              "ToolTip": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Domain\\Entities\\User.cs",
+              "RelativeToolTip": "HealthInsurance.Domain\\Entities\\User.cs",
+              "ViewState": "AgIAAAMAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-28T12:23:21.963Z",
+              "EditorCaption": ""
+            },
+            {
+              "$type": "Document",
+              "DocumentIndex": 6,
+              "Title": "ClaimController.cs",
+              "DocumentMoniker": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.API\\Controllers\\ClaimController.cs",
+              "RelativeDocumentMoniker": "HealthInsurance.API\\Controllers\\ClaimController.cs",
+              "ToolTip": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.API\\Controllers\\ClaimController.cs",
+              "RelativeToolTip": "HealthInsurance.API\\Controllers\\ClaimController.cs",
+              "ViewState": "AgIAAAYAAAAAAAAAAAAAAAoAAAABAAAAAAAAAA==",
+              "Icon": "ae27a6b0-e345-4288-96df-5eaf394ee369.000738|",
+              "WhenOpened": "2026-02-27T12:05:43.02Z",
+              "EditorCaption": ""
+            }
+          ]
+        }
+      ]
+    }
+  ]
+}

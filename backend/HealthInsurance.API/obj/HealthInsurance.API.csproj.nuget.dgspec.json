@@ -1,0 +1,342 @@
+{
+  "format": 1,
+  "restore": {
+    "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.API\\HealthInsurance.API.csproj": {}
+  },
+  "projects": {
+    "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.API\\HealthInsurance.API.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.API\\HealthInsurance.API.csproj",
+        "projectName": "HealthInsurance.API",
+        "projectPath": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.API\\HealthInsurance.API.csproj",
+        "packagesPath": "C:\\Users\\Koushik Gaddam\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.API\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Koushik Gaddam\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Application\\HealthInsurance.Application.csproj": {
+                "projectPath": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Application\\HealthInsurance.Application.csproj"
+              },
+              "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Infrastructure\\HealthInsurance.Infrastructure.csproj": {
+                "projectPath": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Infrastructure\\HealthInsurance.Infrastructure.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "BCrypt.Net-Next": {
+              "target": "Package",
+              "version": "[4.1.0, )"
+            },
+            "Microsoft.AspNetCore.Authentication.JwtBearer": {
+              "target": "Package",
+              "version": "[8.0.24, )"
+            },
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.24, )"
+            },
+            "Swashbuckle.AspNetCore": {
+              "target": "Package",
+              "version": "[6.6.2, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.AspNetCore.App": {
+              "privateAssets": "none"
+            },
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.310/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Application\\HealthInsurance.Application.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Application\\HealthInsurance.Application.csproj",
+        "projectName": "HealthInsurance.Application",
+        "projectPath": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Application\\HealthInsurance.Application.csproj",
+        "packagesPath": "C:\\Users\\Koushik Gaddam\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Application\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Koushik Gaddam\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Domain\\HealthInsurance.Domain.csproj": {
+                "projectPath": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Domain\\HealthInsurance.Domain.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.Extensions.Configuration.Abstractions": {
+              "target": "Package",
+              "version": "[8.0.0, )"
+            },
+            "Microsoft.IdentityModel.Tokens": {
+              "target": "Package",
+              "version": "[8.16.0, )"
+            },
+            "System.IdentityModel.Tokens.Jwt": {
+              "target": "Package",
+              "version": "[8.16.0, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.310/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Domain\\HealthInsurance.Domain.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Domain\\HealthInsurance.Domain.csproj",
+        "projectName": "HealthInsurance.Domain",
+        "projectPath": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Domain\\HealthInsurance.Domain.csproj",
+        "packagesPath": "C:\\Users\\Koushik Gaddam\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Domain\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Koushik Gaddam\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {}
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.310/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    },
+    "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Infrastructure\\HealthInsurance.Infrastructure.csproj": {
+      "version": "1.0.0",
+      "restore": {
+        "projectUniqueName": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Infrastructure\\HealthInsurance.Infrastructure.csproj",
+        "projectName": "HealthInsurance.Infrastructure",
+        "projectPath": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Infrastructure\\HealthInsurance.Infrastructure.csproj",
+        "packagesPath": "C:\\Users\\Koushik Gaddam\\.nuget\\packages\\",
+        "outputPath": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Infrastructure\\obj\\",
+        "projectStyle": "PackageReference",
+        "fallbackFolders": [
+          "C:\\Program Files (x86)\\Microsoft Visual Studio\\Shared\\NuGetPackages"
+        ],
+        "configFilePaths": [
+          "C:\\Users\\Koushik Gaddam\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.FallbackLocation.config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
+        ],
+        "originalTargetFrameworks": [
+          "net8.0"
+        ],
+        "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "https://api.nuget.org/v3/index.json": {}
+        },
+        "frameworks": {
+          "net8.0": {
+            "targetAlias": "net8.0",
+            "projectReferences": {
+              "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Application\\HealthInsurance.Application.csproj": {
+                "projectPath": "C:\\Users\\Koushik Gaddam\\OneDrive\\Desktop\\KOUSHIK\\backend\\HealthInsurance.Application\\HealthInsurance.Application.csproj"
+              }
+            }
+          }
+        },
+        "warningProperties": {
+          "warnAsError": [
+            "NU1605"
+          ]
+        },
+        "restoreAuditProperties": {
+          "enableAudit": "true",
+          "auditLevel": "low",
+          "auditMode": "direct"
+        },
+        "SdkAnalysisLevel": "9.0.300"
+      },
+      "frameworks": {
+        "net8.0": {
+          "targetAlias": "net8.0",
+          "dependencies": {
+            "Microsoft.EntityFrameworkCore.Design": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.24, )"
+            },
+            "Microsoft.EntityFrameworkCore.SqlServer": {
+              "target": "Package",
+              "version": "[8.0.24, )"
+            },
+            "Microsoft.EntityFrameworkCore.Tools": {
+              "include": "Runtime, Build, Native, ContentFiles, Analyzers, BuildTransitive",
+              "suppressParent": "All",
+              "target": "Package",
+              "version": "[8.0.24, )"
+            },
+            "UmbracoCms.Core": {
+              "target": "Package",
+              "version": "[8.18.15, )"
+            }
+          },
+          "imports": [
+            "net461",
+            "net462",
+            "net47",
+            "net471",
+            "net472",
+            "net48",
+            "net481"
+          ],
+          "assetTargetFallback": true,
+          "warn": true,
+          "frameworkReferences": {
+            "Microsoft.NETCore.App": {
+              "privateAssets": "all"
+            }
+          },
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\9.0.310/PortableRuntimeIdentifierGraph.json"
+        }
+      }
+    }
+  }
+}

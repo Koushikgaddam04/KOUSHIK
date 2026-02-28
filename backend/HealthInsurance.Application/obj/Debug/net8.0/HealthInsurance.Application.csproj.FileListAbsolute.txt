@@ -1,0 +1,16 @@
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Application\bin\Debug\net8.0\HealthInsurance.Application.deps.json
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Application\bin\Debug\net8.0\HealthInsurance.Application.dll
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Application\bin\Debug\net8.0\HealthInsurance.Application.pdb
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Application\bin\Debug\net8.0\HealthInsurance.Domain.dll
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Application\bin\Debug\net8.0\HealthInsurance.Domain.pdb
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Application\obj\Debug\net8.0\HealthInsurance.Application.csproj.AssemblyReference.cache
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Application\obj\Debug\net8.0\HealthInsurance.Application.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Application\obj\Debug\net8.0\HealthInsurance.Application.AssemblyInfoInputs.cache
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Application\obj\Debug\net8.0\HealthInsurance.Application.AssemblyInfo.cs
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Application\obj\Debug\net8.0\HealthInsurance.Application.csproj.CoreCompileInputs.cache
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Application\obj\Debug\net8.0\HealthInsurance.Application.sourcelink.json
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Application\obj\Debug\net8.0\HealthIn.733237E8.Up2Date
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Application\obj\Debug\net8.0\HealthInsurance.Application.dll
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Application\obj\Debug\net8.0\refint\HealthInsurance.Application.dll
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Application\obj\Debug\net8.0\HealthInsurance.Application.pdb
+C:\Users\Koushik Gaddam\OneDrive\Desktop\KOUSHIK\backend\HealthInsurance.Application\obj\Debug\net8.0\ref\HealthInsurance.Application.dll
