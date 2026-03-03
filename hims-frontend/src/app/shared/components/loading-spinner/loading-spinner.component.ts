@@ -9,13 +9,13 @@ import { LucideAngularModule, Loader2 } from 'lucide-angular';
   template: `
     @if (show()) {
       <div
-        class="fixed inset-0 bg-slate-100/50 backdrop-blur-sm z-50 flex flex-col items-center justify-center"
+        class="fixed inset-0 bg-slate-100/50 dark:bg-slate-950/50 backdrop-blur-sm z-50 flex flex-col items-center justify-center transition-all duration-300"
       >
         <lucide-icon
           name="loader-2"
-          class="h-10 w-10 text-enterprise-blue-600 animate-spin"
+          class="h-10 w-10 text-enterprise-blue-600 dark:text-blue-400 animate-spin"
         ></lucide-icon>
-        <p class="mt-4 text-enterprise-blue-800 font-medium animate-pulse">{{ message() }}</p>
+        <p class="mt-4 text-enterprise-blue-800 dark:text-slate-100 font-medium animate-pulse">{{ message() }}</p>
       </div>
     }
   `,

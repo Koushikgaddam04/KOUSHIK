@@ -14,8 +14,8 @@ import { LucideAngularModule, Check, X, FileText, Search } from 'lucide-angular'
     <app-loading-spinner [show]="isLoading()" message="Processing Claim..."></app-loading-spinner>
 
     <div class="mb-6">
-      <h1 class="text-2xl font-bold text-slate-800">Claims Queue</h1>
-      <p class="text-slate-500 mt-1">Review, approve, or reject customer health claims.</p>
+      <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Claims Queue</h1>
+      <p class="text-slate-500 dark:text-slate-400 mt-1">Review, approve, or reject customer health claims.</p>
     </div>
 
     <!-- Reject Confirmation Modal -->
@@ -186,9 +186,20 @@ export class ClaimsQueueComponent implements OnInit {
         this.toastr.success('Claim Approved Successfully.');
         this.loadQueue();
       },
-      error: () => {
-        this.toastr.error('Failed to approve claim.');
+      error: (err) => {
+        // Robust error message extraction
+        let errorMsg = 'Failed to approve claim.';
+        if (err?.error) {
+          if (typeof err.error === 'string') {
+            errorMsg = err.error;
+          } else if (err.error.Message || err.error.message) {
+            errorMsg = err.error.Message || err.error.message;
+          }
+        }
+
+        this.toastr.error(errorMsg);
         this.isLoading.set(false);
+        this.loadQueue(); // Refresh to show the (auto-rejected) status
       },
     });
   }
@@ -213,8 +224,16 @@ export class ClaimsQueueComponent implements OnInit {
           this.closeModal();
           this.loadQueue();
         },
-        error: () => {
-          this.toastr.error('Failed to reject claim.');
+        error: (err) => {
+          let errorMsg = 'Failed to reject claim.';
+          if (err?.error) {
+            if (typeof err.error === 'string') {
+              errorMsg = err.error;
+            } else if (err.error.Message || err.error.message) {
+              errorMsg = err.error.Message || err.error.message;
+            }
+          }
+          this.toastr.error(errorMsg);
           this.isLoading.set(false);
           this.closeModal();
         },

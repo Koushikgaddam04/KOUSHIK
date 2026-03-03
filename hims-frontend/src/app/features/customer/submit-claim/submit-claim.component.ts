@@ -16,8 +16,8 @@ import { LucideAngularModule, FileText, UploadCloud } from 'lucide-angular';
 
     <div class="max-w-2xl mx-auto">
       <div class="mb-6">
-        <h1 class="text-2xl font-bold text-slate-800">Submit a New Claim</h1>
-        <p class="text-slate-500 mt-1">
+        <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Submit a New Claim</h1>
+        <p class="text-slate-500 dark:text-slate-400 mt-1">
           Provide details of your incident to initiate the claim process.
         </p>
       </div>

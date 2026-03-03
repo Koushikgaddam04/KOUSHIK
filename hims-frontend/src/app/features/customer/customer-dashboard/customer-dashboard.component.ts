@@ -18,8 +18,8 @@ import { LucideAngularModule, ShieldCheck, FileSearch, ArrowRight } from 'lucide
 
     <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
       <div>
-        <h1 class="text-2xl font-bold text-slate-800">My Dashboard</h1>
-        <p class="text-slate-500 mt-1">Manage your active policies and track claims.</p>
+        <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100">My Dashboard</h1>
+        <p class="text-slate-500 dark:text-slate-400 mt-1">Manage your active policies and track claims.</p>
       </div>
       <div class="flex gap-3">
         <a

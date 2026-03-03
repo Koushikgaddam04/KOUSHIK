@@ -14,15 +14,15 @@ import { LucideAngularModule, LogIn, Lock, Mail, ShieldCheck, ArrowRight } from 
   template: `
     <app-loading-spinner [show]="isLoading()" message="Authenticating..."></app-loading-spinner>
 
-    <div class="min-h-screen bg-slate-50 flex flex-col justify-center py-12 sm:px-6 lg:px-8">
+    <div class="min-h-screen bg-slate-50 dark:bg-slate-950 flex flex-col justify-center py-12 sm:px-6 lg:px-8 transition-colors duration-200">
       <div class="sm:mx-auto sm:w-full sm:max-w-md">
         <div class="flex justify-center text-blue-600 mb-6">
-          <lucide-icon name="shield-check" class="h-16 w-16"></lucide-icon>
+          <lucide-icon name="shield-check" class="h-16 w-16 text-blue-600 dark:text-blue-500"></lucide-icon>
         </div>
-        <h2 class="mt-2 text-center text-3xl font-extrabold text-slate-900 tracking-tight">
+        <h2 class="mt-2 text-center text-3xl font-extrabold text-slate-900 dark:text-slate-100 tracking-tight">
           Sign in to your account
         </h2>
-        <p class="mt-2 text-center text-sm text-slate-600">
+        <p class="mt-2 text-center text-sm text-slate-600 dark:text-slate-400">
           Or
           <a
             routerLink="/register"
@@ -35,21 +35,21 @@ import { LucideAngularModule, LogIn, Lock, Mail, ShieldCheck, ArrowRight } from 
 
       <div class="mt-8 sm:mx-auto sm:w-full sm:max-w-md">
         <div
-          class="bg-white py-8 px-4 shadow-xl shadow-slate-200/50 sm:rounded-2xl sm:px-10 border border-slate-100 relative overflow-hidden"
+          class="bg-white dark:bg-slate-900 py-8 px-4 shadow-xl shadow-slate-200/50 dark:shadow-none sm:rounded-2xl sm:px-10 border border-slate-100 dark:border-slate-800 relative overflow-hidden transition-colors duration-200"
         >
           <!-- Decorative Background element -->
           <div
-            class="absolute -top-24 -right-24 w-48 h-48 bg-blue-50 rounded-full blur-3xl opacity-60 pointer-events-none"
+            class="absolute -top-24 -right-24 w-48 h-48 bg-blue-50 dark:bg-blue-900/20 rounded-full blur-3xl opacity-60 pointer-events-none"
           ></div>
 
           <form class="space-y-6 relative z-10" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
             <div>
-              <label for="email" class="block text-sm font-medium text-slate-700">
+              <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
                 Email address
               </label>
               <div class="mt-1 relative rounded-md shadow-sm">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <lucide-icon name="mail" class="h-5 w-5 text-slate-400"></lucide-icon>
+                  <lucide-icon name="mail" class="h-5 w-5 text-slate-400 dark:text-slate-500"></lucide-icon>
                 </div>
                 <input
                   id="email"
@@ -57,19 +57,19 @@ import { LucideAngularModule, LogIn, Lock, Mail, ShieldCheck, ArrowRight } from 
                   type="email"
                   autocomplete="email"
                   required
-                  class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-slate-300 rounded-lg py-3 transition-colors outline-none border"
+                  class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-lg py-3 transition-colors outline-none border"
                   placeholder="you@example.com"
                 />
               </div>
             </div>
 
             <div>
-              <label for="password" class="block text-sm font-medium text-slate-700">
+              <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
                 Password
               </label>
               <div class="mt-1 relative rounded-md shadow-sm">
                 <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                  <lucide-icon name="lock" class="h-5 w-5 text-slate-400"></lucide-icon>
+                  <lucide-icon name="lock" class="h-5 w-5 text-slate-400 dark:text-slate-500"></lucide-icon>
                 </div>
                 <input
                   id="password"
@@ -77,7 +77,7 @@ import { LucideAngularModule, LogIn, Lock, Mail, ShieldCheck, ArrowRight } from 
                   type="password"
                   autocomplete="current-password"
                   required
-                  class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-slate-300 rounded-lg py-3 transition-colors outline-none border"
+                  class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-10 sm:text-sm border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-lg py-3 transition-colors outline-none border"
                   placeholder="••••••••"
                 />
               </div>
@@ -89,9 +89,9 @@ import { LucideAngularModule, LogIn, Lock, Mail, ShieldCheck, ArrowRight } from 
                   id="remember-me"
                   name="remember-me"
                   type="checkbox"
-                  class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 rounded cursor-pointer"
+                  class="h-4 w-4 text-blue-600 focus:ring-blue-500 border-slate-300 dark:border-slate-700 dark:bg-slate-800 rounded cursor-pointer"
                 />
-                <label for="remember-me" class="ml-2 block text-sm text-slate-900 cursor-pointer">
+                <label for="remember-me" class="ml-2 block text-sm text-slate-900 dark:text-slate-300 cursor-pointer">
                   Remember me
                 </label>
               </div>

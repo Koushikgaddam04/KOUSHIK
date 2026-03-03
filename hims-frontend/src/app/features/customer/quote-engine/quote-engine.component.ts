@@ -16,8 +16,8 @@ import { LucideAngularModule, Calculator, Activity, CheckCircle2 } from 'lucide-
 
     <div class="max-w-3xl mx-auto">
       <div class="mb-8 text-center">
-        <h1 class="text-3xl font-bold text-slate-800">Get a Quote</h1>
-        <p class="text-slate-500 mt-2">
+        <h1 class="text-3xl font-bold text-slate-800 dark:text-slate-100">Get a Quote</h1>
+        <p class="text-slate-500 dark:text-slate-400 mt-2">
           Fill in your details to get an instant tailored insurance quote.
         </p>
       </div>

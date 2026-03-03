@@ -14,7 +14,7 @@ export class OfficerService {
     }
 
     decideClaim(id: string, status: 'Approved' | 'Rejected'): Observable<any> {
-        return this.http.patch(`${this.apiBase}/Staff/claim/decide/${id}?status=${status}`, {}, { responseType: 'text' });
+        return this.http.patch(`${this.apiBase}/Staff/claim/decide/${id}?status=${status}`, {});
     }
 
     getAuditLogs(): Observable<any[]> {

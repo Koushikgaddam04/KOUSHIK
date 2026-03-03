@@ -9,13 +9,13 @@ import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.com
   standalone: true,
   imports: [RouterModule, NavbarComponent, SidebarComponent],
   template: `
-    <div class="min-h-screen bg-slate-50">
+    <div class="min-h-screen bg-slate-50 dark:bg-slate-950 transition-colors duration-200">
       <app-navbar></app-navbar>
 
       <div class="flex pt-16">
         <app-sidebar></app-sidebar>
 
-        <main class="flex-1 ml-64 p-8 overflow-y-auto h-[calc(100vh-4rem)]">
+        <main class="flex-1 ml-64 p-8 overflow-y-auto h-[calc(100vh-4rem)] dark:text-slate-100">
           <div class="max-w-7xl mx-auto">
             <router-outlet></router-outlet>
           </div>
@@ -24,4 +24,4 @@ import { SidebarComponent } from '../../../shared/components/sidebar/sidebar.com
     </div>
   `,
 })
-export class MainLayoutComponent {}
+export class MainLayoutComponent { }

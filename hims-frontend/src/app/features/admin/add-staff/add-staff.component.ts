@@ -18,53 +18,53 @@ import { LucideAngularModule, UserPlus, Mail, Lock, Briefcase } from 'lucide-ang
 
     <div class="max-w-2xl mx-auto">
       <div class="mb-6">
-        <h1 class="text-2xl font-bold text-slate-800">Add New Staff</h1>
-        <p class="text-slate-500 mt-1">Register new Agents or Claims Officers into the system.</p>
+        <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Add New Staff</h1>
+        <p class="text-slate-500 dark:text-slate-400 mt-1">Register new Agents or Claims Officers into the system.</p>
       </div>
 
-      <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
-        <div class="p-6 border-b border-slate-100 bg-slate-50 flex items-center gap-3">
-          <div class="bg-blue-100 p-2 rounded-lg text-blue-600">
+      <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden transition-all duration-200">
+        <div class="p-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex items-center gap-3">
+          <div class="bg-blue-100 dark:bg-blue-900/20 p-2 rounded-lg text-blue-600 dark:text-blue-400">
             <lucide-icon name="user-plus" class="h-5 w-5"></lucide-icon>
           </div>
-          <h2 class="text-lg font-semibold text-slate-800">Staff Details</h2>
+          <h2 class="text-lg font-semibold text-slate-800 dark:text-slate-100">Staff Details</h2>
         </div>
 
         <form class="p-6 space-y-5" [formGroup]="staffForm" (ngSubmit)="onSubmit()">
           <div>
-            <label class="block text-sm font-medium text-slate-700">Full Name</label>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Full Name</label>
             <input
               type="text"
               formControlName="fullName"
               required
-              class="mt-1 flex-1 block w-full rounded-md border-slate-300 border py-2 px-3 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm outline-none"
+              class="mt-1 flex-1 block w-full rounded-md border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 border py-2 px-3 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm outline-none"
             />
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700">Email Address</label>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Email Address</label>
             <div class="mt-1 relative rounded-md shadow-sm">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <lucide-icon name="mail" class="h-4 w-4 text-slate-400"></lucide-icon>
+                <lucide-icon name="mail" class="h-4 w-4 text-slate-400 dark:text-slate-500"></lucide-icon>
               </div>
               <input
                 type="email"
                 formControlName="email"
                 required
-                class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-9 sm:text-sm border-slate-300 rounded-md py-2 border outline-none"
+                class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-9 sm:text-sm border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md py-2 border outline-none"
               />
             </div>
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700">Role</label>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Role</label>
             <div class="mt-1 relative rounded-md shadow-sm">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <lucide-icon name="briefcase" class="h-4 w-4 text-slate-400"></lucide-icon>
+                <lucide-icon name="briefcase" class="h-4 w-4 text-slate-400 dark:text-slate-500"></lucide-icon>
               </div>
               <select
                 formControlName="role"
-                class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-9 sm:text-sm border-slate-300 rounded-md py-2 border outline-none appearance-none"
+                class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-9 sm:text-sm border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md py-2 border outline-none appearance-none"
               >
                 <option value="Agent">Agent</option>
                 <option value="ClaimOfficer">Claims Officer</option>
@@ -73,16 +73,16 @@ import { LucideAngularModule, UserPlus, Mail, Lock, Briefcase } from 'lucide-ang
           </div>
 
           <div>
-            <label class="block text-sm font-medium text-slate-700">Temporary Password</label>
+            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Temporary Password</label>
             <div class="mt-1 relative rounded-md shadow-sm">
               <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                <lucide-icon name="lock" class="h-4 w-4 text-slate-400"></lucide-icon>
+                <lucide-icon name="lock" class="h-4 w-4 text-slate-400 dark:text-slate-500"></lucide-icon>
               </div>
               <input
                 type="password"
                 formControlName="password"
                 required
-                class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-9 sm:text-sm border-slate-300 rounded-md py-2 border outline-none"
+                class="focus:ring-blue-500 focus:border-blue-500 block w-full pl-9 sm:text-sm border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md py-2 border outline-none"
               />
             </div>
           </div>

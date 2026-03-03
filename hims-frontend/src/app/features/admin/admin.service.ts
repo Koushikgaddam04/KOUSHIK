@@ -6,6 +6,9 @@ export interface AdminSummary {
     totalRevenue: number;
     totalActivePolicies: number;
     pendingClaimsCount: number;
+    totalPayouts: number;
+    unpaidCommissions: number;
+    documentsToVerify: number;
 }
 
 @Injectable({
