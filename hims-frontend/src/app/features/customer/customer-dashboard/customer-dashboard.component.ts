@@ -4,12 +4,13 @@ import { RouterModule } from '@angular/router';
 import { CustomerService } from '../customer.service';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
-import { LucideAngularModule, ShieldCheck, FileSearch, ArrowRight } from 'lucide-angular';
+import { LucideAngularModule, ShieldCheck, FileSearch, ArrowRight, FileText } from 'lucide-angular';
+import { DocumentUploadComponent } from './document-upload.component';
 
 @Component({
   selector: 'app-customer-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, LoadingSpinnerComponent, LucideAngularModule],
+  imports: [CommonModule, RouterModule, LoadingSpinnerComponent, LucideAngularModule, DocumentUploadComponent],
   template: `
     <app-loading-spinner
       [show]="isLoading()"
@@ -24,7 +25,7 @@ import { LucideAngularModule, ShieldCheck, FileSearch, ArrowRight } from 'lucide
       <div class="flex gap-3">
         <a
           routerLink="/customer/quote"
-          class="inline-flex items-center justify-center px-4 py-2 border border-blue-600 shadow-sm text-sm font-medium rounded-md text-blue-600 bg-white hover:bg-blue-50 focus:outline-none transition-colors"
+          class="inline-flex items-center justify-center px-4 py-2 border border-blue-600 shadow-sm text-sm font-medium rounded-md text-blue-600 dark:text-blue-400 dark:border-blue-500 bg-white dark:bg-slate-900 hover:bg-blue-50 dark:hover:bg-slate-800 focus:outline-none transition-colors"
         >
           <lucide-icon name="file-search" class="mr-2 h-4 w-4"></lucide-icon>
           Get New Quote
@@ -38,81 +39,99 @@ import { LucideAngularModule, ShieldCheck, FileSearch, ArrowRight } from 'lucide
       </div>
     </div>
 
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-      <!-- Empty State -->
-      @if (policies().length === 0) {
-        <div
-          class="col-span-full bg-white rounded-xl shadow-sm border border-slate-200 p-12 text-center"
-        >
-          <div
-            class="mx-auto w-16 h-16 bg-blue-50 text-blue-500 rounded-full flex items-center justify-center mb-4"
-          >
-            <lucide-icon name="shield-check" class="h-8 w-8"></lucide-icon>
-          </div>
-          <h3 class="text-lg font-medium text-slate-900">No Active Policies</h3>
-          <p class="mt-2 text-sm text-slate-500 max-w-sm mx-auto">
-            You don't have any active insurance policies yet. Start by getting a quote!
-          </p>
-          <div class="mt-6">
-            <a
-              routerLink="/customer/quote"
-              class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700"
+    <div class="grid grid-cols-1 lg:grid-cols-3 gap-8">
+      <!-- Policies Section -->
+      <div class="lg:col-span-2 space-y-6">
+        <h2 class="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2">
+           <lucide-icon name="shield-check" class="h-5 w-5 text-blue-500"></lucide-icon>
+           Active Policies
+        </h2>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <!-- Empty State -->
+          @if (policies().length === 0) {
+            <div
+              class="col-span-full bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-12 text-center"
             >
-              Get a Quote <lucide-icon name="arrow-right" class="ml-2 h-4 w-4"></lucide-icon>
-            </a>
-          </div>
-        </div>
-      }
-
-      <!-- Policy Cards -->
-      @for (policy of policies(); track policy) {
-        <div
-          class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden hover:shadow-md transition-shadow flex flex-col"
-        >
-          <div class="p-6 flex-1">
-            <div class="flex items-center justify-between mb-4">
-              <span
-                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
-                [ngClass]="{
-                  'bg-green-100 text-green-800': policy.status === 'Active',
-                  'bg-yellow-100 text-yellow-800': policy.status === 'Pending',
-                }"
+              <div
+                class="mx-auto w-16 h-16 bg-blue-50 dark:bg-blue-900/20 text-blue-500 rounded-full flex items-center justify-center mb-4"
               >
-                {{ policy.status }}
-              </span>
-              <span class="text-sm font-medium text-slate-500">ID: #{{ policy.id }}</span>
+                <lucide-icon name="shield-check" class="h-8 w-8"></lucide-icon>
+              </div>
+              <h3 class="text-lg font-medium text-slate-900 dark:text-white">No Active Policies</h3>
+              <p class="mt-2 text-sm text-slate-500 dark:text-slate-400 max-w-sm mx-auto">
+                You don't have any active insurance policies yet. Start by getting a quote!
+              </p>
+              <div class="mt-6">
+                <a
+                  routerLink="/customer/quote"
+                  class="inline-flex items-center px-4 py-2 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 font-bold transition-all"
+                >
+                  Get a Quote <lucide-icon name="arrow-right" class="ml-2 h-4 w-4"></lucide-icon>
+                </a>
+              </div>
             </div>
-            <h3 class="text-xl font-bold text-slate-900">
-              {{ policy.planName || 'Standard Package' }}
-            </h3>
+          }
 
-            <div class="mt-6 border-t border-slate-100 pt-4 space-y-3">
-              <div class="flex justify-between text-sm">
-                <span class="text-slate-500">Coverage Amount</span>
-                <span class="font-medium text-slate-900">{{
-                  policy.coverageAmount || 50000 | currency
-                }}</span>
+          <!-- Policy Cards -->
+          @for (policy of policies(); track policy) {
+            <div
+              class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden hover:shadow-md transition-shadow flex flex-col"
+            >
+              <div class="p-6 flex-1">
+                <div class="flex items-center justify-between mb-4">
+                  <span
+                    class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
+                    [ngClass]="{
+                      'bg-green-100 text-green-800 dark:bg-green-900/20 dark:text-green-400': policy.status === 'Active',
+                      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/20 dark:text-yellow-400': policy.status === 'Pending',
+                    }"
+                  >
+                    {{ policy.status }}
+                  </span>
+                  <span class="text-sm font-medium text-slate-400">ID: #{{ policy.id }}</span>
+                </div>
+                <h3 class="text-xl font-bold text-slate-900 dark:text-white">
+                  {{ policy.planName || 'Standard Package' }}
+                </h3>
+
+                <div class="mt-6 border-t border-slate-100 dark:border-slate-800 pt-4 space-y-3">
+                  <div class="flex justify-between text-sm">
+                    <span class="text-slate-500 dark:text-slate-400">Coverage Amount</span>
+                    <span class="font-medium text-slate-900 dark:text-white">{{
+                      policy.coverageAmount || 50000 | currency
+                    }}</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-slate-500 dark:text-slate-400">Premium / month</span>
+                    <span class="font-medium text-slate-900 dark:text-white">{{
+                      policy.premium || 150 | currency
+                    }}</span>
+                  </div>
+                </div>
               </div>
-              <div class="flex justify-between text-sm">
-                <span class="text-slate-500">Premium / month</span>
-                <span class="font-medium text-slate-900">{{
-                  policy.premium || 150 | currency
-                }}</span>
+              <div class="bg-slate-50 dark:bg-slate-800/50 px-6 py-3 border-t border-slate-100 dark:border-slate-800">
+                <a
+                  routerLink="/customer/claim"
+                  [queryParams]="{ policyId: policy.id }"
+                  class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:text-blue-500 flex items-center justify-center"
+                >
+                  Submit Claim for this policy
+                  <lucide-icon name="arrow-right" class="ml-1 h-4 w-4"></lucide-icon>
+                </a>
               </div>
             </div>
-          </div>
-          <div class="bg-slate-50 px-6 py-3 border-t border-slate-100">
-            <a
-              routerLink="/customer/claim"
-              [queryParams]="{ policyId: policy.id }"
-              class="text-sm font-medium text-blue-600 hover:text-blue-500 flex items-center justify-center"
-            >
-              Submit Claim for this policy
-              <lucide-icon name="arrow-right" class="ml-1 h-4 w-4"></lucide-icon>
-            </a>
-          </div>
+          }
         </div>
-      }
+      </div>
+
+      <!-- Document Upload Section -->
+      <div class="lg:col-span-1">
+         <h2 class="text-lg font-semibold text-slate-800 dark:text-slate-100 flex items-center gap-2 mb-6">
+           <lucide-icon name="file-text" class="h-5 w-5 text-emerald-500"></lucide-icon>
+           Profile Documents
+        </h2>
+        <app-document-upload></app-document-upload>
+      </div>
     </div>
   `,
 })

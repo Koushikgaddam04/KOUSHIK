@@ -36,15 +36,9 @@ public class ClaimService : IClaimService
         if (policy.Status != "Active")
             return $"Rejected: Policy is currently {policy.Status}. Only 'Active' policies can file claims.";
 
-        // 2. Business Logic: Tier-Based Coverage Calculation
-        // Platinum: 100% | Gold: 80% | Silver: 60%
-        decimal coveragePercentage = policy.TierName.ToLower() switch
-        {
-            "platinum" => 1.0m,
-            "gold" => 0.8m,
-            "silver" => 0.6m,
-            _ => 0.5m // Default/Basic coverage
-        };
+        // Since TierName is removed from Policy, we use a default coverage percentage (e.g. 100%)
+        // Real-world: This would be determined by the plan or other factors in the contract.
+        decimal coveragePercentage = 1.0m;
 
         decimal calculatedPayout = requestedAmount * coveragePercentage;
 
@@ -67,9 +61,9 @@ public class ClaimService : IClaimService
 
         await _claimRepo.AddAsync(claim);
 
-        // 5. Deduct from Policy Coverage Amount (Real-time update)
-        policy.CoverageAmount -= calculatedPayout;
-        _policyRepo.Update(policy);
+        // 5. [DEDUCTION MOVED TO APPROVAL STAGE]
+        // policy.CoverageAmount -= calculatedPayout;
+        // _policyRepo.Update(policy);
 
         // 6. Audit Logging: Track the Claim Creation
         var log = new PolicyActionLog
@@ -79,7 +73,7 @@ public class ClaimService : IClaimService
             ActionType = "ClaimSubmission",
             OldValue = policy.CoverageAmount.ToString(),
             NewValue = (policy.CoverageAmount - calculatedPayout).ToString(),
-            Reason = $"User requested {requestedAmount}. System approved {calculatedPayout} based on {policy.TierName} tier.",
+            Reason = $"User requested {requestedAmount}. System approved {calculatedPayout} based on policy coverage rules.",
             PerformedByUserId = policy.UserId // Initial submission by customer
         };
         await _auditRepo.AddAsync(log);

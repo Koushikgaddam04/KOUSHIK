@@ -12,6 +12,7 @@ import {
   History,
   ListChecks,
   Activity,
+  FileCheck,
 } from 'lucide-angular';
 
 @Component({
@@ -59,6 +60,17 @@ import {
                 class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"
               ></lucide-icon>
               Manage Policies
+            </a>
+            <a
+              routerLink="/admin/verify-docs"
+              routerLinkActive="bg-enterprise-blue-700 dark:bg-blue-600/20"
+              class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-enterprise-blue-800 dark:hover:bg-slate-800 transition-all duration-200 group"
+            >
+              <lucide-icon
+                name="file-check"
+                class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"
+              ></lucide-icon>
+              Verify Documents
             </a>
           }
 

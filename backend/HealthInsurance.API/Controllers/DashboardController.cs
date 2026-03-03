@@ -7,7 +7,7 @@ namespace HealthInsurance.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class DashboardController : ControllerBase
+public class DashboardController : BaseApiController
 {
     private readonly IDashboardService _dashboardService;
 

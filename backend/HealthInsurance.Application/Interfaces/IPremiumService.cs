@@ -10,5 +10,5 @@ namespace HealthInsurance.Application.Interfaces;
 
 public interface IPremiumService
 {
-    Task<PremiumQuote> CalculateQuoteAsync(int userId, int age, string planName, string tierName);
+    Task<PremiumQuote> CalculateQuoteAsync(int userId, int age, string planName, string tierName, bool saveToDb = false);
 }

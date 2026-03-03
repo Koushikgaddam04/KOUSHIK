@@ -85,15 +85,13 @@ import { LucideAngularModule, Trash2, Shield, Filter, Search } from 'lucide-angu
                       </div> -->
                       <div class="grid grid-cols-2 gap-4">
                         <div class="col-span-2">
-                          <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Plan Name</label>
-                          <select
+                          <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Plan Name</label>
+                          <input
+                            type="text"
                             formControlName="planName"
-                            class="mt-1 block w-full border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white"
-                          >
-                            <option value="Comprehensive Health">Comprehensive Health</option>
-                            <option value="Basic Health">Basic Health</option>
-                            <option value="Premium Health">Premium Health</option>
-                          </select>
+                            placeholder="e.g. Platinum Plus Premium"
+                            class="mt-1 block w-full border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          />
                         </div>
                       </div>
                       <div class="grid grid-cols-2 gap-4">
@@ -234,7 +232,7 @@ import { LucideAngularModule, Trash2, Shield, Filter, Search } from 'lucide-angu
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
                   <div class="font-medium text-slate-800 dark:text-slate-200">
-                    {{ policy.planName || 'Comprehensive Health' }}
+                    {{ policy.planName || '' }}
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
@@ -302,10 +300,11 @@ export class ManagePoliciesComponent implements OnInit {
   policyToDelete = signal<string | null>(null);
 
   showCreateModal = signal(false);
+
   createForm = this.fb.group({
     userId: [1, [Validators.required, Validators.min(1)]],
     agentId: [null],
-    planName: ['Comprehensive Health', Validators.required],
+    planName: ['', Validators.required],
     monthlyPremium: [0, [Validators.required, Validators.min(0)]],
     coverageAmount: [0, [Validators.required, Validators.min(0)]],
     expiryDate: ['', Validators.required],
@@ -385,7 +384,7 @@ export class ManagePoliciesComponent implements OnInit {
   openCreateModal() {
     this.createForm.reset({
       userId: 1,
-      planName: 'Comprehensive Health',
+      planName: '',
       status: 'Active',
       agentId: null,
     });

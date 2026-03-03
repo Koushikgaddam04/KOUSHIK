@@ -3,9 +3,10 @@ import { LoginComponent } from './features/auth/login/login.component';
 import { RegisterComponent } from './features/auth/register/register.component';
 import { MainLayoutComponent } from './core/layout/main-layout/main-layout.component';
 import { roleGuard } from './core/guards/role.guard';
+import { HomeComponent } from './features/home/home.component';
 
 export const routes: Routes = [
-    { path: '', redirectTo: '/login', pathMatch: 'full' },
+    { path: '', component: HomeComponent },
     { path: 'login', component: LoginComponent },
     { path: 'register', component: RegisterComponent },
     {
@@ -39,5 +40,5 @@ export const routes: Routes = [
             }
         ]
     },
-    { path: '**', redirectTo: '/login' }
+    { path: '**', redirectTo: '' }
 ];

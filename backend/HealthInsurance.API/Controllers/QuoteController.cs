@@ -1,11 +1,15 @@
 ﻿using HealthInsurance.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using HealthInsurance.Application.DTOs;
+using Microsoft.AspNetCore.Authorization;
+using HealthInsurance.Domain;
 
 namespace HealthInsurance.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class QuoteController : ControllerBase
+[Authorize]
+public class QuoteController : BaseApiController
 {
     private readonly IPremiumService _premiumService;
 
@@ -15,10 +19,20 @@ public class QuoteController : ControllerBase
     }
 
     [HttpPost("calculate")]
-    public async Task<IActionResult> Calculate(int age, string plan, string tier)
+    public async Task<IActionResult> Calculate([FromBody] QuoteRequestDto request)
     {
-        // For now, we use a dummy UserId until we link the logged-in user
-        var quote = await _premiumService.CalculateQuoteAsync(1, age, plan, tier);
+        var userId = UserSession.CurrentUserId;
+        // We MUST save to DB here so the resulting quote has an ID that the Payment system can reference
+        var quote = await _premiumService.CalculateQuoteAsync(userId, request.Age, request.PlanName, request.Tier, true);
+        return Ok(quote);
+    }
+    
+    [HttpPost("request")]
+    public async Task<IActionResult> RequestPolicy([FromBody] QuoteRequestDto request)
+    {
+        var userId = UserSession.CurrentUserId;
+        // Actually saves the quote to the PremiumQuotes table
+        var quote = await _premiumService.CalculateQuoteAsync(userId, request.Age, request.PlanName, request.Tier, true);
         return Ok(quote);
     }
 }

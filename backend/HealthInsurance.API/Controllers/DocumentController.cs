@@ -1,92 +1,131 @@
 ﻿using HealthInsurance.Application.Interfaces;
 using HealthInsurance.Domain.Entities;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
+using HealthInsurance.Domain;
 
 namespace HealthInsurance.API.Controllers;
 
 [Route("api/[controller]")]
 [ApiController]
-public class DocumentController : ControllerBase
+[Authorize]
+public class DocumentController : BaseApiController
 {
-    private readonly IDocumentRepository _documentRepository;
+    private readonly IDocumentRepository _docRepo;
     private readonly IGenericRepository<PolicyActionLog> _auditRepo;
     private readonly IWebHostEnvironment _environment;
 
-    public DocumentController(IDocumentRepository documentRepository, IGenericRepository<PolicyActionLog> auditRepo, IWebHostEnvironment environment)
+    public DocumentController(IDocumentRepository docRepo, IGenericRepository<PolicyActionLog> auditRepo, IWebHostEnvironment environment)
     {
-        _documentRepository = documentRepository;
+        _docRepo = docRepo;
         _auditRepo = auditRepo;
         _environment = environment;
     }
 
     [HttpPost("upload")]
-    public async Task<IActionResult> Upload(IFormFile file, string docType, string entityType, int entityId)
+    public async Task<IActionResult> Upload([FromForm] DocumentUploadRequest request)
     {
-        if (file == null || file.Length == 0) return BadRequest("No file uploaded.");
+        if (request.File == null || request.File.Length == 0) return BadRequest("No file uploaded.");
 
-        // 1. Create a unique file name to prevent overwriting
-        var fileName = Guid.NewGuid() + Path.GetExtension(file.FileName);
+        var userId = UserSession.CurrentUserId;
+        var fileName = $"{Guid.NewGuid()}_{request.File.FileName}";
         var uploadsFolder = Path.Combine(_environment.ContentRootPath, "Uploads");
 
         if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
 
         var filePath = Path.Combine(uploadsFolder, fileName);
 
-        // 2. Save file to physical storage
         using (var stream = new FileStream(filePath, FileMode.Create))
         {
-            await file.CopyToAsync(stream);
+            await request.File.CopyToAsync(stream);
         }
 
-        // 3. Save metadata to DocumentVault table
         var doc = new DocumentVault
         {
-            FileName = file.FileName,
-            FilePath = filePath,
-            DocumentType = docType,
-            RelatedEntityType = entityType,
-            RelatedEntityId = entityId,
-            Status = "Pending", // For Claims Officer to verify later
-            UploadedByUserId = 1 // Placeholder until we use Auth
+            FileName = request.File.FileName,
+            FilePath = fileName, // Store relative filename for easier download
+            DocumentType = request.DocType,
+            RelatedEntityType = "User",
+            RelatedEntityId = userId,
+            Status = "Pending",
+            UploadedByUserId = userId
         };
 
-        await _documentRepository.AddAsync(doc);
-        await _documentRepository.SaveChangesAsync();
+        await _docRepo.AddAsync(doc);
+        await _docRepo.SaveChangesAsync();
 
         return Ok(new { message = "Document uploaded successfully!", docId = doc.Id });
     }
 
-    [HttpGet("pending-verification")]
-    // [Authorize(Roles = "ClaimsOfficer,Admin")] // Uncomment after testing
-    public async Task<IActionResult> GetPendingDocuments()
+    [HttpGet("my-documents")]
+    public async Task<IActionResult> GetMyDocuments()
     {
-        var allDocs = await _documentRepository.GetAllAsync();
-        var pending = allDocs.Where(d => d.Status == "Pending");
-        return Ok(pending);
+        var userId = UserSession.CurrentUserId;
+        var allDocs = await _docRepo.GetAllAsync();
+        var myDocs = allDocs.Where(d => d.UploadedByUserId == userId).ToList();
+        return Ok(myDocs);
+    }
+
+    [HttpGet("user/{userId}")]
+    public async Task<IActionResult> GetUserDocuments([FromRoute] int userId)
+    {
+        var allDocs = await _docRepo.GetAllAsync();
+        var userDocs = allDocs.Where(d => d.UploadedByUserId == userId).ToList();
+        return Ok(userDocs);
+    }
+
+    [HttpGet("download/{fileName}")]
+    public IActionResult DownloadDocument([FromRoute] string fileName)
+    {
+        var filePath = Path.Combine(_environment.ContentRootPath, "Uploads", fileName);
+        if (!System.IO.File.Exists(filePath)) return NotFound();
+
+        var fileBytes = System.IO.File.ReadAllBytes(filePath);
+        return File(fileBytes, "application/octet-stream", fileName);
     }
 
     [HttpPatch("review/{id}")]
-    public async Task<IActionResult> ReviewDocument(int id, string status, string comments)
+    [Authorize(Roles = "ClaimOfficer,Admin")]
+    public async Task<IActionResult> ReviewDocument([FromRoute] int id, [FromBody] DocumentReviewRequest req)
     {
-        // 1. Update Document Status in Database
-        await _documentRepository.UpdateStatusAsync(id, status, comments);
+        await _docRepo.UpdateStatusAsync(id, req.Status, req.Comments);
 
-        // 2. Heavyweight Audit: Log who did the review
-        var auditLog = new HealthInsurance.Domain.Entities.PolicyActionLog
+        var auditLog = new PolicyActionLog
         {
             EntityName = "Document",
             EntityRecordId = id,
             ActionType = "DocumentReview",
             OldValue = "Pending",
-            NewValue = status,
-            Reason = comments,
-            PerformedByUserId = 3 // Example ID for a 'Claims Officer'
+            NewValue = req.Status,
+            Reason = req.Comments,
+            PerformedByUserId = UserSession.CurrentUserId
         };
 
-        // 3. Save the Log using the injected Repository
         await _auditRepo.AddAsync(auditLog);
-        await _auditRepo.SaveChangesAsync(); // Finalize both changes
+        await _auditRepo.SaveChangesAsync();
 
-        return Ok(new { Message = $"Document {id} has been {status}.", Status = status });
+        return Ok(new { Message = $"Document {id} has been {req.Status}." });
     }
+
+    [HttpGet("pending")]
+    [Authorize(Roles = "ClaimOfficer,Admin")]
+    public async Task<IActionResult> GetPendingDocuments()
+    {
+        var allDocs = await _docRepo.GetAllAsync();
+        var pendingDocs = allDocs.Where(d => d.Status == "Pending").ToList();
+        return Ok(pendingDocs);
+    }
+}
+
+public class DocumentUploadRequest
+{
+    public IFormFile File { get; set; }
+    public string DocType { get; set; }
+}
+
+public class DocumentReviewRequest
+{
+    public string Status { get; set; } = string.Empty;
+    public string Comments { get; set; } = string.Empty;
 }

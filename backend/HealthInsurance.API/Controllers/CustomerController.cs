@@ -2,11 +2,13 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HealthInsurance.Domain.Entities;
+using HealthInsurance.Domain;
+
 namespace HealthInsurance.API.Controllers
 {
     [Route("api/[controller]")]
     [ApiController]
-    public class CustomerController : ControllerBase
+    public class CustomerController : BaseApiController
     {
         private readonly IGenericRepository<Policy> _policyRepo;
         private readonly IGenericRepository<Claim> _claimRepo;
@@ -18,25 +20,28 @@ namespace HealthInsurance.API.Controllers
         }
 
         // 7. See their active policies
-        [HttpGet("{userId}/policies")]
-        public async Task<IActionResult> GetMyPolicies(int userId)
+        [HttpGet("my-policies")]
+        public async Task<IActionResult> GetMyPolicies()
         {
+            var userId = UserSession.CurrentUserId;
             var policies = await _policyRepo.GetAllAsync();
             return Ok(policies.Where(p => p.UserId == userId && p.Status == "Active"));
         }
 
         // 8. Claim History
-        [HttpGet("{userId}/claims")]
-        public async Task<IActionResult> GetMyClaims(int userId)
+        [HttpGet("my-claims")]
+        public async Task<IActionResult> GetMyClaims()
         {
+            var userId = UserSession.CurrentUserId;
             var claims = await _claimRepo.GetAllAsync();
             // We filter claims by linking them through the user's policies
             return Ok(claims.Where(c => c.IsActive == true));
         }
 
-        [HttpGet("my-summary/{userId}")]
-        public async Task<IActionResult> GetCustomerSummary(int userId)
+        [HttpGet("my-summary")]
+        public async Task<IActionResult> GetCustomerSummary()
         {
+            var userId = UserSession.CurrentUserId;
             var policies = await _policyRepo.GetAllAsync();
             var claims = await _claimRepo.GetAllAsync();
 

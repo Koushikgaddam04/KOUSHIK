@@ -18,7 +18,7 @@ public class PremiumService : IPremiumService
         _quoteRepository = quoteRepository;
     }
 
-    public async Task<PremiumQuote> CalculateQuoteAsync(int userId, int age, string planName, string tierName)
+    public async Task<PremiumQuote> CalculateQuoteAsync(int userId, int age, string planName, string tierName, bool saveToDb = false)
     {
         // Real-world creative logic: 
         // 1. Base Premium is $500
@@ -49,8 +49,11 @@ public class PremiumService : IPremiumService
             QuoteReference = "Q-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper()
         };
 
-        await _quoteRepository.AddAsync(quote);
-        await _quoteRepository.SaveChangesAsync();
+        if (saveToDb)
+        {
+            await _quoteRepository.AddAsync(quote);
+            await _quoteRepository.SaveChangesAsync();
+        }
 
         return quote;
     }

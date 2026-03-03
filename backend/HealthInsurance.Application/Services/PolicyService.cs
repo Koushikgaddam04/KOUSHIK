@@ -34,36 +34,49 @@ public class PolicyService : IPolicyService
         var quote = await _quoteRepo.GetByReferenceAsync(quoteReference);
         if (quote == null || quote.IsConvertedToPolicy) return false;
 
-        // 2. Create the real Policy (The "Contract")
+        // 2. Try to find the Plan Template by Name to inherit the assigned Agent
+        int? inheritedAgentId = null;
+        var allPolicies = await _policyRepo.GetAllAsync();
+        var template = allPolicies.FirstOrDefault(p => p.PlanName == quote.SelectedPlanName && p.IsPlanTemplate == true);
+        if (template != null)
+        {
+            inheritedAgentId = template.AgentId;
+        }
+
+        // 3. Create the real Policy (The "Contract")
         var policy = new HealthInsurance.Domain.Entities.Policy
         {
             PolicyNumber = "POL-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper(),
             UserId = customerId,
             PlanName = quote.SelectedPlanName,
-            TierName = quote.SelectedTierName,
+
             MonthlyPremium = quote.CalculatedMonthlyPremium,
             CoverageAmount = quote.CoverageAmount,
             ExpiryDate = DateTime.Now.AddYears(1),
-            Status = "Active"
+            Status = "Active",
+            AgentId = inheritedAgentId, // Inherit from template
+            IsPlanTemplate = false      // This is a customer instance
         };
 
         await _policyRepo.AddAsync(policy);
 
-        // 3. Mark Quote as Converted
+        // 4. Mark Quote as Converted
         quote.IsConvertedToPolicy = true;
         _quoteRepo.Update(quote);
 
-        // 4. Creative Logic: Generate Agent Commission
-        // Assume AgentId 2 for now; 10% commission rate
-        var commission = new AgentCommissionLog
+        // 5. Creative Logic: Generate Agent Commission (if an agent was inherited)
+        if (inheritedAgentId.HasValue)
         {
-            AgentId = 2,
-            PremiumAmount = quote.CalculatedMonthlyPremium,
-            CommissionRate = 0.10m,
-            EarnedAmount = quote.CalculatedMonthlyPremium * 0.10m,
-            Status = "Pending"
-        };
-        await _commissionRepo.AddAsync(commission);
+            var commission = new AgentCommissionLog
+            {
+                AgentId = inheritedAgentId.Value,
+                PremiumAmount = quote.CalculatedMonthlyPremium,
+                CommissionRate = 0.10m,
+                EarnedAmount = quote.CalculatedMonthlyPremium * 0.10m,
+                Status = "Pending"
+            };
+            await _commissionRepo.AddAsync(commission);
+        }
 
         // 5. Audit the Action
         var log = new PolicyActionLog

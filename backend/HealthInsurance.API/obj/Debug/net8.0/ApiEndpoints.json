@@ -56,19 +56,9 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "policyId",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "amount",
-        "Type": "System.Decimal",
-        "IsRequired": false
-      },
-      {
-        "Name": "reason",
-        "Type": "System.String",
-        "IsRequired": false
+        "Name": "request",
+        "Type": "HealthInsurance.Application.DTOs.ClaimRequestDto",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -76,33 +66,31 @@
   {
     "ContainingType": "HealthInsurance.API.Controllers.CustomerController",
     "Method": "GetMyClaims",
-    "RelativePath": "api/Customer/{userId}/claims",
+    "RelativePath": "api/Customer/my-claims",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "userId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
     "ContainingType": "HealthInsurance.API.Controllers.CustomerController",
     "Method": "GetMyPolicies",
-    "RelativePath": "api/Customer/{userId}/policies",
+    "RelativePath": "api/Customer/my-policies",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
-    "Parameters": [
-      {
-        "Name": "userId",
-        "Type": "System.Int32",
-        "IsRequired": true
-      }
-    ],
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthInsurance.API.Controllers.CustomerController",
+    "Method": "GetCustomerSummary",
+    "RelativePath": "api/Customer/my-summary",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -117,8 +105,34 @@
   },
   {
     "ContainingType": "HealthInsurance.API.Controllers.DocumentController",
+    "Method": "DownloadDocument",
+    "RelativePath": "api/Document/download/{fileName}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "fileName",
+        "Type": "System.String",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthInsurance.API.Controllers.DocumentController",
+    "Method": "GetMyDocuments",
+    "RelativePath": "api/Document/my-documents",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthInsurance.API.Controllers.DocumentController",
     "Method": "GetPendingDocuments",
-    "RelativePath": "api/Document/pending-verification",
+    "RelativePath": "api/Document/pending",
     "HttpMethod": "GET",
     "IsController": true,
     "Order": 0,
@@ -139,14 +153,9 @@
         "IsRequired": true
       },
       {
-        "Name": "status",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "comments",
-        "Type": "System.String",
-        "IsRequired": false
+        "Name": "req",
+        "Type": "HealthInsurance.API.Controllers.DocumentReviewRequest",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -160,24 +169,62 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "file",
+        "Name": "File",
         "Type": "Microsoft.AspNetCore.Http.IFormFile",
         "IsRequired": false
       },
       {
-        "Name": "docType",
+        "Name": "DocType",
         "Type": "System.String",
         "IsRequired": false
-      },
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthInsurance.API.Controllers.DocumentController",
+    "Method": "GetUserDocuments",
+    "RelativePath": "api/Document/user/{userId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
       {
-        "Name": "entityType",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "entityId",
+        "Name": "userId",
         "Type": "System.Int32",
-        "IsRequired": false
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthInsurance.API.Controllers.PaymentController",
+    "Method": "ProcessPayment",
+    "RelativePath": "api/Payment/process",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "HealthInsurance.API.Controllers.PaymentRequest",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthInsurance.API.Controllers.PolicyController",
+    "Method": "SoftDeletePolicy",
+    "RelativePath": "api/Policy/{id}",
+    "HttpMethod": "DELETE",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "id",
+        "Type": "System.Int32",
+        "IsRequired": true
       }
     ],
     "ReturnTypes": []
@@ -242,6 +289,16 @@
   },
   {
     "ContainingType": "HealthInsurance.API.Controllers.PolicyController",
+    "Method": "GetMyDashboardPolicies",
+    "RelativePath": "api/Policy/customer",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthInsurance.API.Controllers.PolicyController",
     "Method": "GetRecentPolicies",
     "RelativePath": "api/Policy/recent",
     "HttpMethod": "GET",
@@ -285,21 +342,37 @@
     "Order": 0,
     "Parameters": [
       {
-        "Name": "age",
-        "Type": "System.Int32",
-        "IsRequired": false
-      },
-      {
-        "Name": "plan",
-        "Type": "System.String",
-        "IsRequired": false
-      },
-      {
-        "Name": "tier",
-        "Type": "System.String",
-        "IsRequired": false
+        "Name": "request",
+        "Type": "HealthInsurance.Application.DTOs.QuoteRequestDto",
+        "IsRequired": true
       }
     ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthInsurance.API.Controllers.QuoteController",
+    "Method": "RequestPolicy",
+    "RelativePath": "api/Quote/request",
+    "HttpMethod": "POST",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "request",
+        "Type": "HealthInsurance.Application.DTOs.QuoteRequestDto",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthInsurance.API.Controllers.StaffController",
+    "Method": "GetAgents",
+    "RelativePath": "api/Staff/agents",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
     "ReturnTypes": []
   },
   {
@@ -325,6 +398,16 @@
   },
   {
     "ContainingType": "HealthInsurance.API.Controllers.StaffController",
+    "Method": "GetPendingClaims",
+    "RelativePath": "api/Staff/claim/pending",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthInsurance.API.Controllers.StaffController",
     "Method": "GetStaffHistory",
     "RelativePath": "api/Staff/history/{role}",
     "HttpMethod": "GET",
@@ -335,6 +418,38 @@
         "Name": "role",
         "Type": "System.String",
         "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthInsurance.API.Controllers.StaffController",
+    "Method": "GetAgentQueue",
+    "RelativePath": "api/Staff/my-verification-queue/{agentId}",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "agentId",
+        "Type": "System.Int32",
+        "IsRequired": true
+      }
+    ],
+    "ReturnTypes": []
+  },
+  {
+    "ContainingType": "HealthInsurance.API.Controllers.StaffController",
+    "Method": "GetPendingPolicies",
+    "RelativePath": "api/Staff/policy/pending",
+    "HttpMethod": "GET",
+    "IsController": true,
+    "Order": 0,
+    "Parameters": [
+      {
+        "Name": "agentId",
+        "Type": "System.Int32",
+        "IsRequired": false
       }
     ],
     "ReturnTypes": []

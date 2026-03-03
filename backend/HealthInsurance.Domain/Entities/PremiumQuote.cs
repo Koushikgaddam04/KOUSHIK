@@ -26,6 +26,7 @@ public class PremiumQuote : BaseEntity
     // Tracking
     public DateTime ExpiryDate { get; set; }
     public bool IsConvertedToPolicy { get; set; } = false;
+    public bool IsPaid { get; set; } = false;
 
     public string QuoteReference { get; set; } = string.Empty;
 }

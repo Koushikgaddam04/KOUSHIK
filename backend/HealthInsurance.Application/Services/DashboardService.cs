@@ -30,19 +30,19 @@ public class DashboardService : IDashboardService
     public async Task<Dictionary<string, object>> GetAdminStatsAsync()
     {
         // Only include policies that have not been soft-deleted
-        var policies = (await _policyRepo.GetAllAsync()).Where(p => p.IsActive);
+        var policies = (await _policyRepo.GetAllAsync()).Where(p => p.IsActive && p.UserId!=1);
         var claims = await _claimRepo.GetAllAsync();
         var commissions = await _commissionRepo.GetAllAsync();
         var docs = await _docRepo.GetAllAsync();
 
         return new Dictionary<string, object>
         {
-            { "TotalActivePolicies", policies.Count(p => p.Status == "Active") },
-            { "TotalRevenue", policies.Sum(p => p.MonthlyPremium) },
-            { "PendingClaimsCount", claims.Count(c => c.Status == "PendingApproval") },
-            { "TotalPayouts", claims.Where(c => c.Status == "Approved").Sum(c => c.ClaimAmount) },
-            { "UnpaidCommissions", commissions.Where(a => a.Status == "Pending").Sum(a => a.EarnedAmount) },
-            { "DocumentsToVerify", docs.Count(d => d.Status == "Pending") }
+            { "totalActivePolicies", policies.Count(p => p.Status.Equals("Active", StringComparison.OrdinalIgnoreCase)) },
+            { "totalRevenue", policies.Sum(p => p.MonthlyPremium) },
+            { "pendingClaimsCount", claims.Count(c => c.Status.Equals("PendingApproval", StringComparison.OrdinalIgnoreCase)) },
+            { "totalPayouts", claims.Where(c => c.Status.Equals("Approved", StringComparison.OrdinalIgnoreCase)).Sum(c => c.ClaimAmount) },
+            { "unpaidCommissions", commissions.Where(a => a.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase)).Sum(a => a.EarnedAmount) },
+            { "documentsToVerify", docs.Count(d => d.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase)) }
         };
     }
 }

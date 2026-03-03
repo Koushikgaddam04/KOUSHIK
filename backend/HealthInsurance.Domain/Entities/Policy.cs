@@ -14,10 +14,16 @@ public class Policy : BaseEntity
     public User? User { get; set; }
 
     public string PlanName { get; set; } = string.Empty;
-    public string TierName { get; set; } = string.Empty;
+
 
     public decimal MonthlyPremium { get; set; }
     public decimal CoverageAmount { get; set; }
     public DateTime ExpiryDate { get; set; }
     public string Status { get; set; } = "Active";
+    
+    // The assigned agent for this policy (nullable, because policies start unassigned)
+    public int? AgentId { get; set; }
+
+    // Discriminator to distinguish between a "Product Plan Template" and a "Customer Policy Instance"
+    public bool IsPlanTemplate { get; set; } = false;
 }

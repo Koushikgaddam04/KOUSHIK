@@ -4,12 +4,13 @@ import { OfficerService } from '../officer.service';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
-import { LucideAngularModule, Check, X, FileText, Search } from 'lucide-angular';
+import { UserDocumentsModalComponent } from '../../../shared/components/user-documents-modal/user-documents-modal.component';
+import { LucideAngularModule, Check, X, FileText, Search, Eye } from 'lucide-angular';
 
 @Component({
   selector: 'app-claims-queue',
   standalone: true,
-  imports: [CommonModule, LoadingSpinnerComponent, ConfirmationModalComponent, LucideAngularModule],
+  imports: [CommonModule, LoadingSpinnerComponent, ConfirmationModalComponent, UserDocumentsModalComponent, LucideAngularModule],
   template: `
     <app-loading-spinner [show]="isLoading()" message="Processing Claim..."></app-loading-spinner>
 
@@ -27,6 +28,12 @@ import { LucideAngularModule, Check, X, FileText, Search } from 'lucide-angular'
       (confirm)="confirmReject()"
       (close)="closeModal()"
     ></app-confirmation-modal>
+
+    <app-user-documents-modal 
+      [show]="showDocsModal()" 
+      [userId]="selectedUserId()" 
+      (close)="showDocsModal.set(false)">
+    </app-user-documents-modal>
 
     <div class="bg-white rounded-xl shadow-sm border border-slate-200 overflow-hidden">
       <div class="p-4 border-b border-slate-100 flex justify-between items-center bg-slate-50">
@@ -110,7 +117,14 @@ import { LucideAngularModule, Check, X, FileText, Search } from 'lucide-angular'
                 <td class="px-6 py-4 text-sm text-slate-500 max-w-sm">
                   <p class="truncate">{{ claim.reason }}</p>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2">
+                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium space-x-2 flex items-center justify-end">
+                  <button
+                    (click)="viewDocs(claim.userId)"
+                    class="inline-flex items-center px-3 py-1.5 border border-slate-300 text-xs font-medium rounded shadow-sm text-slate-700 bg-white hover:bg-slate-50 focus:outline-none transition-colors"
+                  >
+                    <lucide-icon name="eye" class="mr-1 h-3.5 w-3.5"></lucide-icon>
+                    Docs
+                  </button>
                   <button
                     (click)="approve(claim.id)"
                     class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-green-600 hover:bg-green-700 focus:outline-none transition-colors"
@@ -155,6 +169,8 @@ export class ClaimsQueueComponent implements OnInit {
 
   showRejectModal = signal(false);
   claimToReject = signal<string | null>(null);
+  showDocsModal = signal(false);
+  selectedUserId = signal<number>(0);
 
   ngOnInit() {
     this.loadQueue();
@@ -239,5 +255,10 @@ export class ClaimsQueueComponent implements OnInit {
         },
       });
     }
+  }
+
+  viewDocs(userId: number) {
+    this.selectedUserId.set(userId);
+    this.showDocsModal.set(true);
   }
 }

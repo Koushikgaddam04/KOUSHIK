@@ -5,10 +5,12 @@ import { ToastrService } from 'ngx-toastr';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
 import { LucideAngularModule } from 'lucide-angular';
 
+import { RouterModule } from '@angular/router';
+
 @Component({
   selector: 'app-admin-dashboard',
   standalone: true,
-  imports: [CommonModule, LoadingSpinnerComponent, LucideAngularModule],
+  imports: [CommonModule, LoadingSpinnerComponent, LucideAngularModule, RouterModule],
   template: `
     <app-loading-spinner [show]="isLoading()" message="Loading Stats..."></app-loading-spinner>
     
@@ -80,8 +82,11 @@ import { LucideAngularModule } from 'lucide-angular';
       </div>
 
       <!-- Documents to Verify Card -->
-      <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 flex items-center relative overflow-hidden hover:shadow-md transition-all duration-200">
-        <div class="absolute right-0 top-0 h-full w-2 bg-yellow-500"></div>
+      <div 
+        routerLink="/admin/verify-docs"
+        class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 flex items-center relative overflow-hidden hover:shadow-md transition-all duration-200 cursor-pointer group"
+      >
+        <div class="absolute right-0 top-0 h-full w-2 bg-yellow-500 group-hover:w-3 transition-all"></div>
         <div class="p-3 bg-yellow-100 dark:bg-yellow-900/20 text-yellow-600 dark:text-yellow-400 rounded-lg mr-4">
           <lucide-icon name="file-check" class="h-8 w-8"></lucide-icon>
         </div>

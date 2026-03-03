@@ -21,9 +21,14 @@ public class HealthInsuranceDbContext : DbContext
     public DbSet<DocumentVault> Documents { get; set; }
     public DbSet<AgentCommissionLog> CommissionLogs { get; set; }
     public DbSet<PremiumQuote> PremiumQuotes { get; set; }
+    public DbSet<Payment> Payments { get; set; }
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         base.OnModelCreating(modelBuilder);
+
+        modelBuilder.Entity<Payment>()
+            .Property(p => p.Amount).HasColumnType("decimal(18,2)");
 
         // Fix for ClaimAmount in Claim table
         modelBuilder.Entity<Claim>()

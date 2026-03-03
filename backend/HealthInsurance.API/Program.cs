@@ -115,11 +115,11 @@ namespace HealthInsurance.API
             app.UseMiddleware<ExceptionMiddleware>();
 
             // CORS should be before Authentication
-            //app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200"));
+            app.UseCors(policy => policy.AllowAnyHeader().AllowAnyMethod().WithOrigins("http://localhost:4200"));
             app.UseCors("AllowAngular");
 
-
-            app.UseHttpsRedirection();
+            // Disabled for local Angular proxy development to prevent 307 CORS Redirect blocks
+            // app.UseHttpsRedirection();
             app.UseAuthentication();
             app.UseAuthorization();
 
