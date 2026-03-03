@@ -1,0 +1,77 @@
+﻿
+> hims-frontend@0.0.0 build
+> ng build
+
+[33mΓ¥»[39m Building...
+[32mΓ£ö[39m Building...
+Application bundle generation failed. [3.137 seconds] - 2026-03-01T17:56:36.856Z
+
+node.exe : 
+[1m[33m[33mΓû▓ [43;
+33m[[43;30mWARNING[43
+;33m][0m [1mAll 
+"@import" rules must 
+come first[0m 
+[invalid-@import]
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo 
+...
++ ~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~
+~~
+    + CategoryInfo     
+         : NotSpecifi  
+  ed: ([1m[33m[33   
+ mΓ...nvalid-@impor    
+t]:String) [], Rem    
+oteException
+    + FullyQualifiedEr 
+   rorId : NativeComm  
+  andError
+ 
+
+    
+src/styles.css:1349:0:
+[37m      1349 Γöé 
+[32m@import[37m 
+'ngx-toastr/toastr';
+           Γò╡ 
+[32m~~~~~~~[0m
+
+  This rule cannot 
+come before an 
+"@import" rule
+
+    src/styles.css:1:0:
+[37m      1 Γöé 
+[32m[37m*, ::before, 
+::after {
+        Γò╡ [32m^[0m
+
+[39m[22m
+[1m[31m[31mX [41;31
+m[[41;97mERROR[41;31m
+][0m [1mCould not 
+resolve "zone.js"[0m
+
+    src/main.ts:1:7:
+[37m      1 Γöé 
+import 
+[32m'zone.js'[37m;
+        Γò╡        
+[32m~~~~~~~~~[0m
+
+  You can mark the 
+path "zone.js" as 
+external to exclude it 
+from the bundle, which 
+will remove this error 
+and leave the 
+unresolved path in the 
+bundle.
+
+[39m[22m

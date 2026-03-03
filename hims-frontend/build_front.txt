@@ -1,0 +1,8 @@
+﻿
+> hims-frontend@0.0.0 build
+> ng build
+
+[33mΓ¥»[39m Building...
+[32mΓ£ö[39m Building...
+Application bundle generation failed. [3.137 seconds] - 2026-03-01T17:55:40.444Z
+
