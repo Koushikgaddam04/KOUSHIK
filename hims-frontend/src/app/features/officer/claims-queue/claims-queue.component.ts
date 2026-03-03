@@ -1,4 +1,4 @@
-import { Component, inject, OnInit, signal } from '@angular/core';
+import { Component, inject, OnInit, signal, computed } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OfficerService } from '../officer.service';
 import { ToastrService } from 'ngx-toastr';
@@ -38,6 +38,7 @@ import { LucideAngularModule, Check, X, FileText, Search } from 'lucide-angular'
           <input
             type="text"
             placeholder="Search claims..."
+            (input)="onSearch($event)"
             class="pl-9 pr-4 py-2 border border-slate-300 rounded-md text-sm w-full focus:outline-none focus:ring-1 focus:ring-blue-500"
           />
         </div>
@@ -80,7 +81,7 @@ import { LucideAngularModule, Check, X, FileText, Search } from 'lucide-angular'
             </tr>
           </thead>
           <tbody class="bg-white divide-y divide-slate-200">
-            @if (queue().length === 0) {
+            @if (filteredQueue().length === 0) {
               <tr>
                 <td colspan="5" class="px-6 py-12 text-center text-slate-500">
                   <div class="flex flex-col items-center">
@@ -95,7 +96,7 @@ import { LucideAngularModule, Check, X, FileText, Search } from 'lucide-angular'
               </tr>
             }
 
-            @for (claim of queue(); track claim) {
+            @for (claim of filteredQueue(); track claim.id) {
               <tr class="hover:bg-slate-50 transition-colors">
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
                   #{{ claim.id }}
@@ -138,13 +139,30 @@ export class ClaimsQueueComponent implements OnInit {
   private toastr = inject(ToastrService);
 
   queue = signal<any[]>([]);
+  searchTerm = signal('');
   isLoading = signal(false);
+
+  filteredQueue = computed(() => {
+    const term = this.searchTerm().toLowerCase();
+    const all = this.queue();
+    if (!term) return all;
+    return all.filter(c =>
+      c.id.toString().toLowerCase().includes(term) ||
+      c.policyId.toString().toLowerCase().includes(term) ||
+      c.reason.toLowerCase().includes(term)
+    );
+  });
 
   showRejectModal = signal(false);
   claimToReject = signal<string | null>(null);
 
   ngOnInit() {
     this.loadQueue();
+  }
+
+  onSearch(event: Event) {
+    const val = (event.target as HTMLInputElement).value;
+    this.searchTerm.set(val);
   }
 
   loadQueue() {
