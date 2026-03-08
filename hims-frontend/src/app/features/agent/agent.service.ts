@@ -11,9 +11,8 @@ export class AgentService {
 
     getVerificationQueue(): Observable<any[]> {
         // Retrieve current user ID from localStorage (set during login)
-        const user = JSON.parse(localStorage.getItem('user') || '{}');
-        const agentId = user.id || 0; 
-        
+        const agentId = localStorage.getItem('userId') || '0';
+
         return this.http.get<any[]>(`${this.apiBase}/Staff/policy/pending?agentId=${agentId}`);
     }
 
@@ -25,5 +24,5 @@ export class AgentService {
         return this.http.get<any[]>(`${this.apiBase}/Staff/history/agent`);
     }
 
-    
+
 }

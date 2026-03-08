@@ -102,6 +102,7 @@ import { LucideAngularModule, Trash2, Shield, Filter, Search } from 'lucide-angu
                           <input
                             type="number"
                             formControlName="monthlyPremium"
+                            min="0"
                             class="mt-1 block w-full border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                           />
                         </div>
@@ -112,6 +113,7 @@ import { LucideAngularModule, Trash2, Shield, Filter, Search } from 'lucide-angu
                           <input
                             type="number"
                             formControlName="coverageAmount"
+                            min="0"
                             class="mt-1 block w-full border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                           />
                         </div>
@@ -122,6 +124,7 @@ import { LucideAngularModule, Trash2, Shield, Filter, Search } from 'lucide-angu
                           <input
                             type="date"
                             formControlName="expiryDate"
+                            [min]="minDate"
                             class="mt-1 block w-full border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
                           />
                         </div>
@@ -295,6 +298,7 @@ export class ManagePoliciesComponent implements OnInit {
   policies = signal<any[]>([]);
   agents = signal<any[]>([]);
   isLoading = signal(false);
+  minDate = new Date().toISOString().split('T')[0];
 
   showModal = signal(false);
   policyToDelete = signal<string | null>(null);

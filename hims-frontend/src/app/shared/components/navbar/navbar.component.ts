@@ -36,11 +36,21 @@ import { LucideAngularModule, LogOut, UserCircle, Sun, Moon } from 'lucide-angul
         </button>
 
         <div
+          class="flex flex-col items-end mr-2"
+        >
+          <span class="text-sm font-bold text-slate-900 dark:text-white leading-none">
+            {{ authService.currentUser()?.fullName }}
+          </span>
+          <span class="text-[10px] text-slate-500 dark:text-slate-400">
+            {{ authService.currentUser()?.email }}
+          </span>
+        </div>
+
+        <div
           class="flex items-center gap-2 px-3 py-1.5 bg-slate-100 dark:bg-slate-800 rounded-full text-sm font-medium text-slate-700 dark:text-slate-300 border border-slate-200 dark:border-slate-700"
         >
           <lucide-icon name="user-circle" class="h-5 w-5 text-slate-500 dark:text-slate-400"></lucide-icon>
-          <span>{{ authService.currentUser()?.email }}</span>
-          <span class="ml-1 px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs rounded-full">{{
+          <span class="px-2 py-0.5 bg-blue-100 dark:bg-blue-900/30 text-blue-700 dark:text-blue-400 text-xs rounded-full">{{
             authService.currentUser()?.role
           }}</span>
         </div>

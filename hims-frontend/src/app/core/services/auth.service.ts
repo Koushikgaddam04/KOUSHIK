@@ -5,15 +5,21 @@ import { tap, catchError } from 'rxjs/operators';
 import { Observable, throwError } from 'rxjs';
 
 export interface User {
+    id: number;
     email: string;
+    fullName: string;
     role: string;
 }
 
 export interface LoginResponse {
     token?: string;
     Token?: string;
+    userId?: number;
+    UserId?: number;
     userEmail?: string;
     UserEmail?: string;
+    userFullName?: string;
+    UserFullName?: string;
     userRole?: string;
     UserRole?: string;
 }
@@ -37,9 +43,11 @@ export class AuthService {
         const token = localStorage.getItem('jwt');
         const email = localStorage.getItem('email');
         const role = localStorage.getItem('role');
+        const userId = localStorage.getItem('userId');
+        const fullName = localStorage.getItem('fullName');
 
-        if (token && email && role) {
-            this.currentUser.set({ email, role });
+        if (token && email && role && userId && fullName) {
+            this.currentUser.set({ id: parseInt(userId), email, role, fullName });
             this.isAuthenticated.set(true);
         }
     }
@@ -50,13 +58,17 @@ export class AuthService {
                 const token = res.Token || res.token;
                 const email = res.UserEmail || res.userEmail;
                 const role = res.UserRole || res.userRole;
+                const userId = res.UserId || res.userId;
+                const fullName = res.UserFullName || res.userFullName;
 
-                if (token && email && role) {
+                if (token && email && role && userId && fullName) {
                     localStorage.setItem('jwt', token);
                     localStorage.setItem('email', email);
                     localStorage.setItem('role', role);
+                    localStorage.setItem('userId', userId.toString());
+                    localStorage.setItem('fullName', fullName);
 
-                    this.currentUser.set({ email: email, role: role });
+                    this.currentUser.set({ id: userId, email: email, role: role, fullName: fullName });
                     this.isAuthenticated.set(true);
                 } else {
                     console.error('Login response missing required fields:', res);
@@ -76,6 +88,8 @@ export class AuthService {
         localStorage.removeItem('jwt');
         localStorage.removeItem('email');
         localStorage.removeItem('role');
+        localStorage.removeItem('userId');
+        localStorage.removeItem('fullName');
         this.currentUser.set(null);
         this.isAuthenticated.set(false);
         this.router.navigate(['/']);

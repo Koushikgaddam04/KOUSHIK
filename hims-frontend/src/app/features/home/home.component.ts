@@ -1,7 +1,7 @@
-import { Component, signal, effect } from '@angular/core';
+import { Component, signal, effect, OnDestroy, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { LucideAngularModule, ShieldCheck, Sun, Moon, ArrowRight, Activity, Shield, Heart, Zap, Play, CheckCircle2 } from 'lucide-angular';
+import { LucideAngularModule, ShieldCheck, Sun, Moon, ArrowRight, Activity, Shield, Heart, Zap, Play, CheckCircle2, ChevronLeft, ChevronRight } from 'lucide-angular';
 
 @Component({
   selector: 'app-home',
@@ -14,8 +14,8 @@ import { LucideAngularModule, ShieldCheck, Sun, Moon, ArrowRight, Activity, Shie
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="flex justify-between items-center h-20">
             <!-- Logo -->
-            <div class="flex items-center gap-2.5 group cursor-pointer">
-              <div class="p-2 bg-blue-600 rounded-xl group-hover:scale-110 transition-transform duration-300">
+            <div class="flex items-center gap-2.5 group cursor-pointer" routerLink="/">
+              <div class="p-2 bg-blue-600 rounded-xl group-hover:scale-110 transition-transform duration-300 shadow-lg shadow-blue-500/20">
                 <lucide-icon name="shield-check" class="h-6 w-6 text-white"></lucide-icon>
               </div>
               <span class="text-xl font-bold tracking-tight">HIMS Portal</span>
@@ -89,30 +89,59 @@ import { LucideAngularModule, ShieldCheck, Sun, Moon, ArrowRight, Activity, Shie
             </div>
           </div>
 
-          <!-- Dashboard Mockup/Visual -->
-          <div class="mt-20 relative px-4 sm:px-10">
+          <!-- Dynamic Premium Carousel -->
+          <div class="mt-20 relative group">
             <div class="absolute inset-0 bg-blue-500/10 dark:bg-blue-600/5 blur-3xl rounded-full -z-10 transform scale-75"></div>
-            <div class="bg-slate-50 dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-2xl overflow-hidden aspect-[16/9] max-w-5xl mx-auto p-4 flex flex-col">
-               <!-- Mockup UI Header -->
-               <div class="flex items-center justify-between mb-8 border-b border-slate-200 dark:border-slate-800 pb-4">
-                  <div class="flex gap-1.5">
-                    <div class="w-3 h-3 rounded-full bg-red-400"></div>
-                    <div class="w-3 h-3 rounded-full bg-yellow-400"></div>
-                    <div class="w-3 h-3 rounded-full bg-green-400"></div>
+            
+            <div class="relative overflow-hidden rounded-[2.5rem] border border-slate-200 dark:border-slate-800 shadow-2xl bg-slate-50 dark:bg-slate-900 aspect-[16/9] md:aspect-[21/9] max-w-6xl mx-auto">
+              <!-- Carousel Slides -->
+              <div 
+                class="flex transition-transform duration-700 ease-out h-full"
+                [style.transform]="'translateX(-' + currentSlide() * 100 + '%)'"
+              >
+                @for (slide of slides; track slide.title) {
+                  <div class="w-full h-full flex-shrink-0 relative">
+                    <img [src]="slide.image" [alt]="slide.title" class="w-full h-full object-cover opacity-80 dark:opacity-60">
+                    <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-slate-950/20 to-transparent"></div>
+                    <div class="absolute bottom-0 left-0 p-8 md:p-16 text-white max-w-2xl animate-slide-up">
+                      <div class="flex items-center gap-2 text-blue-400 font-bold mb-4">
+                        <lucide-icon [name]="slide.icon" class="h-5 w-5"></lucide-icon>
+                        <span class="uppercase tracking-widest text-xs">{{ slide.category }}</span>
+                      </div>
+                      <h2 class="text-3xl md:text-5xl font-bold mb-4">{{ slide.title }}</h2>
+                      <p class="text-lg text-slate-300 leading-relaxed mb-8">{{ slide.description }}</p>
+                      <button class="flex items-center gap-2 text-white font-bold hover:gap-4 transition-all group/btn">
+                        Learn more <lucide-icon name="arrow-right" class="h-4 w-4 group-hover/btn:scale-125 transition-transform"></lucide-icon>
+                      </button>
+                    </div>
                   </div>
-                  <div class="h-6 w-1/3 bg-slate-200 dark:bg-slate-800 rounded-lg"></div>
-                  <div class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-800"></div>
-               </div>
-               <!-- Mockup UI Content -->
-               <div class="grid grid-cols-3 gap-6 flex-1">
-                  <div class="col-span-2 space-y-6">
-                    <div class="h-32 bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800"></div>
-                    <div class="h-48 bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800"></div>
-                  </div>
-                  <div class="space-y-6">
-                    <div class="h-full bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800"></div>
-                  </div>
-               </div>
+                }
+              </div>
+
+              <!-- Controls -->
+              <button 
+                (click)="prevSlide()"
+                class="absolute left-6 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all opacity-0 group-hover:opacity-100 hidden md:block"
+              >
+                <lucide-icon name="chevron-left" class="h-6 w-6"></lucide-icon>
+              </button>
+              <button 
+                (click)="nextSlide()"
+                class="absolute right-6 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 backdrop-blur-md border border-white/20 text-white hover:bg-white/20 transition-all opacity-0 group-hover:opacity-100 hidden md:block"
+              >
+                <lucide-icon name="chevron-right" class="h-6 w-6"></lucide-icon>
+              </button>
+
+              <!-- Indicators -->
+              <div class="absolute bottom-8 right-8 flex gap-3">
+                @for (slide of slides; track $index) {
+                  <button 
+                    (click)="setSlide($index)"
+                    class="h-1.5 rounded-full transition-all duration-300"
+                    [class]="currentSlide() === $index ? 'w-8 bg-blue-500' : 'w-3 bg-white/30'"
+                  ></button>
+                }
+              </div>
             </div>
           </div>
         </div>
@@ -137,17 +166,46 @@ import { LucideAngularModule, ShieldCheck, Sun, Moon, ArrowRight, Activity, Shie
       from { opacity: 0; transform: translateY(10px); }
       to { opacity: 1; transform: translateY(0); }
     }
+    @keyframes slide-up {
+      from { opacity: 0; transform: translateY(30px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
     .animate-fade-in { animation: fade-in 0.8s ease-out forwards; }
+    .animate-slide-up { animation: slide-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
   `]
 })
-export class HomeComponent {
+export class HomeComponent implements OnInit, OnDestroy {
   isDarkMode = signal(false);
+  currentSlide = signal(0);
+  private intervalId?: any;
+
+  slides = [
+    {
+      category: 'Efficiency',
+      title: 'Automated Claim Lifecycle',
+      description: 'Our proprietary AI engine processes 90% of routine claims in under 30 seconds, allowing officers to focus on complex cases.',
+      icon: 'zap',
+      image: 'https://images.unsplash.com/photo-1576091160550-217359f48f4c?auto=format&fit=crop&q=80&w=2070'
+    },
+    {
+      category: 'Security',
+      title: 'Military-Grade Data Vault',
+      description: 'Your medical records and sensitive documents are encrypted using AES-256 standards with zero-knowledge architecture.',
+      icon: 'shield',
+      image: 'https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=2070'
+    },
+    {
+      category: 'Care',
+      title: 'Unified Customer Experience',
+      description: 'From instant quotes to policy management, we provide a seamless digital journey for your health insurance needs.',
+      icon: 'heart',
+      image: 'https://images.unsplash.com/photo-1516549655169-df83a0774514?auto=format&fit=crop&q=80&w=2070'
+    }
+  ];
 
   constructor() {
-    // Initial theme check
     this.isDarkMode.set(document.documentElement.classList.contains('dark'));
 
-    // Sync logic
     effect(() => {
       if (this.isDarkMode()) {
         document.documentElement.classList.add('dark');
@@ -159,7 +217,48 @@ export class HomeComponent {
     });
   }
 
+  ngOnInit() {
+    this.startAutoPlay();
+  }
+
+  ngOnDestroy() {
+    this.stopAutoPlay();
+  }
+
   toggleDarkMode() {
     this.isDarkMode.update(v => !v);
   }
+
+  nextSlide() {
+    this.currentSlide.update(v => (v + 1) % this.slides.length);
+    this.resetAutoPlay();
+  }
+
+  prevSlide() {
+    this.currentSlide.update(v => (v - 1 + this.slides.length) % this.slides.length);
+    this.resetAutoPlay();
+  }
+
+  setSlide(index: number) {
+    this.currentSlide.set(index);
+    this.resetAutoPlay();
+  }
+
+  private startAutoPlay() {
+    this.intervalId = setInterval(() => {
+      this.currentSlide.update(v => (v + 1) % this.slides.length);
+    }, 5000);
+  }
+
+  private stopAutoPlay() {
+    if (this.intervalId) {
+      clearInterval(this.intervalId);
+    }
+  }
+
+  private resetAutoPlay() {
+    this.stopAutoPlay();
+    this.startAutoPlay();
+  }
 }
+
