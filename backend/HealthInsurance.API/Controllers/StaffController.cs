@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HealthInsurance.Domain.Entities;
+using HealthInsurance.Domain;
 
 namespace HealthInsurance.API.Controllers
 {
@@ -66,7 +67,7 @@ namespace HealthInsurance.API.Controllers
             var allQuotes = await _quoteRepo.GetAllAsync();
 
             var pendingQueue = allQuotes
-                .Where(q => q.IsConvertedToPolicy == false)
+                .Where(q => q.IsConvertedToPolicy == false && q.IsPaid == true)
                 .Select(q => new
                 {
                     id = q.Id,
@@ -142,7 +143,7 @@ namespace HealthInsurance.API.Controllers
                             ActionType = "ClaimDecision",
                             NewValue = "Rejected",
                             Reason = "Policy Violation: Insufficient Coverage Amount",
-                            PerformedByUserId = 1
+                            PerformedByUserId = UserSession.CurrentUserId
                         };
                         await _auditRepo.AddAsync(errorLog);
                         
@@ -163,7 +164,7 @@ namespace HealthInsurance.API.Controllers
                         ActionType = "ClaimApprovalDeduction",
                         NewValue = $"Remaining: {policy.CoverageAmount}",
                         Reason = $"Deducted ${claim.ClaimAmount} for Claim #{claim.Id}",
-                        PerformedByUserId = 1 // Admin/Officer ID
+                        PerformedByUserId = UserSession.CurrentUserId // Admin/Officer ID
                     };
                     await _auditRepo.AddAsync(log);
                 }
@@ -177,7 +178,7 @@ namespace HealthInsurance.API.Controllers
                 ActionType = "ClaimDecision",
                 NewValue = status,
                 Reason = status == "Rejected" ? "Rejected by Claims Officer" : $"Approved for amount ${claim.ClaimAmount}",
-                PerformedByUserId = 1
+                PerformedByUserId = UserSession.CurrentUserId
             };
             await _auditRepo.AddAsync(decisionLog);
 

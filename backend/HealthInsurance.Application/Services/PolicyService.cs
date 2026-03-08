@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 
 using HealthInsurance.Application.Interfaces;
 using HealthInsurance.Domain.Entities;
+using HealthInsurance.Domain;
 
 namespace HealthInsurance.Application.Services;
 
@@ -82,10 +83,10 @@ public class PolicyService : IPolicyService
         var log = new PolicyActionLog
         {
             EntityName = "Policy",
-            EntityRecordId = 0, // Will be updated after Save
-            ActionType = "Activation",
+            EntityRecordId = policy.Id, 
+            ActionType = "PolicyVerification",
             NewValue = "Active",
-            PerformedByUserId = 1 // Admin
+            PerformedByUserId = UserSession.CurrentUserId // Use actual logged in user
         };
         await _auditRepo.AddAsync(log);
 

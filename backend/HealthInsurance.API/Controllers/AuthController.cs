@@ -4,6 +4,7 @@ using HealthInsurance.Domain.Entities;
 using HealthInsurance.Domain.Enums;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using HealthInsurance.Domain;
 
 namespace HealthInsurance.API.Controllers;
 
@@ -64,6 +65,8 @@ public class AuthController : ControllerBase
         return Ok(new
         {
             Token = token,
+            UserId = user.Id,
+            UserFullName = user.FullName,
             UserEmail = user.Email,
             UserRole = user.Role.ToString()
         });
@@ -84,7 +87,7 @@ public class AuthController : ControllerBase
             FullName = dto.FullName,
             Email = dto.Email,
             PasswordHash = BCrypt.Net.BCrypt.HashPassword(dto.Password),
-            Role = (UserRole)dto.RoleId // Here, the Admin decides the role
+            Role = (UserRole)dto.RoleId
         };
 
         await _userRepository.AddAsync(staff);

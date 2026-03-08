@@ -1,8 +1,6 @@
 
 using HealthInsurance.API.Middleware;
 using HealthInsurance.Application.Interfaces;
-using HealthInsurance.Application.Interfaces;
-using HealthInsurance.Application.Services;
 using HealthInsurance.Application.Services;
 using HealthInsurance.Infrastructure;
 using HealthInsurance.Infrastructure.Repositories;

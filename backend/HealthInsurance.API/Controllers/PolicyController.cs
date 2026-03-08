@@ -107,7 +107,7 @@ public class PolicyController : BaseApiController
     public async Task<IActionResult> CreatePolicy([FromBody] Policy policy)
     {
         policy.PolicyNumber = "POL-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper();
-        policy.UserId = 1; // Admin attribution
+        policy.UserId = UserSession.CurrentUserId; // Dynamic Admin/User attribution
         policy.IsPlanTemplate = true; // Admin created policies are templates
 
         await _policyRepo.AddAsync(policy);
@@ -133,7 +133,7 @@ public class PolicyController : BaseApiController
             EntityRecordId = policyId,
             ActionType = "AgentAssignment",
             NewValue = $"Agent ID: {agentId}",
-            PerformedByUserId = 1 // Placeholder for Admin ID
+            PerformedByUserId = UserSession.CurrentUserId // Actual Admin/Agent ID
         };
         await _auditRepo.AddAsync(log);
         await _auditRepo.SaveChangesAsync();
@@ -197,7 +197,7 @@ public class PolicyController : BaseApiController
             OldValue = "Active",
             NewValue = "Inactive/Cancelled",
             Reason = "Admin initiated soft delete.",
-            PerformedByUserId = 1 // Admin ID
+            PerformedByUserId = UserSession.CurrentUserId // Admin ID
         };
 
         await _auditRepo.AddAsync(log);
