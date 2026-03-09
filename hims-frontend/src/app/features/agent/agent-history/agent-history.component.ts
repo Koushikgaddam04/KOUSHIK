@@ -70,15 +70,17 @@ import { LucideAngularModule, Search } from 'lucide-angular';
                 </td>
               </tr>
             }
-            @for (item of history(); track item) {
+            @for (item of history(); track item.id) {
               <tr class="hover:bg-slate-50">
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">#{{ item.id }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
                   {{ item.policyId || 'N/A' }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">Verified Policy</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                  {{ (item.timestamp | date: 'medium') || 'Unknown Date' }}
+                  {{ item.actionDetails }}
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
+                  {{ (item.date | date: 'medium') || 'Unknown Date' }}
                 </td>
               </tr>
             }

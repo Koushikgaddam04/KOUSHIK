@@ -2,13 +2,13 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DocumentService } from '../../../core/services/document.service';
 import { ToastrService } from 'ngx-toastr';
-import { LucideAngularModule, UploadCloud, FileText, CheckCircle, Trash2, Download } from 'lucide-angular';
+import { LucideAngularModule, UploadCloud, FileText, CheckCircle, Trash2, Download, Eye } from 'lucide-angular';
 
 @Component({
-    selector: 'app-document-upload',
-    standalone: true,
-    imports: [CommonModule, LucideAngularModule],
-    template: `
+  selector: 'app-document-upload',
+  standalone: true,
+  imports: [CommonModule, LucideAngularModule],
+  template: `
     <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6">
       <div class="flex items-center justify-between mb-6">
         <div>
@@ -57,9 +57,9 @@ import { LucideAngularModule, UploadCloud, FileText, CheckCircle, Trash2, Downlo
               </div>
             </div>
             <div class="flex gap-2">
-               <a [href]="getDownloadUrl(doc.filePath)" target="_blank" class="p-2 text-slate-400 hover:text-blue-600 transition-colors">
-                 <lucide-icon name="download" class="h-4 w-4"></lucide-icon>
-               </a>
+                <a [href]="getViewUrl(doc.filePath)" target="_blank" class="p-2 text-slate-400 hover:text-emerald-600 transition-colors" title="View Document">
+                  <lucide-icon name="eye" class="h-4 w-4"></lucide-icon>
+                </a>
             </div>
           </div>
         }
@@ -68,50 +68,54 @@ import { LucideAngularModule, UploadCloud, FileText, CheckCircle, Trash2, Downlo
   `
 })
 export class DocumentUploadComponent implements OnInit {
-    private docService = inject(DocumentService);
-    private toastr = inject(ToastrService);
+  private docService = inject(DocumentService);
+  private toastr = inject(ToastrService);
 
-    documents = signal<any[]>([]);
-    isLoading = signal(false);
+  documents = signal<any[]>([]);
+  isLoading = signal(false);
 
-    ngOnInit() {
-        this.loadDocuments();
-    }
+  ngOnInit() {
+    this.loadDocuments();
+  }
 
-    loadDocuments() {
-        this.docService.getMyDocuments().subscribe({
-            next: (docs) => this.documents.set(docs),
-            error: () => this.toastr.error('Failed to load documents')
-        });
-    }
+  loadDocuments() {
+    this.docService.getMyDocuments().subscribe({
+      next: (docs) => this.documents.set(docs),
+      error: () => this.toastr.error('Failed to load documents')
+    });
+  }
 
-    onFileSelected(event: any) {
-        const file = event.target.files[0];
-        if (file) {
-            if (file.size > 5 * 1024 * 1024) {
-                this.toastr.error('File size exceeds 5MB');
-                return;
-            }
+  onFileSelected(event: any) {
+    const file = event.target.files[0];
+    if (file) {
+      if (file.size > 5 * 1024 * 1024) {
+        this.toastr.error('File size exceeds 5MB');
+        return;
+      }
 
-            this.isLoading.set(true);
-            // Ask for doc type simple prompt for now
-            const docType = prompt('Enter document type (e.g. Aadhar, Pan, Health Statement):') || 'Other';
+      this.isLoading.set(true);
+      // Ask for doc type simple prompt for now
+      const docType = prompt('Enter document type (e.g. Aadhar, Pan, Health Statement):') || 'Other';
 
-            this.docService.upload(file, docType).subscribe({
-                next: () => {
-                    this.toastr.success('Document uploaded successfully');
-                    this.loadDocuments();
-                    this.isLoading.set(false);
-                },
-                error: () => {
-                    this.toastr.error('Upload failed');
-                    this.isLoading.set(false);
-                }
-            });
+      this.docService.upload(file, docType).subscribe({
+        next: () => {
+          this.toastr.success('Document uploaded successfully');
+          this.loadDocuments();
+          this.isLoading.set(false);
+        },
+        error: () => {
+          this.toastr.error('Upload failed');
+          this.isLoading.set(false);
         }
+      });
     }
+  }
 
-    getDownloadUrl(filePath: string) {
-        return this.docService.getDownloadUrl(filePath);
-    }
+  getDownloadUrl(filePath: string) {
+    return this.docService.getDownloadUrl(filePath);
+  }
+
+  getViewUrl(filePath: string) {
+    return this.docService.getViewUrl(filePath);
+  }
 }

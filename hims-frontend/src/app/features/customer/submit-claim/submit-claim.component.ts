@@ -96,15 +96,15 @@ export class SubmitClaimComponent implements OnInit {
   isPolicyIdPreFilled = signal(false);
 
   claimForm = this.fb.group({
-    policyId: ['', Validators.required],
-    amount: ['', [Validators.required, Validators.min(1)]],
+    policyId: [null as number | null, Validators.required],
+    amount: [null as number | null, [Validators.required, Validators.min(1)]],
     reason: ['', Validators.required],
   });
 
   ngOnInit() {
     this.route.queryParams.subscribe((params) => {
       if (params['policyId']) {
-        this.claimForm.patchValue({ policyId: params['policyId'] });
+        this.claimForm.patchValue({ policyId: +params['policyId'] });
         this.isPolicyIdPreFilled.set(true);
       }
     });

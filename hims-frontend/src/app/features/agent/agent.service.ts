@@ -16,8 +16,8 @@ export class AgentService {
         return this.http.get<any[]>(`${this.apiBase}/Staff/policy/pending?agentId=${agentId}`);
     }
 
-    verifyPolicy(id: string): Observable<any> {
-        return this.http.patch(`${this.apiBase}/Staff/policy/verify/${id}?status=Active`, {}, { responseType: 'text' });
+    verifyPolicy(id: string, status: string = 'Active'): Observable<any> {
+        return this.http.patch(`${this.apiBase}/Staff/policy/verify/${id}?status=${status}`, {}, { responseType: 'text' });
     }
 
     getHistory(): Observable<any[]> {

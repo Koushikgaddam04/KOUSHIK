@@ -43,7 +43,18 @@ export class AdminService {
     }
 
     getAgents(): Observable<any[]> {
-        // Assuming a way to get staff to populate the assignment dropdown
         return this.http.get<any[]>(`${this.apiBase}/Staff/agents`);
+    }
+
+    getClaimsOfficers(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiBase}/Staff/claims-officers`);
+    }
+
+    getStaff(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiBase}/Staff/all`);
+    }
+
+    assignOfficer(policyId: string, claimsOfficerId: string): Observable<any> {
+        return this.http.patch(`${this.apiBase}/Policy/assign-officer?policyId=${policyId}&claimsOfficerId=${claimsOfficerId}`, {});
     }
 }

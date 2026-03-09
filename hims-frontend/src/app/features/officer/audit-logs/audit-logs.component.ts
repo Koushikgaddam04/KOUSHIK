@@ -77,23 +77,23 @@ import { LucideAngularModule, Search, Clock } from 'lucide-angular';
               <tr class="hover:bg-slate-50 transition-colors">
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">#{{ item.id }}</td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900">
-                  Claim #{{ item.claimId || 'Unknown' }}
+                  {{ item.claimReference || 'Unknown' }}
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <span
                     class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium"
                     [ngClass]="{
-                      'bg-green-100 text-green-800': item.action === 'Approved',
-                      'bg-red-100 text-red-800': item.action === 'Rejected',
+                      'bg-green-100 text-green-800': item.actionTaken === 'Approved',
+                      'bg-red-100 text-red-800': item.actionTaken === 'Rejected',
                       'bg-slate-100 text-slate-800':
-                        item.action !== 'Approved' && item.action !== 'Rejected',
+                        item.actionTaken !== 'Approved' && item.actionTaken !== 'Rejected',
                     }"
                   >
-                    {{ item.action || 'Processed' }}
+                    {{ item.actionTaken || 'Processed' }}
                   </span>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500">
-                  {{ (item.timestamp | date: 'medium') || 'Unknown Date' }}
+                  {{ (item.dateTime | date: 'medium') || 'Unknown Date' }}
                 </td>
               </tr>
             }

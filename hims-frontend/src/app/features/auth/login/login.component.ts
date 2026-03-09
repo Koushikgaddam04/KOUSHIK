@@ -101,7 +101,7 @@ import { LucideAngularModule, LogIn, Lock, Mail, ShieldCheck, Activity, Shield, 
                 <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
                   Password
                 </label>
-                <a href="#" class="text-sm font-medium text-blue-600 hover:text-blue-500">Forgot?</a>
+                <!-- <a href="#" class="text-sm font-medium text-blue-600 hover:text-blue-500">Forgot?</a> -->
               </div>
               <div class="relative">
                 <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">

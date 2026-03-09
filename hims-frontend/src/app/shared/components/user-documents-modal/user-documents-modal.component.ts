@@ -5,10 +5,10 @@ import { LucideAngularModule, X, FileText, Download, Eye } from 'lucide-angular'
 import { ToastrService } from 'ngx-toastr';
 
 @Component({
-    selector: 'app-user-documents-modal',
-    standalone: true,
-    imports: [CommonModule, LucideAngularModule],
-    template: `
+  selector: 'app-user-documents-modal',
+  standalone: true,
+  imports: [CommonModule, LucideAngularModule],
+  template: `
     <div class="fixed inset-0 z-50 overflow-y-auto" *ngIf="show">
       <div class="flex items-center justify-center min-h-screen px-4 pt-4 pb-20 text-center sm:block sm:p-0">
         <div class="fixed inset-0 transition-opacity" aria-hidden="true" (click)="onClose()">
@@ -63,12 +63,12 @@ import { ToastrService } from 'ngx-toastr';
                     </div>
                     <div class="flex items-center gap-2">
                       <a 
-                        [href]="getDownloadUrl(doc.filePath)" 
+                        [href]="getViewUrl(doc.filePath)" 
                         target="_blank"
-                        class="p-2 text-slate-400 hover:text-blue-600 dark:hover:text-blue-400 transition-colors"
-                        title="Download"
+                        class="px-4 py-2 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg font-bold text-xs flex items-center gap-2 hover:bg-emerald-100 transition-colors"
                       >
-                        <lucide-icon name="download" class="h-5 w-5"></lucide-icon>
+                        <lucide-icon name="eye" class="h-4 w-4"></lucide-icon>
+                        View Inline
                       </a>
                     </div>
                   </div>
@@ -91,41 +91,45 @@ import { ToastrService } from 'ngx-toastr';
   `
 })
 export class UserDocumentsModalComponent implements OnChanges {
-    @Input() show = false;
-    @Input() userId = 0;
-    @Output() close = new EventEmitter<void>();
+  @Input() show = false;
+  @Input() userId = 0;
+  @Output() close = new EventEmitter<void>();
 
-    private docService = inject(DocumentService);
-    private toastr = inject(ToastrService);
+  private docService = inject(DocumentService);
+  private toastr = inject(ToastrService);
 
-    documents = signal<any[]>([]);
-    isLoading = signal(false);
+  documents = signal<any[]>([]);
+  isLoading = signal(false);
 
-    ngOnChanges(changes: SimpleChanges) {
-        if (changes['show']?.currentValue && this.userId) {
-            this.loadDocuments();
-        }
+  ngOnChanges(changes: SimpleChanges) {
+    if (changes['show']?.currentValue && this.userId) {
+      this.loadDocuments();
     }
+  }
 
-    loadDocuments() {
-        this.isLoading.set(true);
-        this.docService.getUserDocuments(this.userId).subscribe({
-            next: (docs) => {
-                this.documents.set(docs);
-                this.isLoading.set(false);
-            },
-            error: () => {
-                this.toastr.error('Failed to load user documents');
-                this.isLoading.set(false);
-            }
-        });
-    }
+  loadDocuments() {
+    this.isLoading.set(true);
+    this.docService.getUserDocuments(this.userId).subscribe({
+      next: (docs) => {
+        this.documents.set(docs);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.toastr.error('Failed to load user documents');
+        this.isLoading.set(false);
+      }
+    });
+  }
 
-    onClose() {
-        this.close.emit();
-    }
+  onClose() {
+    this.close.emit();
+  }
 
-    getDownloadUrl(filePath: string) {
-        return this.docService.getDownloadUrl(filePath);
-    }
+  getDownloadUrl(filePath: string) {
+    return this.docService.getDownloadUrl(filePath);
+  }
+
+  getViewUrl(filePath: string) {
+    return this.docService.getViewUrl(filePath);
+  }
 }

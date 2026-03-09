@@ -2,12 +2,13 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { OfficerService } from '../officer.service';
 import { LucideAngularModule } from 'lucide-angular';
+import { forkJoin } from 'rxjs';
 
 @Component({
-    selector: 'app-officer-dashboard',
-    standalone: true,
-    imports: [CommonModule, LucideAngularModule],
-    template: `
+  selector: 'app-officer-dashboard',
+  standalone: true,
+  imports: [CommonModule, LucideAngularModule],
+  template: `
     <div class="mb-8">
       <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Officer Overview</h1>
       <p class="text-slate-500 dark:text-slate-400 mt-1">Real-time statistics for health insurance claims.</p>
@@ -65,18 +66,19 @@ import { LucideAngularModule } from 'lucide-angular';
       <div class="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
         <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-6">Recent Claim Activity</h3>
         <div class="space-y-4">
-          <div *ngFor="let item of recentActivity()" class="flex items-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
-            <div class="w-2 h-2 rounded-full mr-4" [ngClass]="item.status === 'Approved' ? 'bg-green-500' : 'bg-red-500'"></div>
-            <div class="flex-1">
-              <p class="text-sm font-medium text-slate-900 dark:text-slate-100">Claim #{{item.id}} - {{item.status}}</p>
-              <p class="text-xs text-slate-500">{{item.date | date:'short'}}</p>
+          @for (item of recentActivity(); track item.id) {
+            <div class="flex items-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg">
+              <div class="w-2 h-2 rounded-full mr-4" [ngClass]="item.status === 'Approved' ? 'bg-green-500' : 'bg-red-500'"></div>
+              <div class="flex-1">
+                <p class="text-sm font-medium text-slate-900 dark:text-slate-100">{{item.reference}} - {{item.status}}</p>
+                <p class="text-xs text-slate-500">{{item.date | date:'short'}}</p>
+              </div>
             </div>
-            <div class="text-sm font-bold text-slate-700 dark:text-slate-300">{{item.amount | currency}}</div>
-          </div>
-          
-          <div *ngIf="recentActivity().length === 0" class="text-center py-12 text-slate-400">
-            No recent activity recorded.
-          </div>
+          } @empty {
+            <div class="text-center py-12 text-slate-400">
+              No recent activity recorded.
+            </div>
+          }
         </div>
       </div>
 
@@ -97,44 +99,49 @@ import { LucideAngularModule } from 'lucide-angular';
   `,
 })
 export class OfficerDashboardComponent implements OnInit {
-    private officerService = inject(OfficerService);
+  private officerService = inject(OfficerService);
 
-    stats = signal({ total: 0, pending: 0, approved: 0, rejected: 0 });
-    recentActivity = signal<any[]>([]);
+  stats = signal({ total: 0, pending: 0, approved: 0, rejected: 0 });
+  recentActivity = signal<any[]>([]);
 
-    ngOnInit() {
-        this.loadStats();
-    }
+  ngOnInit() {
+    this.loadStats();
+  }
 
-    loadStats() {
-        this.officerService.getPendingClaims().subscribe(pending => {
-            this.officerService.getAuditLogs().subscribe(logs => {
-                // Filter for final decisions only to avoid double counting with deductions
-                const decisions = logs.filter(l => l.actionType === 'ClaimDecision');
+  loadStats() {
+    forkJoin({
+      pending: this.officerService.getPendingClaims(),
+      logs: this.officerService.getAuditLogs()
+    }).subscribe({
+      next: ({ pending, logs }) => {
+        // Backend returns: { id, claimReference, actionTaken, dateTime }
+        // 'actionTaken' holds the value: 'Approved', 'Rejected', 'ClaimSubmission', etc.
+        const decisions = logs.filter((l: any) =>
+          l.actionTaken === 'Approved' || l.actionTaken === 'Rejected'
+        );
 
-                const approved = decisions.filter(l => l.newValue === 'Approved').length;
-                const rejected = decisions.filter(l => l.newValue === 'Rejected').length;
+        const approved = decisions.filter((l: any) => l.actionTaken === 'Approved').length;
+        const rejected = decisions.filter((l: any) => l.actionTaken === 'Rejected').length;
+        const processed = approved + rejected;
 
-                // Total = Approved + Rejected + Pending
-                // Or maybe Total = All Submissions? 
-                // Let's go with Total Processed = Approved + Rejected
-                const processed = approved + rejected;
-
-                this.stats.set({
-                    total: processed,
-                    pending: pending.length,
-                    approved: approved,
-                    rejected: rejected
-                });
-
-                // Map recent decisions to activity
-                this.recentActivity.set(decisions.slice(0, 5).map(l => ({
-                    id: l.entityRecordId,
-                    status: l.newValue,
-                    amount: l.reason?.includes('$') ? parseFloat(l.reason.split('$')[1]) : 0,
-                    date: l.timestamp || l.createdAt
-                })));
-            });
+        this.stats.set({
+          total: processed + pending.length,
+          pending: pending.length,
+          approved,
+          rejected
         });
-    }
+
+        // Map recent decisions to activity feed
+        this.recentActivity.set(decisions.slice(0, 5).map((l: any) => ({
+          id: l.id,
+          reference: l.claimReference || 'Unknown',
+          status: l.actionTaken,
+          date: l.dateTime
+        })));
+      },
+      error: () => {
+        // Keep default zero stats on error
+      }
+    });
+  }
 }

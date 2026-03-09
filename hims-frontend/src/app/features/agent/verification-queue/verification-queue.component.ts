@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { AgentService } from '../agent.service';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
-import { LucideAngularModule, CheckCircle, Search, ClipboardList, Eye } from 'lucide-angular';
+import { LucideAngularModule, CheckCircle, Search, ClipboardList, Eye, XCircle } from 'lucide-angular';
 import { UserDocumentsModalComponent } from '../../../shared/components/user-documents-modal/user-documents-modal.component';
 
 @Component({
@@ -122,7 +122,14 @@ import { UserDocumentsModalComponent } from '../../../shared/components/user-doc
                     View Docs
                   </button>
                   <button
-                    (click)="verify(item.id)"
+                    (click)="verify(item.id, 'reject')"
+                    class="inline-flex items-center px-3 py-1.5 border border-red-300 dark:border-red-700 text-xs font-medium rounded shadow-sm text-red-700 dark:text-red-400 bg-white dark:bg-slate-800 hover:bg-red-50 dark:hover:bg-red-900/10 focus:outline-none transition-colors"
+                  >
+                    <lucide-icon name="x-circle" class="mr-1.5 h-3.5 w-3.5"></lucide-icon>
+                    Reject
+                  </button>
+                  <button
+                    (click)="verify(item.id, 'approve')"
                     class="inline-flex items-center px-3 py-1.5 border border-transparent text-xs font-medium rounded shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-colors"
                   >
                     <lucide-icon name="check-circle" class="mr-1.5 h-3.5 w-3.5"></lucide-icon>
@@ -164,15 +171,15 @@ export class VerificationQueueComponent implements OnInit {
     });
   }
 
-  verify(id: string) {
+  verify(id: string, status: string = 'approve') {
     this.isLoading.set(true);
-    this.agentService.verifyPolicy(id).subscribe({
-      next: () => {
-        this.toastr.success('Policy has been verified and set to Active.');
+    this.agentService.verifyPolicy(id, status).subscribe({
+      next: (res: any) => {
+        this.toastr.success(res || 'Action completed successfully.');
         this.loadQueue();
       },
       error: () => {
-        this.toastr.error('Verification failed.');
+        this.toastr.error('Operation failed.');
         this.isLoading.set(false);
       },
     });

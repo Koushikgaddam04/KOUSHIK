@@ -28,6 +28,10 @@ export class DocumentService {
         return `${this.apiBase}/download/${fileName}`;
     }
 
+    getViewUrl(fileName: string): string {
+        return `${this.apiBase}/view/${fileName}`;
+    }
+
     reviewDocument(id: number, status: string, comments: string): Observable<any> {
         return this.http.patch(`${this.apiBase}/review/${id}`, { status, comments });
     }

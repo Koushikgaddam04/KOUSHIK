@@ -137,8 +137,22 @@ import { LucideAngularModule, Trash2, Shield, Filter, Search } from 'lucide-angu
                             class="mt-1 block w-full border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-slate-800"
                           >
                             <option [ngValue]="null">Unassigned</option>
-                            @for (agent of agents(); track agent) {
+                            @for (agent of agents(); track agent.id) {
                               <option [value]="agent.id">{{ agent.name }}</option>
+                            }
+                          </select>
+                        </div>
+                        <div>
+                          <label class="block text-sm font-medium text-gray-700 dark:text-slate-300"
+                            >Assign Claims Officer (Optional)</label
+                          >
+                          <select
+                            formControlName="claimsOfficerId"
+                            class="mt-1 block w-full border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-slate-800"
+                          >
+                            <option [ngValue]="null">Unassigned</option>
+                            @for (officer of claimsOfficers(); track officer.id) {
+                              <option [value]="officer.id">{{ officer.name }}</option>
                             }
                           </select>
                         </div>
@@ -212,6 +226,18 @@ import { LucideAngularModule, Trash2, Shield, Filter, Search } from 'lucide-angu
               >
                 Assigned Agent
               </th>
+               <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+              >
+                Claims Officer
+              </th>
+              <th
+                scope="col"
+                class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
+              >
+                Claims Officer
+              </th>
               <th
                 scope="col"
                 class="px-6 py-3 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
@@ -244,8 +270,9 @@ import { LucideAngularModule, Trash2, Shield, Filter, Search } from 'lucide-angu
                     [ngClass]="{
                       'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400': policy.status === 'Active',
                       'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400': policy.status === 'Pending',
+                      'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400': policy.status === 'Inactive',
                       'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300':
-                        policy.status !== 'Active' && policy.status !== 'Pending',
+                        policy.status !== 'Active' && policy.status !== 'Pending' && policy.status !== 'Inactive',
                     }"
                   >
                     {{ policy.status }}
@@ -260,6 +287,18 @@ import { LucideAngularModule, Trash2, Shield, Filter, Search } from 'lucide-angu
                     <option [ngValue]="null">Unassigned</option>
                     @for (agent of agents(); track agent) {
                       <option [value]="agent.id">{{ agent.name }}</option>
+                    }
+                  </select>
+                </td>
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                  <select
+                    class="block w-full text-sm border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md py-1.5 focus:border-blue-500 focus:ring-blue-500 outline-none p-1 border appearance-none"
+                    [ngModel]="policy.claimsOfficerId"
+                    (ngModelChange)="onAssignOfficer(policy.id, $event)"
+                  >
+                    <option [ngValue]="null">Unassigned</option>
+                    @for (officer of claimsOfficers(); track officer.id) {
+                      <option [value]="officer.id">{{ officer.name }}</option>
                     }
                   </select>
                 </td>
@@ -297,6 +336,7 @@ export class ManagePoliciesComponent implements OnInit {
 
   policies = signal<any[]>([]);
   agents = signal<any[]>([]);
+  claimsOfficers = signal<any[]>([]);
   isLoading = signal(false);
   minDate = new Date().toISOString().split('T')[0];
 
@@ -308,6 +348,7 @@ export class ManagePoliciesComponent implements OnInit {
   createForm = this.fb.group({
     userId: [1, [Validators.required, Validators.min(1)]],
     agentId: [null],
+    claimsOfficerId: [null],
     planName: ['', Validators.required],
     monthlyPremium: [0, [Validators.required, Validators.min(0)]],
     coverageAmount: [0, [Validators.required, Validators.min(0)]],
@@ -335,7 +376,12 @@ export class ManagePoliciesComponent implements OnInit {
 
     this.adminService.getAgents().subscribe({
       next: (res) => this.agents.set(res || []),
-      error: (err) => console.log('Notice: /api/Staff/agents might need implementation on backend'),
+      error: (err) => console.log('Error fetching agents'),
+    });
+
+    this.adminService.getClaimsOfficers().subscribe({
+      next: (res) => this.claimsOfficers.set(res || []),
+      error: (err) => console.log('Error fetching claims officers'),
     });
   }
 
@@ -385,12 +431,30 @@ export class ManagePoliciesComponent implements OnInit {
     });
   }
 
+  onAssignOfficer(policyId: string, officerId: string) {
+    if (!officerId) return;
+
+    this.isLoading.set(true);
+    this.adminService.assignOfficer(policyId, officerId).subscribe({
+      next: () => {
+        this.toastr.success('Claims Officer assigned to policy.');
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.toastr.error('Failed to assign claims officer.');
+        this.isLoading.set(false);
+        this.loadData();
+      },
+    });
+  }
+
   openCreateModal() {
     this.createForm.reset({
       userId: 1,
       planName: '',
       status: 'Active',
       agentId: null,
+      claimsOfficerId: null,
     });
     this.showCreateModal.set(true);
   }
@@ -403,28 +467,12 @@ export class ManagePoliciesComponent implements OnInit {
     if (this.createForm.valid) {
       this.isLoading.set(true);
       const formValue = this.createForm.value;
-      const agentId = formValue.agentId;
 
       this.adminService.createPolicy(formValue).subscribe({
         next: (res: any) => {
-          if (agentId && res && res.id) {
-            this.adminService.assignPolicy(res.id, agentId).subscribe({
-              next: () => {
-                this.toastr.success('Policy created and agent assigned.');
-                this.closeCreateModal();
-                this.loadData();
-              },
-              error: () => {
-                this.toastr.warning('Policy created, but agent assignment failed.');
-                this.closeCreateModal();
-                this.loadData();
-              },
-            });
-          } else {
-            this.toastr.success('Policy created successfully.');
-            this.closeCreateModal();
-            this.loadData(); // Refresh list
-          }
+          this.toastr.success('Policy created successfully.');
+          this.closeCreateModal();
+          this.loadData(); // Refresh list
         },
         error: (err) => {
           this.toastr.error('Failed to create policy.');
