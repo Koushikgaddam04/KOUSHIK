@@ -39,6 +39,14 @@ public class HealthInsuranceDbContext : DbContext
         .HasOne(c => c.Policy)
         .WithMany()
         .HasForeignKey(c => c.PolicyId)
+        .IsRequired(false)
+        .OnDelete(DeleteBehavior.Restrict);
+
+        modelBuilder.Entity<Claim>()
+        .HasOne(c => c.PremiumQuote)
+        .WithMany()
+        .HasForeignKey(c => c.PremiumQuoteId)
+        .IsRequired(false)
         .OnDelete(DeleteBehavior.Restrict);
 
         // Fix for CoverageAmount in Policy table

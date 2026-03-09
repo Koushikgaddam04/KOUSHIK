@@ -33,44 +33,30 @@ public class PolicyService : IPolicyService
     {
         // 1. Find the Quote
         var quote = await _quoteRepo.GetByReferenceAsync(quoteReference);
-        if (quote == null || quote.IsConvertedToPolicy) return false;
+        if (quote == null || quote.IsConvertedToPolicy != 0) return false;
 
-        // 2. Try to find the Plan Template by Name to inherit the assigned Agent
-        int? inheritedAgentId = null;
+        // 2. Try to find the Plan Template by Name to inherit the assigned Agent/Officer
         var allPolicies = await _policyRepo.GetAllAsync();
         var template = allPolicies.FirstOrDefault(p => p.PlanName == quote.SelectedPlanName && p.IsPlanTemplate == true);
+        
         if (template != null)
         {
-            inheritedAgentId = template.AgentId;
+            quote.AgentId = template.AgentId;
+            quote.ClaimsOfficerId = template.ClaimsOfficerId;
         }
 
-        // 3. Create the real Policy (The "Contract")
-        var policy = new HealthInsurance.Domain.Entities.Policy
-        {
-            PolicyNumber = "POL-" + Guid.NewGuid().ToString().Substring(0, 8).ToUpper(),
-            UserId = customerId,
-            PlanName = quote.SelectedPlanName,
-
-            MonthlyPremium = quote.CalculatedMonthlyPremium,
-            CoverageAmount = quote.CoverageAmount,
-            ExpiryDate = DateTime.Now.AddYears(1),
-            Status = "Active",
-            AgentId = inheritedAgentId, // Inherit from template
-            IsPlanTemplate = false      // This is a customer instance
-        };
-
-        await _policyRepo.AddAsync(policy);
-
-        // 4. Mark Quote as Converted
-        quote.IsConvertedToPolicy = true;
+        // 3. Mark Quote as Active Policy
+        quote.IsConvertedToPolicy = 1; // Approved
+        quote.IsActive = true;
+        
         _quoteRepo.Update(quote);
 
-        // 5. Creative Logic: Generate Agent Commission (if an agent was inherited)
-        if (inheritedAgentId.HasValue)
+        // 4. Generate Agent Commission (if an agent was inherited)
+        if (quote.AgentId.HasValue)
         {
             var commission = new AgentCommissionLog
             {
-                AgentId = inheritedAgentId.Value,
+                AgentId = quote.AgentId.Value,
                 PremiumAmount = quote.CalculatedMonthlyPremium,
                 CommissionRate = 0.10m,
                 EarnedAmount = quote.CalculatedMonthlyPremium * 0.10m,
@@ -82,14 +68,39 @@ public class PolicyService : IPolicyService
         // 5. Audit the Action
         var log = new PolicyActionLog
         {
-            EntityName = "Policy",
-            EntityRecordId = policy.Id, 
+            EntityName = "PremiumQuote",
+            EntityRecordId = quote.Id, 
             ActionType = "PolicyVerification",
-            NewValue = "Active",
-            PerformedByUserId = UserSession.CurrentUserId // Use actual logged in user
+            NewValue = "Approved/Active",
+            PerformedByUserId = UserSession.CurrentUserId 
         };
         await _auditRepo.AddAsync(log);
 
-        return await _policyRepo.SaveChangesAsync();
+        return await _quoteRepo.SaveChangesAsync();
+    }
+
+    public async Task<bool> RejectPolicyAsync(string quoteReference)
+    {
+        var quote = await _quoteRepo.GetByReferenceAsync(quoteReference);
+        if (quote == null || quote.IsConvertedToPolicy != 0) return false;
+
+        // Mark as Rejected
+        quote.IsConvertedToPolicy = 2; // Rejected
+        quote.IsActive = false;
+        
+        _quoteRepo.Update(quote);
+
+        // Audit the Action
+        var log = new PolicyActionLog
+        {
+            EntityName = "PremiumQuote",
+            EntityRecordId = quote.Id,
+            ActionType = "PolicyVerification",
+            NewValue = "Rejected/RefundPending",
+            PerformedByUserId = UserSession.CurrentUserId
+        };
+        await _auditRepo.AddAsync(log);
+
+        return await _quoteRepo.SaveChangesAsync();
     }
 }

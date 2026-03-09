@@ -11,4 +11,5 @@ namespace HealthInsurance.Application.Interfaces;
 public interface IPolicyService
 {
     Task<bool> ActivatePolicyAsync(string quoteReference, int customerId);
+    Task<bool> RejectPolicyAsync(string quoteReference);
 }

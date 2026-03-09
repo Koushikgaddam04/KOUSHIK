@@ -11,93 +11,106 @@ namespace HealthInsurance.Application.Services;
 
 public class ClaimService : IClaimService
 {
-    private readonly IGenericRepository<HealthInsurance.Domain.Entities.Policy> _policyRepo;
+    private readonly IQuoteRepository _quoteRepo;
     private readonly IGenericRepository<Claim> _claimRepo;
     private readonly IGenericRepository<PolicyActionLog> _auditRepo;
+    private readonly IGenericRepository<HealthInsurance.Domain.Entities.Policy> _policyRepo;
 
     public ClaimService(
         IGenericRepository<HealthInsurance.Domain.Entities.Policy> policyRepo,
+        IQuoteRepository quoteRepo,
         IGenericRepository<Claim> claimRepo,
         IGenericRepository<PolicyActionLog> auditRepo)
     {
         _policyRepo = policyRepo;
+        _quoteRepo = quoteRepo;
         _claimRepo = claimRepo;
         _auditRepo = auditRepo;
     }
 
-    public async Task<string> ProcessClaimAsync(int policyId, decimal requestedAmount, string reason)
+    public async Task<string> ProcessClaimAsync(int policyId, decimal requestedAmount, string reason, int callerUserId)
     {
-        // 1. Validate Policy Existence and Status
-        var policy = await _policyRepo.GetByIdAsync(policyId);
+        // 1. Try to find in Legacy Policies first
+        var legacyPolicy = await _policyRepo.GetByIdAsync(policyId);
+        
+        int? realPolicyId = null;
+        int? realQuoteId = null;
+        int userId = 0;
+        decimal coverageLimit = 0;
+        string policyRef = "";
 
-        if (policy == null || !policy.IsActive) // Check if policy is null OR soft-deleted
-            return "Rejected: Policy record is inactive or does not exist.";
-
-        if (policy.Status != "Active")
-            return $"Rejected: Policy is currently {policy.Status}. Only 'Active' policies can file claims.";
-
-        // Since TierName is removed from Policy, we use a default coverage percentage (e.g. 100%)
-        // Real-world: This would be determined by the plan or other factors in the contract.
-        decimal coveragePercentage = 1.0m;
-
-        decimal calculatedPayout = requestedAmount * coveragePercentage;
-
-        // 3. Check for Remaining Coverage Limits
-        if (calculatedPayout > policy.CoverageAmount)
+        if (legacyPolicy != null && legacyPolicy.IsActive && legacyPolicy.Status == "Active")
         {
-            return $"Rejected: Calculated payout (${calculatedPayout}) exceeds remaining policy limit (${policy.CoverageAmount}).";
+            realPolicyId = legacyPolicy.Id;
+            userId = legacyPolicy.UserId;
+            coverageLimit = legacyPolicy.CoverageAmount;
+            policyRef = legacyPolicy.PolicyNumber;
+        }
+        else
+        {
+            // 2. Try to find in PremiumQuotes (The new Policy source)
+            var quotePolicy = await _quoteRepo.GetByIdAsync(policyId);
+            if (quotePolicy != null && quotePolicy.IsActive && quotePolicy.IsConvertedToPolicy == 1)
+            {
+                realQuoteId = quotePolicy.Id;
+                userId = quotePolicy.UserId ?? 0;
+                coverageLimit = quotePolicy.CoverageAmount;
+                policyRef = quotePolicy.QuoteReference;
+            }
         }
 
-        // 4. Create the Claim Record
+        if (realPolicyId == null && realQuoteId == null)
+            return "Rejected: No active policy found with that ID.";
+
+        // 3. Calculation
+        decimal calculatedPayout = requestedAmount; // Simple 100% coverage for now
+
+        if (calculatedPayout > coverageLimit)
+        {
+            return $"Rejected: Payout (${calculatedPayout}) exceeds coverage limit (${coverageLimit}).";
+        }
+
+        // 4. Create Claim Record
+        // Always use callerUserId (from JWT) as the claim owner — NOT the policy's UserId
+        // This ensures GetClaimsByUserId correctly returns this claim for the logged-in customer.
         var claim = new Claim
         {
-            PolicyId = policyId,
-            UserId = policy.UserId,
+            PolicyId = realPolicyId,
+            PremiumQuoteId = realQuoteId,
+            UserId = callerUserId > 0 ? callerUserId : userId,
             ClaimAmount = calculatedPayout,
             Reason = reason,
-            Status = "PendingApproval",
-            IsActive = true
+            Status = "PendingApproval"
         };
 
         await _claimRepo.AddAsync(claim);
 
-        // 5. [DEDUCTION MOVED TO APPROVAL STAGE]
-        // policy.CoverageAmount -= calculatedPayout;
-        // _policyRepo.Update(policy);
-
-        // 6. Audit Logging: Track the Claim Creation
-        var log = new PolicyActionLog
+        // 5. Audit — use callerUserId for the FK (guaranteed valid from JWT)
+        int auditUserId = callerUserId > 0 ? callerUserId : userId;
+        if (auditUserId > 0)
         {
-            EntityName = "Claim",
-            EntityRecordId = policyId,
-            ActionType = "ClaimSubmission",
-            OldValue = policy.CoverageAmount.ToString(),
-            NewValue = (policy.CoverageAmount - calculatedPayout).ToString(),
-            Reason = $"User requested {requestedAmount}. System approved {calculatedPayout} based on policy coverage rules.",
-            PerformedByUserId = policy.UserId // Initial submission by customer
-        };
-        await _auditRepo.AddAsync(log);
-
-        // 7. Commit Transaction
-        //var success = await _claimRepo.SaveChangesAsync();
-        var success = false;
-        try
-        {
-            success = await _claimRepo.SaveChangesAsync();
-        }
-        catch (Exception ex)
-        {
-            // Put a breakpoint here! 
-            // Hover over 'ex' and look at 'InnerException'
-            var message = ex.InnerException?.Message;
-            throw;
+            var log = new PolicyActionLog
+            {
+                EntityName = realPolicyId.HasValue ? "Policy" : "PremiumQuote",
+                EntityRecordId = policyId,
+                ActionType = "ClaimSubmission",
+                NewValue = calculatedPayout.ToString(),
+                PerformedByUserId = auditUserId
+            };
+            await _auditRepo.AddAsync(log);
         }
 
+        var success = await _claimRepo.SaveChangesAsync();
+        
         if (success)
-        {
-            return $"Success: Claim submitted for ${calculatedPayout}. Your remaining coverage is now ${policy.CoverageAmount}.";
-        }
+            return $"Success: Claim submitted for ${calculatedPayout} against policy {policyRef}.";
 
-        return "Error: System failed to process the claim. Please try again later.";
+        return "Error: Failed to save claim.";
+    }
+
+    public async Task<IEnumerable<Claim>> GetClaimsByUserIdAsync(int userId)
+    {
+        var allClaims = await _claimRepo.GetAllAsync();
+        return allClaims.Where(c => c.UserId == userId).ToList();
     }
 }

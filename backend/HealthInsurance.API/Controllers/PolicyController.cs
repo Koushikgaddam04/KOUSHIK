@@ -16,17 +16,20 @@ public class PolicyController : BaseApiController
 {
     private readonly IPolicyService _policyService;
     private readonly IGenericRepository<Policy> _policyRepo;
+    private readonly IGenericRepository<User> _userRepo;
     private readonly IGenericRepository<PolicyActionLog> _auditRepo;
     private readonly IGenericRepository<PremiumQuote> _quoteRepo;
 
     public PolicyController(
         IPolicyService policyService,
         IGenericRepository<Policy> policyRepo,
+        IGenericRepository<User> userRepo,
         IGenericRepository<PolicyActionLog> auditRepo,
         IGenericRepository<PremiumQuote> quoteRepo)
     {
         _policyService = policyService;
         _policyRepo = policyRepo;
+        _userRepo = userRepo;
         _auditRepo = auditRepo;
         _quoteRepo = quoteRepo;
     }
@@ -41,40 +44,61 @@ public class PolicyController : BaseApiController
         var allPolicies = await _policyRepo.GetAllAsync();
         var policies = allPolicies.Where(p => p.UserId == userId).ToList();
 
-        // 2. Get converted quotes (as requested: IsConvertedToPolicy = true)
+        var allUsers = await _userRepo.GetAllAsync();
+
+        // 1. Convert legacy policies to the common display format
+        var dashboardList = policies.Select(p => {
+            var agent = allUsers.FirstOrDefault(u => u.Id == p.AgentId);
+            var officer = allUsers.FirstOrDefault(u => u.Id == p.ClaimsOfficerId);
+            return new {
+                Id = p.Id,
+                PlanName = p.PlanName,
+                Status = p.Status,
+                Premium = p.MonthlyPremium,
+                MonthlyPremium = p.MonthlyPremium,
+                CoverageAmount = p.CoverageAmount,
+                ExpiryDate = p.ExpiryDate,
+                PolicyNumber = p.PolicyNumber,
+                AgentName = agent?.FullName ?? "Not Assigned",
+                ClaimsOfficerName = officer?.FullName ?? "Not Assigned"
+            };
+        }).ToList<dynamic>();
+
+        // 2. Get PremiumQuotes that are now acting as policies or are in progress
         var quotes = await _quoteRepo.GetAllAsync();
-        var convertedQuotes = quotes.Where(q => q.UserId == userId && q.IsConvertedToPolicy == true).ToList();
+        var myQuotes = quotes.Where(q => q.UserId == userId).ToList();
 
-        // We combine them for the UI to display in the same "Policies" list
-        // Using common property names expected by the UI part: id, planName, status, premium, coverageAmount
-        var dashboardList = policies
-        .Select(p => new {
-            Id = p.Id,
-            PlanName = p.PlanName,
-            Status = p.Status,
-            Premium = p.MonthlyPremium,
-            MonthlyPremium = p.MonthlyPremium,
-            CoverageAmount = p.CoverageAmount,
-            ExpiryDate = p.ExpiryDate,
-            PolicyNumber = p.PolicyNumber
-        }).ToList();
-
-        foreach (var q in convertedQuotes)
+        foreach (var q in myQuotes)
         {
-            // Avoid adding duplicates if already in the policy table
-            if (!dashboardList.Any(d => d.PlanName == q.SelectedPlanName && d.MonthlyPremium == q.CalculatedMonthlyPremium))
+            // Only add if it's either an active policy (1) or a pending paid request (0) or rejected (2)
+            // But usually we show them in different sections. 
+            // For this consolidated list, we'll label them by status.
+            
+            string status = q.IsConvertedToPolicy switch
             {
-                dashboardList.Add(new {
-                    Id = q.Id,
-                    PlanName = q.SelectedPlanName,
-                    Status = "Active",
-                    Premium = q.CalculatedMonthlyPremium,
-                    MonthlyPremium = q.CalculatedMonthlyPremium,
-                    CoverageAmount = q.CoverageAmount,
-                    ExpiryDate = q.ExpiryDate,
-                    PolicyNumber = q.QuoteReference
-                });
-            }
+                1 => "Active",
+                2 => "Rejected",
+                _ => q.IsPaid ? "Pending" : "Quote"
+            };
+
+            // Don't show raw quotes that aren't paid yet in the policy dashboard
+            if (!q.IsPaid && q.IsConvertedToPolicy == 0) continue;
+
+            var agent = allUsers.FirstOrDefault(u => u.Id == q.AgentId);
+            var officer = allUsers.FirstOrDefault(u => u.Id == q.ClaimsOfficerId);
+
+            dashboardList.Add(new {
+                Id = q.Id,
+                PlanName = q.SelectedPlanName,
+                Status = status,
+                Premium = q.CalculatedMonthlyPremium,
+                MonthlyPremium = q.CalculatedMonthlyPremium,
+                CoverageAmount = q.CoverageAmount,
+                ExpiryDate = q.ExpiryDate,
+                PolicyNumber = q.QuoteReference,
+                AgentName = agent?.FullName ?? (status == "Pending" ? "Processing" : "Not Assigned"),
+                ClaimsOfficerName = officer?.FullName ?? (status == "Pending" ? "Processing" : "Not Assigned")
+            });
         }
 
         return Ok(dashboardList);
@@ -96,10 +120,11 @@ public class PolicyController : BaseApiController
     public async Task<IActionResult> GetRecentPolicies()
     {
         var policies = await _policyRepo.GetAllAsync();
-        var activeTemplates = policies.Where(p => p.IsActive && p.IsPlanTemplate)
+        // Show both active and inactive templates for Admin management
+        var templates = policies.Where(p => p.IsPlanTemplate)
                                  .OrderByDescending(p => p.CreatedAt)
                                  .Take(10);
-        return Ok(activeTemplates);
+        return Ok(templates);
     }
 
     // 4. Create Policy (Direct Admin Creation)
@@ -138,6 +163,29 @@ public class PolicyController : BaseApiController
         await _auditRepo.AddAsync(log);
         await _auditRepo.SaveChangesAsync();
         return Ok("Agent assigned successfully.");
+    }
+
+    [HttpPatch("assign-officer")]
+    public async Task<IActionResult> AssignOfficer([FromQuery] int policyId, [FromQuery] int claimsOfficerId)
+    {
+        var policy = await _policyRepo.GetByIdAsync(policyId);
+        if (policy == null) return NotFound();
+
+        policy.ClaimsOfficerId = claimsOfficerId;
+        _policyRepo.Update(policy);
+        await _policyRepo.SaveChangesAsync();
+
+        var log = new PolicyActionLog
+        {
+            EntityName = "Policy",
+            EntityRecordId = policyId,
+            ActionType = "ClaimsOfficerAssignment",
+            NewValue = $"Officer ID: {claimsOfficerId}",
+            PerformedByUserId = UserSession.CurrentUserId
+        };
+        await _auditRepo.AddAsync(log);
+        await _auditRepo.SaveChangesAsync();
+        return Ok("Claims Officer assigned successfully.");
     }
 
     // 6. Request for a Policy (Customer functionality)
@@ -186,7 +234,7 @@ public class PolicyController : BaseApiController
 
         // Soft delete: just flip the flag
         policy.IsActive = false;
-        policy.Status = "Cancelled";
+        policy.Status = "Inactive";
 
         // Log this major action in the audit trail
         var log = new PolicyActionLog
@@ -195,7 +243,7 @@ public class PolicyController : BaseApiController
             EntityRecordId = id,
             ActionType = "SoftDelete",
             OldValue = "Active",
-            NewValue = "Inactive/Cancelled",
+            NewValue = "Inactive",
             Reason = "Admin initiated soft delete.",
             PerformedByUserId = UserSession.CurrentUserId // Admin ID
         };

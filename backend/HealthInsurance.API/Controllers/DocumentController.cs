@@ -30,8 +30,7 @@ public class DocumentController : BaseApiController
 
         var userId = UserSession.CurrentUserId;
         var fileName = $"{Guid.NewGuid()}_{request.File.FileName}";
-        var uploadsFolder = Path.Combine(_environment.ContentRootPath, "Uploads");
-
+        var uploadsFolder = GetUploadsFolder();
         if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
 
         var filePath = Path.Combine(uploadsFolder, fileName);
@@ -76,13 +75,56 @@ public class DocumentController : BaseApiController
     }
 
     [HttpGet("download/{fileName}")]
+    [AllowAnonymous]
     public IActionResult DownloadDocument([FromRoute] string fileName)
     {
-        var filePath = Path.Combine(_environment.ContentRootPath, "Uploads", fileName);
+        var filePath = GetFilePath(fileName);
         if (!System.IO.File.Exists(filePath)) return NotFound();
 
         var fileBytes = System.IO.File.ReadAllBytes(filePath);
         return File(fileBytes, "application/octet-stream", fileName);
+    }
+
+    [HttpGet("view/{fileName}")]
+    [AllowAnonymous]
+    public IActionResult ViewDocument([FromRoute] string fileName)
+    {
+        var filePath = GetFilePath(fileName);
+        if (!System.IO.File.Exists(filePath)) return NotFound();
+
+        var extension = Path.GetExtension(fileName).ToLowerInvariant();
+        string contentType = extension switch
+        {
+            ".pdf" => "application/pdf",
+            ".jpg" or ".jpeg" => "image/jpeg",
+            ".png" => "image/png",
+            ".txt" => "text/plain",
+            _ => "application/octet-stream"
+        };
+
+        var fileBytes = System.IO.File.ReadAllBytes(filePath);
+        return File(fileBytes, contentType);
+    }
+
+    private string GetUploadsFolder()
+    {
+        // Use ContentRootPath as primary (project root)
+        return Path.Combine(_environment.ContentRootPath, "Uploads");
+    }
+
+    private string GetFilePath(string fileName)
+    {
+        // 1. Check ContentRootPath (likely project root in dev)
+        var path = Path.Combine(_environment.ContentRootPath, "Uploads", fileName);
+        if (System.IO.File.Exists(path)) return path;
+
+        // 2. Fallback to AppContext.BaseDirectory (bin folder)
+        path = Path.Combine(AppContext.BaseDirectory, "Uploads", fileName);
+        if (System.IO.File.Exists(path)) return path;
+
+        // 3. Fallback to Current Directory
+        path = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", fileName);
+        return path;
     }
 
     [HttpPatch("review/{id}")]

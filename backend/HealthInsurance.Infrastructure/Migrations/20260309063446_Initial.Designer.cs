@@ -12,8 +12,8 @@ using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 namespace HealthInsurance.Infrastructure.Migrations
 {
     [DbContext(typeof(HealthInsuranceDbContext))]
-    [Migration("20260303050725_AddIsPlanTemplateToPolicy")]
-    partial class AddIsPlanTemplateToPolicy
+    [Migration("20260309063446_Initial")]
+    partial class Initial
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -164,6 +164,56 @@ namespace HealthInsurance.Infrastructure.Migrations
                     b.ToTable("Documents");
                 });
 
+            modelBuilder.Entity("HealthInsurance.Domain.Entities.Payment", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("int");
+
+                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
+
+                    b.Property<decimal>("Amount")
+                        .HasColumnType("decimal(18,2)");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<bool>("IsActive")
+                        .HasColumnType("bit");
+
+                    b.Property<DateTime>("PaymentDate")
+                        .HasColumnType("datetime2");
+
+                    b.Property<string>("PaymentMethod")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<int>("QuoteId")
+                        .HasColumnType("int");
+
+                    b.Property<string>("Status")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<string>("TransactionReference")
+                        .IsRequired()
+                        .HasColumnType("nvarchar(max)");
+
+                    b.Property<DateTime?>("UpdatedAt")
+                        .HasColumnType("datetime2");
+
+                    b.Property<int>("UserId")
+                        .HasColumnType("int");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("QuoteId");
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Payments");
+                });
+
             modelBuilder.Entity("HealthInsurance.Domain.Entities.Policy", b =>
                 {
                     b.Property<int>("Id")
@@ -173,6 +223,9 @@ namespace HealthInsurance.Infrastructure.Migrations
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
                     b.Property<int?>("AgentId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("ClaimsOfficerId")
                         .HasColumnType("int");
 
                     b.Property<decimal>("CoverageAmount")
@@ -291,6 +344,9 @@ namespace HealthInsurance.Infrastructure.Migrations
                     b.Property<bool>("IsConvertedToPolicy")
                         .HasColumnType("bit");
 
+                    b.Property<bool>("IsPaid")
+                        .HasColumnType("bit");
+
                     b.Property<int>("ProspectAge")
                         .HasColumnType("int");
 
@@ -395,6 +451,25 @@ namespace HealthInsurance.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("UploadedByUser");
+                });
+
+            modelBuilder.Entity("HealthInsurance.Domain.Entities.Payment", b =>
+                {
+                    b.HasOne("HealthInsurance.Domain.Entities.PremiumQuote", "Quote")
+                        .WithMany()
+                        .HasForeignKey("QuoteId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("HealthInsurance.Domain.Entities.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Quote");
+
+                    b.Navigation("User");
                 });
 
             modelBuilder.Entity("HealthInsurance.Domain.Entities.Policy", b =>

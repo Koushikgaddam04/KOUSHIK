@@ -24,6 +24,9 @@ public class Policy : BaseEntity
     // The assigned agent for this policy (nullable, because policies start unassigned)
     public int? AgentId { get; set; }
 
+    // The assigned claims officer for this policy
+    public int? ClaimsOfficerId { get; set; }
+
     // Discriminator to distinguish between a "Product Plan Template" and a "Customer Policy Instance"
     public bool IsPlanTemplate { get; set; } = false;
 }

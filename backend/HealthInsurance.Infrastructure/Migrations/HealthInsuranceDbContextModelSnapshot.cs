@@ -85,7 +85,10 @@ namespace HealthInsurance.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<int>("PolicyId")
+                    b.Property<int?>("PolicyId")
+                        .HasColumnType("int");
+
+                    b.Property<int?>("PremiumQuoteId")
                         .HasColumnType("int");
 
                     b.Property<string>("Reason")
@@ -105,6 +108,8 @@ namespace HealthInsurance.Infrastructure.Migrations
                     b.HasKey("Id");
 
                     b.HasIndex("PolicyId");
+
+                    b.HasIndex("PremiumQuoteId");
 
                     b.HasIndex("UserId");
 
@@ -222,6 +227,9 @@ namespace HealthInsurance.Infrastructure.Migrations
                     b.Property<int?>("AgentId")
                         .HasColumnType("int");
 
+                    b.Property<int?>("ClaimsOfficerId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("CoverageAmount")
                         .HasColumnType("decimal(18,2)");
 
@@ -320,8 +328,14 @@ namespace HealthInsurance.Infrastructure.Migrations
 
                     SqlServerPropertyBuilderExtensions.UseIdentityColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("AgentId")
+                        .HasColumnType("int");
+
                     b.Property<decimal>("CalculatedMonthlyPremium")
                         .HasColumnType("decimal(18,2)");
+
+                    b.Property<int?>("ClaimsOfficerId")
+                        .HasColumnType("int");
 
                     b.Property<decimal>("CoverageAmount")
                         .HasColumnType("decimal(18,2)");
@@ -335,8 +349,8 @@ namespace HealthInsurance.Infrastructure.Migrations
                     b.Property<bool>("IsActive")
                         .HasColumnType("bit");
 
-                    b.Property<bool>("IsConvertedToPolicy")
-                        .HasColumnType("bit");
+                    b.Property<int>("IsConvertedToPolicy")
+                        .HasColumnType("int");
 
                     b.Property<bool>("IsPaid")
                         .HasColumnType("bit");
@@ -422,8 +436,12 @@ namespace HealthInsurance.Infrastructure.Migrations
                     b.HasOne("HealthInsurance.Domain.Entities.Policy", "Policy")
                         .WithMany()
                         .HasForeignKey("PolicyId")
-                        .OnDelete(DeleteBehavior.Restrict)
-                        .IsRequired();
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("HealthInsurance.Domain.Entities.PremiumQuote", "PremiumQuote")
+                        .WithMany()
+                        .HasForeignKey("PremiumQuoteId")
+                        .OnDelete(DeleteBehavior.Restrict);
 
                     b.HasOne("HealthInsurance.Domain.Entities.User", "User")
                         .WithMany()
@@ -432,6 +450,8 @@ namespace HealthInsurance.Infrastructure.Migrations
                         .IsRequired();
 
                     b.Navigation("Policy");
+
+                    b.Navigation("PremiumQuote");
 
                     b.Navigation("User");
                 });

@@ -6,7 +6,7 @@ using Microsoft.EntityFrameworkCore.Migrations;
 namespace HealthInsurance.Infrastructure.Migrations
 {
     /// <inheritdoc />
-    public partial class InitialCreate : Migration
+    public partial class Initial : Migration
     {
         /// <inheritdoc />
         protected override void Up(MigrationBuilder migrationBuilder)
@@ -123,11 +123,13 @@ namespace HealthInsurance.Infrastructure.Migrations
                     PolicyNumber = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     UserId = table.Column<int>(type: "int", nullable: false),
                     PlanName = table.Column<string>(type: "nvarchar(max)", nullable: false),
-                    TierName = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     MonthlyPremium = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     CoverageAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    AgentId = table.Column<int>(type: "int", nullable: true),
+                    ClaimsOfficerId = table.Column<int>(type: "int", nullable: true),
+                    IsPlanTemplate = table.Column<bool>(type: "bit", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
                     IsActive = table.Column<bool>(type: "bit", nullable: false)
@@ -157,6 +159,7 @@ namespace HealthInsurance.Infrastructure.Migrations
                     CoverageAmount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
                     ExpiryDate = table.Column<DateTime>(type: "datetime2", nullable: false),
                     IsConvertedToPolicy = table.Column<bool>(type: "bit", nullable: false),
+                    IsPaid = table.Column<bool>(type: "bit", nullable: false),
                     QuoteReference = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
                     UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
@@ -204,6 +207,40 @@ namespace HealthInsurance.Infrastructure.Migrations
                         onDelete: ReferentialAction.Cascade);
                 });
 
+            migrationBuilder.CreateTable(
+                name: "Payments",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    UserId = table.Column<int>(type: "int", nullable: false),
+                    QuoteId = table.Column<int>(type: "int", nullable: false),
+                    Amount = table.Column<decimal>(type: "decimal(18,2)", nullable: false),
+                    PaymentMethod = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    TransactionReference = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    Status = table.Column<string>(type: "nvarchar(max)", nullable: false),
+                    PaymentDate = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    CreatedAt = table.Column<DateTime>(type: "datetime2", nullable: false),
+                    UpdatedAt = table.Column<DateTime>(type: "datetime2", nullable: true),
+                    IsActive = table.Column<bool>(type: "bit", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_Payments", x => x.Id);
+                    table.ForeignKey(
+                        name: "FK_Payments_PremiumQuotes_QuoteId",
+                        column: x => x.QuoteId,
+                        principalTable: "PremiumQuotes",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                    table.ForeignKey(
+                        name: "FK_Payments_Users_UserId",
+                        column: x => x.UserId,
+                        principalTable: "Users",
+                        principalColumn: "Id",
+                        onDelete: ReferentialAction.Cascade);
+                });
+
             migrationBuilder.CreateIndex(
                 name: "IX_ActionLogs_PerformedByUserId",
                 table: "ActionLogs",
@@ -228,6 +265,16 @@ namespace HealthInsurance.Infrastructure.Migrations
                 name: "IX_Documents_UploadedByUserId",
                 table: "Documents",
                 column: "UploadedByUserId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_QuoteId",
+                table: "Payments",
+                column: "QuoteId");
+
+            migrationBuilder.CreateIndex(
+                name: "IX_Payments_UserId",
+                table: "Payments",
+                column: "UserId");
 
             migrationBuilder.CreateIndex(
                 name: "IX_Policies_UserId",
@@ -256,10 +303,13 @@ namespace HealthInsurance.Infrastructure.Migrations
                 name: "Documents");
 
             migrationBuilder.DropTable(
-                name: "PremiumQuotes");
+                name: "Payments");
 
             migrationBuilder.DropTable(
                 name: "Policies");
+
+            migrationBuilder.DropTable(
+                name: "PremiumQuotes");
 
             migrationBuilder.DropTable(
                 name: "Users");

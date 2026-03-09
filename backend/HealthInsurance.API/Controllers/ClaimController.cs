@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using HealthInsurance.Application.Interfaces;
 using HealthInsurance.Application.DTOs;
 using Microsoft.AspNetCore.Authorization;
+using HealthInsurance.Domain;
 
 namespace HealthInsurance.API.Controllers;
 
@@ -23,7 +24,7 @@ public class ClaimController : BaseApiController
     {
         if (request.Amount <= 0) return BadRequest("Claim amount must be greater than zero.");
 
-        var result = await _claimService.ProcessClaimAsync(request.PolicyId, request.Amount, request.Reason);
+        var result = await _claimService.ProcessClaimAsync(request.PolicyId, request.Amount, request.Reason, UserSession.CurrentUserId);
 
         if (result.StartsWith("Rejected") || result.StartsWith("Error"))
         {
@@ -31,5 +32,23 @@ public class ClaimController : BaseApiController
         }
 
         return Ok(new { Message = result });
+    }
+
+    [HttpGet("my-claims")]
+    public async Task<IActionResult> GetMyClaims()
+    {
+        var userId = UserSession.CurrentUserId;
+        var claims = await _claimService.GetClaimsByUserIdAsync(userId);
+        var result = claims.Select(c => new
+        {
+            id = c.Id,
+            policyId = c.PolicyId,
+            premiumQuoteId = c.PremiumQuoteId,
+            claimAmount = c.ClaimAmount,
+            reason = c.Reason,
+            status = c.Status,
+            createdAt = c.CreatedAt
+        });
+        return Ok(result);
     }
 }

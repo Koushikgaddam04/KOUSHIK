@@ -13,10 +13,12 @@ public class Claim : BaseEntity
     public string Status { get; set; } = "Pending"; // Pending, Approved, Rejected
 
     // Foreign Keys
-    public int UserId { get; set; } // The Customer who raised it
-    public int PolicyId { get; set; } // The Policy they are claiming against
+    public int UserId { get; set; }
+    public int? PolicyId { get; set; } 
+    public int? PremiumQuoteId { get; set; }
 
-    // Navigation Properties (Helps Entity Framework link tables)
+    // Navigation Properties
     public User? User { get; set; }
     public Policy? Policy { get; set; }
+    public PremiumQuote? PremiumQuote { get; set; }
 }

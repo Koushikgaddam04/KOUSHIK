@@ -25,8 +25,15 @@ public class PremiumQuote : BaseEntity
 
     // Tracking
     public DateTime ExpiryDate { get; set; }
-    public bool IsConvertedToPolicy { get; set; } = false;
+
+    // Status: 0=Wait/Pending, 1=Approved, 2=Rejected
+    public int IsConvertedToPolicy { get; set; } = 0; 
     public bool IsPaid { get; set; } = false;
+    public bool IsActive { get; set; } = false;
+
+    // Staff assignment
+    public int? AgentId { get; set; }
+    public int? ClaimsOfficerId { get; set; }
 
     public string QuoteReference { get; set; } = string.Empty;
 }
