@@ -10,6 +10,6 @@ namespace HealthInsurance.Application.Interfaces;
 
 public interface IClaimService
 {
-    Task<string> ProcessClaimAsync(int policyId, decimal requestedAmount, string reason, int callerUserId);
+    Task<(string Message, int ClaimId)> ProcessClaimAsync(int policyId, decimal requestedAmount, string reason, int callerUserId);
     Task<IEnumerable<Claim>> GetClaimsByUserIdAsync(int userId);
 }

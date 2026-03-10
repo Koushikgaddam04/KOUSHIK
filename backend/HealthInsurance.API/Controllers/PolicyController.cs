@@ -152,6 +152,18 @@ public class PolicyController : BaseApiController
         _policyRepo.Update(policy);
         await _policyRepo.SaveChangesAsync();
 
+        if (policy.IsPlanTemplate && !string.IsNullOrEmpty(policy.PlanName))
+        {
+            var allQuotes = await _quoteRepo.GetAllAsync();
+            var matchedQuotes = allQuotes.Where(q => q.SelectedPlanName == policy.PlanName).ToList();
+            foreach (var q in matchedQuotes)
+            {
+                q.AgentId = agentId;
+                _quoteRepo.Update(q);
+            }
+            if (matchedQuotes.Any()) await _quoteRepo.SaveChangesAsync();
+        }
+
         var log = new PolicyActionLog
         {
             EntityName = "Policy",
@@ -174,6 +186,18 @@ public class PolicyController : BaseApiController
         policy.ClaimsOfficerId = claimsOfficerId;
         _policyRepo.Update(policy);
         await _policyRepo.SaveChangesAsync();
+
+        if (policy.IsPlanTemplate && !string.IsNullOrEmpty(policy.PlanName))
+        {
+            var allQuotes = await _quoteRepo.GetAllAsync();
+            var matchedQuotes = allQuotes.Where(q => q.SelectedPlanName == policy.PlanName).ToList();
+            foreach (var q in matchedQuotes)
+            {
+                q.ClaimsOfficerId = claimsOfficerId;
+                _quoteRepo.Update(q);
+            }
+            if (matchedQuotes.Any()) await _quoteRepo.SaveChangesAsync();
+        }
 
         var log = new PolicyActionLog
         {

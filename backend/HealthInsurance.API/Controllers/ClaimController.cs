@@ -24,14 +24,14 @@ public class ClaimController : BaseApiController
     {
         if (request.Amount <= 0) return BadRequest("Claim amount must be greater than zero.");
 
-        var result = await _claimService.ProcessClaimAsync(request.PolicyId, request.Amount, request.Reason, UserSession.CurrentUserId);
+        var (message, claimId) = await _claimService.ProcessClaimAsync(request.PolicyId, request.Amount, request.Reason, UserSession.CurrentUserId);
 
-        if (result.StartsWith("Rejected") || result.StartsWith("Error"))
+        if (message.StartsWith("Rejected") || message.StartsWith("Error"))
         {
-            return BadRequest(new { Message = result });
+            return BadRequest(new { Message = message });
         }
 
-        return Ok(new { Message = result });
+        return Ok(new { Message = message, ClaimId = claimId });
     }
 
     [HttpGet("my-claims")]

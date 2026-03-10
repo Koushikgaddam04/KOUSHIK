@@ -28,7 +28,7 @@ public class ClaimService : IClaimService
         _auditRepo = auditRepo;
     }
 
-    public async Task<string> ProcessClaimAsync(int policyId, decimal requestedAmount, string reason, int callerUserId)
+    public async Task<(string Message, int ClaimId)> ProcessClaimAsync(int policyId, decimal requestedAmount, string reason, int callerUserId)
     {
         // 1. Try to find in Legacy Policies first
         var legacyPolicy = await _policyRepo.GetByIdAsync(policyId);
@@ -60,14 +60,14 @@ public class ClaimService : IClaimService
         }
 
         if (realPolicyId == null && realQuoteId == null)
-            return "Rejected: No active policy found with that ID.";
+            return ("Rejected: No active policy found with that ID.", 0);
 
         // 3. Calculation
         decimal calculatedPayout = requestedAmount; // Simple 100% coverage for now
 
         if (calculatedPayout > coverageLimit)
         {
-            return $"Rejected: Payout (${calculatedPayout}) exceeds coverage limit (${coverageLimit}).";
+            return ($"Rejected: Payout (${calculatedPayout}) exceeds coverage limit (${coverageLimit}).", 0);
         }
 
         // 4. Create Claim Record
@@ -103,9 +103,9 @@ public class ClaimService : IClaimService
         var success = await _claimRepo.SaveChangesAsync();
         
         if (success)
-            return $"Success: Claim submitted for ${calculatedPayout} against policy {policyRef}.";
+            return ($"Success: Claim submitted for ${calculatedPayout} against policy {policyRef}.", claim.Id);
 
-        return "Error: Failed to save claim.";
+        return ("Error: Failed to save claim.", 0);
     }
 
     public async Task<IEnumerable<Claim>> GetClaimsByUserIdAsync(int userId)

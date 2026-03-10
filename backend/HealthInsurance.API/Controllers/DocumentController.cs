@@ -43,10 +43,11 @@ public class DocumentController : BaseApiController
         var doc = new DocumentVault
         {
             FileName = request.File.FileName,
-            FilePath = fileName, // Store relative filename for easier download
+            FilePath = fileName,
             DocumentType = request.DocType,
-            RelatedEntityType = "User",
-            RelatedEntityId = userId,
+            // Link to a specific entity (Policy/Claim/User) based on what the caller provides
+            RelatedEntityType = string.IsNullOrEmpty(request.EntityType) ? "User" : request.EntityType,
+            RelatedEntityId = request.EntityId > 0 ? request.EntityId : userId,
             Status = "Pending",
             UploadedByUserId = userId
         };
@@ -62,7 +63,9 @@ public class DocumentController : BaseApiController
     {
         var userId = UserSession.CurrentUserId;
         var allDocs = await _docRepo.GetAllAsync();
-        var myDocs = allDocs.Where(d => d.UploadedByUserId == userId).ToList();
+        var myDocs = allDocs.Where(d => d.UploadedByUserId == userId)
+            .Select(d => new { d.Id, d.FileName, d.FilePath, d.DocumentType, d.Status, d.RelatedEntityType, d.RelatedEntityId, d.CreatedAt })
+            .ToList();
         return Ok(myDocs);
     }
 
@@ -70,8 +73,23 @@ public class DocumentController : BaseApiController
     public async Task<IActionResult> GetUserDocuments([FromRoute] int userId)
     {
         var allDocs = await _docRepo.GetAllAsync();
-        var userDocs = allDocs.Where(d => d.UploadedByUserId == userId).ToList();
+        var userDocs = allDocs.Where(d => d.UploadedByUserId == userId)
+            .Select(d => new { d.Id, d.FileName, d.FilePath, d.DocumentType, d.Status, d.RelatedEntityType, d.RelatedEntityId, d.CreatedAt })
+            .ToList();
         return Ok(userDocs);
+    }
+
+    // NEW: get documents linked to a specific entity (e.g. Policy/Claim)
+    [HttpGet("for/{entityType}/{entityId}")]
+    public async Task<IActionResult> GetForEntity([FromRoute] string entityType, [FromRoute] int entityId)
+    {
+        var allDocs = await _docRepo.GetAllAsync();
+        var docs = allDocs
+            .Where(d => d.RelatedEntityType.Equals(entityType, StringComparison.OrdinalIgnoreCase)
+                     && d.RelatedEntityId == entityId)
+            .Select(d => new { d.Id, d.FileName, d.FilePath, d.DocumentType, d.Status, d.CreatedAt })
+            .ToList();
+        return Ok(docs);
     }
 
     [HttpGet("download/{fileName}")]
@@ -128,7 +146,7 @@ public class DocumentController : BaseApiController
     }
 
     [HttpPatch("review/{id}")]
-    [Authorize(Roles = "ClaimOfficer,Admin")]
+    [Authorize] // Both Agents and ClaimsOfficers can verify documents
     public async Task<IActionResult> ReviewDocument([FromRoute] int id, [FromBody] DocumentReviewRequest req)
     {
         await _docRepo.UpdateStatusAsync(id, req.Status, req.Comments);
@@ -162,8 +180,11 @@ public class DocumentController : BaseApiController
 
 public class DocumentUploadRequest
 {
-    public IFormFile File { get; set; }
-    public string DocType { get; set; }
+    public IFormFile File { get; set; } = null!;
+    public string DocType { get; set; } = string.Empty;
+    // Optional: link this document to a Policy or Claim entity
+    public string? EntityType { get; set; }   // "Policy" or "Claim"
+    public int EntityId { get; set; }          // The entity's ID
 }
 
 public class DocumentReviewRequest

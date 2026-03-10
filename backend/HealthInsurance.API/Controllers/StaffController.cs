@@ -16,6 +16,7 @@ namespace HealthInsurance.API.Controllers
         private readonly IGenericRepository<User> _userRepo;
         private readonly IGenericRepository<PremiumQuote> _quoteRepo;
         private readonly IPolicyService _policyService;
+        private readonly IDocumentRepository _docRepo;
 
         public StaffController(
             IGenericRepository<Claim> claimRepo, 
@@ -23,7 +24,8 @@ namespace HealthInsurance.API.Controllers
             IGenericRepository<PolicyActionLog> auditRepo,
             IGenericRepository<User> userRepo,
             IGenericRepository<PremiumQuote> quoteRepo,
-            IPolicyService policyService)
+            IPolicyService policyService,
+            IDocumentRepository docRepo)
         {
             _claimRepo = claimRepo;
             _policyRepo = policyRepo;
@@ -31,6 +33,7 @@ namespace HealthInsurance.API.Controllers
             _userRepo = userRepo;
             _quoteRepo = quoteRepo;
             _policyService = policyService;
+            _docRepo = docRepo;
         }
 
         // Add agents endpoint for Manage Policies
@@ -92,18 +95,19 @@ namespace HealthInsurance.API.Controllers
             // 1. Get the list of Plan Names this specific Agent is responsible for
             var allPolicies = await _policyRepo.GetAllAsync();
             var agentAssignedPlanNames = allPolicies
-                .Where(p => p.AgentId == agentId && p.IsActive)
+                .Where(p => p.IsPlanTemplate && p.AgentId == agentId && p.IsActive)
                 .Select(p => p.PlanName)
                 .Distinct()
                 .ToList();
 
-            // 2. Fetch Quotes that are converted (IsConvertedToPolicy = 1) 
-            // AND match the agent's assigned plans
+            // 2. Fetch Quotes that are converted (IsConvertedToPolicy = 0) 
+            // AND match the agent's assigned plans OR directly assigned
             var allQuotes = await _quoteRepo.GetAllAsync();
             var allUsers = await _userRepo.GetAllAsync();
 
             var pendingQueue = allQuotes
                 .Where(q => q.IsConvertedToPolicy == 0 && q.IsPaid == true)
+                .Where(q => q.AgentId == agentId || agentAssignedPlanNames.Contains(q.SelectedPlanName))
                 .Select(q => {
                     var user = allUsers.FirstOrDefault(u => u.Id == q.UserId);
                     return new {
@@ -129,6 +133,36 @@ namespace HealthInsurance.API.Controllers
             var quote = await _quoteRepo.GetByIdAsync(id);
             if (quote == null) return NotFound("Pending quote request not found.");
 
+            // --- DOCUMENT GATE (only applies when APPROVING) ---
+            if (status?.ToLower() != "reject")
+            {
+                var allDocs = await _docRepo.GetAllAsync();
+                var entityDocs = allDocs
+                    .Where(d => d.RelatedEntityType.Equals("Policy", StringComparison.OrdinalIgnoreCase)
+                             && d.RelatedEntityId == id)
+                    .ToList();
+
+                // If any document is Rejected → auto-reject the whole policy
+                var rejectedDoc = entityDocs.FirstOrDefault(d => d.Status.Equals("Rejected", StringComparison.OrdinalIgnoreCase));
+                if (rejectedDoc != null)
+                {
+                    await _policyService.RejectPolicyAsync(quote.QuoteReference);
+                    return BadRequest(new { Message = $"Policy rejected automatically: document '{rejectedDoc.FileName}' ({rejectedDoc.DocumentType}) was rejected by the agent." });
+                }
+
+                // If any document is still Pending → block agent from deciding
+                var pendingDoc = entityDocs.FirstOrDefault(d => d.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase));
+                if (pendingDoc != null)
+                {
+                    return BadRequest(new { Message = $"Cannot verify policy yet. Document '{pendingDoc.FileName}' ({pendingDoc.DocumentType}) has not been reviewed. Please verify or reject all documents first." });
+                }
+
+                if (entityDocs.Count == 0)
+                {
+                    return BadRequest(new { Message = "No documents uploaded for this policy application. The customer must upload documents before you can verify." });
+                }
+            }
+
             bool success;
             if (status?.ToLower() == "reject")
             {
@@ -145,11 +179,28 @@ namespace HealthInsurance.API.Controllers
         }
         // 10. Get Pending Claims (Claim Officer Queue)
         [HttpGet("claim/pending")]
-        public async Task<IActionResult> GetPendingClaims()
+        public async Task<IActionResult> GetPendingClaims([FromQuery] int officerId)
         {
             var allClaims = await _claimRepo.GetAllAsync();
+            var allPolicies = await _policyRepo.GetAllAsync();
+            var allQuotes = await _quoteRepo.GetAllAsync();
+
             var pendingClaims = allClaims
                 .Where(c => c.Status == "PendingApproval")
+                .Where(c => {
+                    // Find the underlying policy to check ClaimsOfficerId
+                    if (c.PremiumQuoteId.HasValue && c.PremiumQuoteId.Value > 0)
+                    {
+                        var quote = allQuotes.FirstOrDefault(q => q.Id == c.PremiumQuoteId.Value);
+                        if (quote != null) return quote.ClaimsOfficerId == officerId;
+                    }
+                    else if (c.PolicyId.HasValue && c.PolicyId.Value > 0)
+                    {
+                        var policy = allPolicies.FirstOrDefault(p => p.Id == c.PolicyId.Value);
+                        if (policy != null) return policy.ClaimsOfficerId == officerId;
+                    }
+                    return false;
+                })
                 .Select(c => new
                 {
                     id = c.Id,
@@ -170,7 +221,44 @@ namespace HealthInsurance.API.Controllers
             var claim = await _claimRepo.GetByIdAsync(id);
             if (claim == null) return NotFound();
 
-            // If approving, deduct from the correct coverage source
+            // --- DOCUMENT GATE (only applies when APPROVING) ---
+            if (status == "Approved" && claim.Status != "Approved")
+            {
+                var allDocs = await _docRepo.GetAllAsync();
+                var claimDocs = allDocs
+                    .Where(d => d.RelatedEntityType.Equals("Claim", StringComparison.OrdinalIgnoreCase)
+                             && d.RelatedEntityId == id)
+                    .ToList();
+
+                // If any document is Rejected → auto-reject the claim
+                var rejectedDoc = claimDocs.FirstOrDefault(d => d.Status.Equals("Rejected", StringComparison.OrdinalIgnoreCase));
+                if (rejectedDoc != null)
+                {
+                    claim.Status = "Rejected";
+                    await _auditRepo.AddAsync(new PolicyActionLog
+                    {
+                        EntityName = "Claim", EntityRecordId = claim.Id,
+                        ActionType = "ClaimDecision", NewValue = "Rejected",
+                        Reason = $"Automatically rejected: document '{rejectedDoc.FileName}' ({rejectedDoc.DocumentType}) was rejected.",
+                        PerformedByUserId = UserSession.CurrentUserId
+                    });
+                    await _claimRepo.SaveChangesAsync();
+                    return BadRequest(new { Message = $"Claim automatically rejected: document '{rejectedDoc.FileName}' ({rejectedDoc.DocumentType}) was rejected by the officer." });
+                }
+
+                // If any document is still Pending → block officer from deciding
+                var pendingDoc = claimDocs.FirstOrDefault(d => d.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase));
+                if (pendingDoc != null)
+                {
+                    return BadRequest(new { Message = $"Cannot approve claim yet. Document '{pendingDoc.FileName}' ({pendingDoc.DocumentType}) has not been reviewed. Please verify or reject all documents first." });
+                }
+
+                if (claimDocs.Count == 0)
+                {
+                    return BadRequest(new { Message = "No documents uploaded for this claim. The customer must upload supporting documents before this claim can be approved." });
+                }
+            }
+
             if (status == "Approved" && claim.Status != "Approved")
             {
                 decimal currentCoverage = 0;
@@ -261,7 +349,7 @@ namespace HealthInsurance.API.Controllers
 
         // 10 & 12. History for Agent/Officer
         [HttpGet("history/{role}")]
-        public async Task<IActionResult> GetStaffHistory([FromRoute] string role)
+        public async Task<IActionResult> GetStaffHistory([FromRoute] string role, [FromQuery] int officerId = 0)
         {
             // 1. Fetch all logs from the Audit Repository
             var allLogs = await _auditRepo.GetAllAsync();
@@ -289,12 +377,42 @@ namespace HealthInsurance.API.Controllers
             }
             else if (role.ToLower() == "claimofficer" || role.ToLower() == "officer")
             {
+                var officerQuotes = new HashSet<int>();
+                var officerPoliciesIds = new HashSet<int>();
+                var officerClaims = new HashSet<int>();
+
+                if (officerId > 0)
+                {
+                    var allClaims = await _claimRepo.GetAllAsync();
+                    var allPolicies = await _policyRepo.GetAllAsync();
+                    var allQuotes = await _quoteRepo.GetAllAsync();
+                    
+                    officerQuotes = allQuotes.Where(q => q.ClaimsOfficerId == officerId).Select(q => q.Id).ToHashSet();
+                    officerPoliciesIds = allPolicies.Where(p => p.ClaimsOfficerId == officerId).Select(p => p.Id).ToHashSet();
+
+                    officerClaims = allClaims.Where(c => {
+                        if (c.PremiumQuoteId.HasValue && c.PremiumQuoteId.Value > 0) return officerQuotes.Contains(c.PremiumQuoteId.Value);
+                        else if (c.PolicyId.HasValue && c.PolicyId.Value > 0) return officerPoliciesIds.Contains(c.PolicyId.Value);
+                        return false;
+                    }).Select(c => c.Id).ToHashSet();
+                }
+
                 // Claim Officers look at Claim submissions and final decisions
                 var officerHistory = allLogs.Where(l =>
                     l.ActionType == "ClaimSubmission" ||
                     l.ActionType == "ClaimDecision" ||
                     l.ActionType == "ClaimApprovalDeduction"
-                ).OrderByDescending(l => l.CreatedAt)
+                )
+                .Where(l => {
+                    if (officerId == 0) return true;
+                    if (l.ActionType == "ClaimDecision" || l.ActionType == "ClaimApprovalDeduction") return officerClaims.Contains(l.EntityRecordId);
+                    if (l.ActionType == "ClaimSubmission") {
+                        if (l.EntityName == "PremiumQuote") return officerQuotes.Contains(l.EntityRecordId);
+                        if (l.EntityName == "Policy" || l.EntityName == "legacyPolicy") return officerPoliciesIds.Contains(l.EntityRecordId);
+                    }
+                    return false;
+                })
+                .OrderByDescending(l => l.CreatedAt)
                 .Select(l => new {
                     id = l.Id,
                     claimReference = l.EntityRecordId != 0 ? "Claim #" + l.EntityRecordId : "Unknown",

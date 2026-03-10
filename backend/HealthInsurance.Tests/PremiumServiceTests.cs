@@ -99,6 +99,7 @@ namespace HealthInsurance.Tests
         private readonly Mock<IGenericRepository<Claim>> _claimRepoMock;
         private readonly Mock<IGenericRepository<AgentCommissionLog>> _commissionRepoMock;
         private readonly Mock<IGenericRepository<DocumentVault>> _docRepoMock;
+        private readonly Mock<IQuoteRepository> _quoteRepoMock;
         private readonly DashboardService _dashboardService;
 
         public DashboardServiceTests()
@@ -107,12 +108,14 @@ namespace HealthInsurance.Tests
             _claimRepoMock = new Mock<IGenericRepository<Claim>>();
             _commissionRepoMock = new Mock<IGenericRepository<AgentCommissionLog>>();
             _docRepoMock = new Mock<IGenericRepository<DocumentVault>>();
+            _quoteRepoMock = new Mock<IQuoteRepository>();
 
             _dashboardService = new DashboardService(
                 _policyRepoMock.Object,
                 _claimRepoMock.Object,
                 _commissionRepoMock.Object,
-                _docRepoMock.Object);
+                _docRepoMock.Object,
+                _quoteRepoMock.Object);
         }
 
         [Fact]
@@ -130,13 +133,15 @@ namespace HealthInsurance.Tests
             _claimRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<Claim>());
             _commissionRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<AgentCommissionLog>());
             _docRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<DocumentVault>());
+            _quoteRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<PremiumQuote>());
 
             // Act
             var result = await _dashboardService.GetAdminStatsAsync();
 
             // Assert
             Assert.Equal(2, result["totalActivePolicies"]);
-            Assert.Equal(350m, result["totalRevenue"]); // 100 + 200 + 50 (based on my previous code review, it sums all regardless of status if they are active and userId != 1)
+            // Revenue sums only Active policies (not Pending): 100 + 200 = 300
+            Assert.Equal(300m, result["totalRevenue"]);
         }
     }
 }
