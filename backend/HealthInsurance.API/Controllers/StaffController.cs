@@ -17,6 +17,7 @@ namespace HealthInsurance.API.Controllers
         private readonly IGenericRepository<PremiumQuote> _quoteRepo;
         private readonly IPolicyService _policyService;
         private readonly IDocumentRepository _docRepo;
+        private readonly IGenericRepository<AgentCommissionLog> _commissionRepo;
 
         public StaffController(
             IGenericRepository<Claim> claimRepo, 
@@ -25,7 +26,8 @@ namespace HealthInsurance.API.Controllers
             IGenericRepository<User> userRepo,
             IGenericRepository<PremiumQuote> quoteRepo,
             IPolicyService policyService,
-            IDocumentRepository docRepo)
+            IDocumentRepository docRepo,
+            IGenericRepository<AgentCommissionLog> commissionRepo)
         {
             _claimRepo = claimRepo;
             _policyRepo = policyRepo;
@@ -34,6 +36,7 @@ namespace HealthInsurance.API.Controllers
             _quoteRepo = quoteRepo;
             _policyService = policyService;
             _docRepo = docRepo;
+            _commissionRepo = commissionRepo;
         }
 
         // Add agents endpoint for Manage Policies
@@ -423,8 +426,22 @@ namespace HealthInsurance.API.Controllers
 
                 return Ok(officerHistory);
             }
+            else if (role.ToLower() == "admin")
+            {
+                var adminHistory = allLogs.OrderByDescending(l => l.CreatedAt)
+                .Select(l => new {
+                    id = l.Id,
+                    claimReference = l.EntityName + (l.EntityRecordId != 0 ? " #" + l.EntityRecordId : ""),
+                    actionTaken = l.ActionType,
+                    dateTime = l.CreatedAt,
+                    newValue = l.NewValue,
+                    reason = l.Reason
+                }).ToList();
 
-            return BadRequest("Invalid role. Please use 'agent' or 'claimofficer'.");
+                return Ok(adminHistory);
+            }
+
+            return BadRequest("Invalid role. Please use 'agent', 'claimofficer', or 'admin'.");
         }
 
         [HttpGet("my-verification-queue/{agentId}")]
@@ -438,6 +455,18 @@ namespace HealthInsurance.API.Controllers
             ).ToList();
 
             return Ok(myQueue);
+        }
+
+        [HttpGet("commissions/{agentId}")]
+        public async Task<IActionResult> GetAgentCommissions([FromRoute] int agentId)
+        {
+            var allCommissions = await _commissionRepo.GetAllAsync();
+            var agentCommissions = allCommissions
+                .Where(c => c.AgentId == agentId)
+                .OrderByDescending(c => c.CreatedAt)
+                .ToList();
+
+            return Ok(agentCommissions);
         }
     }
 }

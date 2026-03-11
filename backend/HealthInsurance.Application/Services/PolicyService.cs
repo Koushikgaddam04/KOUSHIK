@@ -58,8 +58,8 @@ public class PolicyService : IPolicyService
             {
                 AgentId = quote.AgentId.Value,
                 PremiumAmount = quote.CalculatedMonthlyPremium,
-                CommissionRate = 0.10m,
-                EarnedAmount = quote.CalculatedMonthlyPremium * 0.10m,
+                CommissionRate = 0.05m,
+                EarnedAmount = quote.CalculatedMonthlyPremium * 0.05m,
                 Status = "Pending"
             };
             await _commissionRepo.AddAsync(commission);

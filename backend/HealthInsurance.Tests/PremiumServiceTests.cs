@@ -13,12 +13,14 @@ namespace HealthInsurance.Tests
     public class PremiumServiceTests
     {
         private readonly Mock<IQuoteRepository> _quoteRepoMock;
+        private readonly Mock<IGenericRepository<Policy>> _policyRepoMockLocal;
         private readonly PremiumService _premiumService;
 
         public PremiumServiceTests()
         {
             _quoteRepoMock = new Mock<IQuoteRepository>();
-            _premiumService = new PremiumService(_quoteRepoMock.Object);
+            _policyRepoMockLocal = new Mock<IGenericRepository<Policy>>();
+            _premiumService = new PremiumService(_quoteRepoMock.Object, _policyRepoMockLocal.Object);
         }
 
         [Fact]
@@ -100,6 +102,8 @@ namespace HealthInsurance.Tests
         private readonly Mock<IGenericRepository<AgentCommissionLog>> _commissionRepoMock;
         private readonly Mock<IGenericRepository<DocumentVault>> _docRepoMock;
         private readonly Mock<IQuoteRepository> _quoteRepoMock;
+        private readonly Mock<IGenericRepository<User>> _userRepoMock;
+        private readonly Mock<IGenericRepository<PolicyActionLog>> _auditRepoMock;
         private readonly DashboardService _dashboardService;
 
         public DashboardServiceTests()
@@ -109,13 +113,20 @@ namespace HealthInsurance.Tests
             _commissionRepoMock = new Mock<IGenericRepository<AgentCommissionLog>>();
             _docRepoMock = new Mock<IGenericRepository<DocumentVault>>();
             _quoteRepoMock = new Mock<IQuoteRepository>();
+            _userRepoMock = new Mock<IGenericRepository<User>>();
+            _auditRepoMock = new Mock<IGenericRepository<PolicyActionLog>>();
+
+            // Add an empty setup for the mock to prevent null reference issues
+            _auditRepoMock.Setup(m => m.GetAllAsync()).ReturnsAsync(new List<PolicyActionLog>());
 
             _dashboardService = new DashboardService(
                 _policyRepoMock.Object,
                 _claimRepoMock.Object,
                 _commissionRepoMock.Object,
                 _docRepoMock.Object,
-                _quoteRepoMock.Object);
+                _quoteRepoMock.Object,
+                _userRepoMock.Object,
+                _auditRepoMock.Object);
         }
 
         [Fact]
@@ -134,6 +145,7 @@ namespace HealthInsurance.Tests
             _commissionRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<AgentCommissionLog>());
             _docRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<DocumentVault>());
             _quoteRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<PremiumQuote>());
+            _userRepoMock.Setup(r => r.GetAllAsync()).ReturnsAsync(new List<User>());
 
             // Act
             var result = await _dashboardService.GetAdminStatsAsync();
@@ -142,6 +154,7 @@ namespace HealthInsurance.Tests
             Assert.Equal(2, result["totalActivePolicies"]);
             // Revenue sums only Active policies (not Pending): 100 + 200 = 300
             Assert.Equal(300m, result["totalRevenue"]);
+            Assert.Equal(0, result["totalCustomers"]);
         }
     }
 }

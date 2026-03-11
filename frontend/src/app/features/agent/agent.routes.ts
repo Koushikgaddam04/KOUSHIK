@@ -3,6 +3,10 @@ import { VerificationQueueComponent } from './verification-queue/verification-qu
 import { AgentHistoryComponent } from './agent-history/agent-history.component';
 
 export const AGENT_ROUTES: Routes = [
-    { path: '', component: VerificationQueueComponent },
+    {
+        path: '',
+        loadComponent: () => import('./agent-dashboard/agent-dashboard.component').then(m => m.AgentDashboardComponent)
+    },
+    { path: 'queue', component: VerificationQueueComponent },
     { path: 'history', component: AgentHistoryComponent }
 ];

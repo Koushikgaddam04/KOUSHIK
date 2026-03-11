@@ -13,6 +13,15 @@ import {
   ListChecks,
   Activity,
   FileCheck,
+  PieChart,
+  BarChart2,
+  Users,
+  CreditCard,
+  Briefcase,
+  Settings,
+  FolderOpen,
+  LineChart,
+  Clock
 } from 'lucide-angular';
 
 @Component({
@@ -33,10 +42,7 @@ import {
               [routerLinkActiveOptions]="{ exact: true }"
               class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-enterprise-blue-800 dark:hover:bg-slate-800 transition-all duration-200 group"
             >
-              <lucide-icon
-                name="layout-dashboard"
-                class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"
-              ></lucide-icon>
+              <lucide-icon name="layout-dashboard" class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"></lucide-icon>
               Dashboard
             </a>
             <a
@@ -44,10 +50,7 @@ import {
               routerLinkActive="bg-enterprise-blue-700 dark:bg-blue-600/20"
               class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-enterprise-blue-800 dark:hover:bg-slate-800 transition-all duration-200 group"
             >
-              <lucide-icon
-                name="user-plus"
-                class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"
-              ></lucide-icon>
+              <lucide-icon name="user-plus" class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"></lucide-icon>
               Add Staff
             </a>
             <a
@@ -55,22 +58,16 @@ import {
               routerLinkActive="bg-enterprise-blue-700 dark:bg-blue-600/20"
               class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-enterprise-blue-800 dark:hover:bg-slate-800 transition-all duration-200 group"
             >
-              <lucide-icon
-                name="shield-check"
-                class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"
-              ></lucide-icon>
+              <lucide-icon name="shield-check" class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"></lucide-icon>
               Manage Policies
             </a>
             <a
-              routerLink="/admin/verify-docs"
+              routerLink="/admin/logs"
               routerLinkActive="bg-enterprise-blue-700 dark:bg-blue-600/20"
               class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-enterprise-blue-800 dark:hover:bg-slate-800 transition-all duration-200 group"
             >
-              <lucide-icon
-                name="file-check"
-                class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"
-              ></lucide-icon>
-              Verify Documents
+              <lucide-icon name="list-checks" class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"></lucide-icon>
+              Action Logs
             </a>
           }
 
@@ -82,33 +79,48 @@ import {
               [routerLinkActiveOptions]="{ exact: true }"
               class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-enterprise-blue-800 dark:hover:bg-slate-800 transition-all duration-200 group"
             >
-              <lucide-icon
-                name="layout-dashboard"
-                class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"
-              ></lucide-icon>
-              My Dashboard
+              <lucide-icon name="layout-dashboard" class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"></lucide-icon>
+              Dashboard
+            </a>
+            <a
+              routerLink="/customer/policies"
+              routerLinkActive="bg-enterprise-blue-700 dark:bg-blue-600/20"
+              class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-enterprise-blue-800 dark:hover:bg-slate-800 transition-all duration-200 group"
+            >
+              <lucide-icon name="shield-check" class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"></lucide-icon>
+              Policies
             </a>
             <a
               routerLink="/customer/quote"
               routerLinkActive="bg-enterprise-blue-700 dark:bg-blue-600/20"
               class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-enterprise-blue-800 dark:hover:bg-slate-800 transition-all duration-200 group"
             >
-              <lucide-icon
-                name="file-search"
-                class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"
-              ></lucide-icon>
-              Get a Quote
+              <lucide-icon name="file-search" class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"></lucide-icon>
+              Quotes
             </a>
             <a
               routerLink="/customer/claim"
               routerLinkActive="bg-enterprise-blue-700 dark:bg-blue-600/20"
               class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-enterprise-blue-800 dark:hover:bg-slate-800 transition-all duration-200 group"
             >
-              <lucide-icon
-                name="file-text"
-                class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"
-              ></lucide-icon>
-              Submit Claim
+              <lucide-icon name="file-text" class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"></lucide-icon>
+              Raise Claims
+            </a>
+            <a
+              routerLink="/customer/policy-requests"
+              routerLinkActive="bg-enterprise-blue-700 dark:bg-blue-600/20"
+              class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-enterprise-blue-800 dark:hover:bg-slate-800 transition-all duration-200 group"
+            >
+              <lucide-icon name="clock" class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"></lucide-icon>
+              Policy Requests Tracking
+            </a>
+            <a
+              routerLink="/customer/claims-tracking"
+              routerLinkActive="bg-enterprise-blue-700 dark:bg-blue-600/20"
+              class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-enterprise-blue-800 dark:hover:bg-slate-800 transition-all duration-200 group"
+            >
+              <lucide-icon name="activity" class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"></lucide-icon>
+              Claims Tracking
             </a>
           }
 
@@ -120,10 +132,15 @@ import {
               [routerLinkActiveOptions]="{ exact: true }"
               class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-enterprise-blue-800 dark:hover:bg-slate-800 transition-all duration-200 group"
             >
-              <lucide-icon
-                name="list-checks"
-                class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"
-              ></lucide-icon>
+              <lucide-icon name="layout-dashboard" class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"></lucide-icon>
+              Dashboard
+            </a>
+            <a
+              routerLink="/agent/queue"
+              routerLinkActive="bg-enterprise-blue-700 dark:bg-blue-600/20"
+              class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-enterprise-blue-800 dark:hover:bg-slate-800 transition-all duration-200 group"
+            >
+              <lucide-icon name="list-checks" class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"></lucide-icon>
               Verification Queue
             </a>
             <a
@@ -131,10 +148,7 @@ import {
               routerLinkActive="bg-enterprise-blue-700 dark:bg-blue-600/20"
               class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-enterprise-blue-800 dark:hover:bg-slate-800 transition-all duration-200 group"
             >
-              <lucide-icon
-                name="history"
-                class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"
-              ></lucide-icon>
+              <lucide-icon name="history" class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"></lucide-icon>
               Policy History
             </a>
           }
@@ -147,10 +161,7 @@ import {
               [routerLinkActiveOptions]="{ exact: true }"
               class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-enterprise-blue-800 dark:hover:bg-slate-800 transition-all duration-200 group"
             >
-              <lucide-icon
-                name="layout-dashboard"
-                class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"
-              ></lucide-icon>
+              <lucide-icon name="layout-dashboard" class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"></lucide-icon>
               Officer Dashboard
             </a>
             <a
@@ -158,10 +169,7 @@ import {
               routerLinkActive="bg-enterprise-blue-700 dark:bg-blue-600/20"
               class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-enterprise-blue-800 dark:hover:bg-slate-800 transition-all duration-200 group"
             >
-              <lucide-icon
-                name="activity"
-                class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"
-              ></lucide-icon>
+              <lucide-icon name="activity" class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"></lucide-icon>
               Claims Queue
             </a>
             <a
@@ -169,10 +177,7 @@ import {
               routerLinkActive="bg-enterprise-blue-700 dark:bg-blue-600/20"
               class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-enterprise-blue-800 dark:hover:bg-slate-800 transition-all duration-200 group"
             >
-              <lucide-icon
-                name="history"
-                class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"
-              ></lucide-icon>
+              <lucide-icon name="history" class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"></lucide-icon>
               Audit Logs
             </a>
           }

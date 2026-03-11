@@ -24,5 +24,13 @@ export class AgentService {
         return this.http.get<any[]>(`${this.apiBase}/Staff/history/agent`);
     }
 
+    getMyActivePolicies(): Observable<any[]> {
+        const agentId = localStorage.getItem('userId') || '0';
+        return this.http.get<any[]>(`${this.apiBase}/Staff/my-verification-queue/${agentId}`);
+    }
 
+    getMyCommissions(): Observable<any[]> {
+        const agentId = localStorage.getItem('userId') || '0';
+        return this.http.get<any[]>(`${this.apiBase}/Staff/commissions/${agentId}`);
+    }
 }

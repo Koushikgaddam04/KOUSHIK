@@ -4,6 +4,7 @@ using HealthInsurance.Application.Interfaces;
 using HealthInsurance.Application.DTOs;
 using Microsoft.AspNetCore.Authorization;
 using HealthInsurance.Domain;
+using HealthInsurance.Domain.Entities;
 
 namespace HealthInsurance.API.Controllers;
 
@@ -13,10 +14,14 @@ namespace HealthInsurance.API.Controllers;
 public class ClaimController : BaseApiController
 {
     private readonly IClaimService _claimService;
+    private readonly IQuoteRepository _quoteRepo;
+    private readonly IGenericRepository<Policy> _policyRepo;
 
-    public ClaimController(IClaimService claimService)
+    public ClaimController(IClaimService claimService, IQuoteRepository quoteRepo, IGenericRepository<Policy> policyRepo)
     {
         _claimService = claimService;
+        _quoteRepo = quoteRepo;
+        _policyRepo = policyRepo;
     }
 
     [HttpPost("submit")]
@@ -39,15 +44,33 @@ public class ClaimController : BaseApiController
     {
         var userId = UserSession.CurrentUserId;
         var claims = await _claimService.GetClaimsByUserIdAsync(userId);
-        var result = claims.Select(c => new
-        {
-            id = c.Id,
-            policyId = c.PolicyId,
-            premiumQuoteId = c.PremiumQuoteId,
-            claimAmount = c.ClaimAmount,
-            reason = c.Reason,
-            status = c.Status,
-            createdAt = c.CreatedAt
+        var quotes = await _quoteRepo.GetAllAsync();
+        var policies = await _policyRepo.GetAllAsync();
+        
+        var result = claims.Select(c => {
+            string planName = "Unknown Plan";
+            if (c.PremiumQuoteId.HasValue && c.PremiumQuoteId > 0)
+            {
+                var quote = quotes.FirstOrDefault(q => q.Id == c.PremiumQuoteId);
+                planName = quote?.SelectedPlanName ?? "Unknown Plan";
+            }
+            else if (c.PolicyId.HasValue && c.PolicyId > 0)
+            {
+                var policy = policies.FirstOrDefault(p => p.Id == c.PolicyId);
+                planName = policy?.PlanName ?? "Unknown Plan";
+            }
+
+            return new
+            {
+                id = c.Id,
+                policyId = c.PolicyId,
+                premiumQuoteId = c.PremiumQuoteId,
+                planName = planName,
+                claimAmount = c.ClaimAmount,
+                reason = c.Reason,
+                status = c.Status,
+                createdAt = c.CreatedAt
+            };
         });
         return Ok(result);
     }

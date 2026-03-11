@@ -5,6 +5,7 @@ using System.Text;
 using System.Threading.Tasks;
 using HealthInsurance.Application.Interfaces;
 using HealthInsurance.Domain.Entities;
+using HealthInsurance.Domain.Enums;
 
 namespace HealthInsurance.Application.Services;
 
@@ -15,19 +16,25 @@ public class DashboardService : IDashboardService
     private readonly IGenericRepository<AgentCommissionLog> _commissionRepo;
     private readonly IGenericRepository<DocumentVault> _docRepo;
     private readonly IQuoteRepository _quoteRepo;
+    private readonly IGenericRepository<User> _userRepo;
+    private readonly IGenericRepository<PolicyActionLog> _auditRepo;
 
     public DashboardService(
         IGenericRepository<Policy> policyRepo,
         IGenericRepository<Claim> claimRepo,
         IGenericRepository<AgentCommissionLog> commissionRepo,
         IGenericRepository<DocumentVault> docRepo,
-        IQuoteRepository quoteRepo)
+        IQuoteRepository quoteRepo,
+        IGenericRepository<User> userRepo,
+        IGenericRepository<PolicyActionLog> auditRepo)
     {
         _policyRepo = policyRepo;
         _claimRepo = claimRepo;
         _commissionRepo = commissionRepo;
         _docRepo = docRepo;
         _quoteRepo = quoteRepo;
+        _userRepo = userRepo;
+        _auditRepo = auditRepo;
     }
 
     public async Task<Dictionary<string, object>> GetAdminStatsAsync()
@@ -47,6 +54,9 @@ public class DashboardService : IDashboardService
         var claims = (await _claimRepo.GetAllAsync()).ToList();
         var commissions = (await _commissionRepo.GetAllAsync()).ToList();
         var docs = (await _docRepo.GetAllAsync()).ToList();
+        
+        var allUsers = await _userRepo.GetAllAsync();
+        int totalCustomers = allUsers.Count(u => u.Role == UserRole.Customer);
 
         // ACTIVE POLICIES = legacy Active policies + converted quotes
         int legacyActiveCount = legacyPolicies.Count(p =>
@@ -66,7 +76,7 @@ public class DashboardService : IDashboardService
         int pendingClaimsCount = claims.Count(c =>
             c.Status.Equals("PendingApproval", StringComparison.OrdinalIgnoreCase));
 
-        // TOTAL PAYOUTS = sum of all approved claim amounts disbursed so far
+        // TOTAL PAYOUTS (claims) = sum of all approved claim amounts disbursed so far
         decimal totalPayouts = claims
             .Where(c => c.Status.Equals("Approved", StringComparison.OrdinalIgnoreCase))
             .Sum(c => c.ClaimAmount);
@@ -75,10 +85,21 @@ public class DashboardService : IDashboardService
         decimal unpaidCommissions = commissions
             .Where(a => a.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase))
             .Sum(a => a.EarnedAmount);
+            
+        // AGENT PAYOUTS = total commissions earned mapped by agent id
+        var agentPayouts = commissions
+            .GroupBy(c => c.AgentId)
+            .Select(g => new { 
+                AgentId = g.Key, 
+                TotalEarned = g.Sum(c => c.EarnedAmount) 
+            })
+            .ToDictionary(k => k.AgentId.ToString(), v => v.TotalEarned);
 
         // DOCUMENTS TO VERIFY = user documents pending admin/agent review
         int documentsToVerify = docs.Count(d =>
             d.Status.Equals("Pending", StringComparison.OrdinalIgnoreCase));
+
+        int totalActionLogs = (await _auditRepo.GetAllAsync()).Count();
 
         return new Dictionary<string, object>
         {
@@ -87,7 +108,10 @@ public class DashboardService : IDashboardService
             { "pendingClaimsCount", pendingClaimsCount },
             { "totalPayouts", totalPayouts },
             { "unpaidCommissions", unpaidCommissions },
-            { "documentsToVerify", documentsToVerify }
+            { "agentPayouts", agentPayouts },
+            { "documentsToVerify", documentsToVerify },
+            { "totalCustomers", totalCustomers },
+            { "totalActionLogs", totalActionLogs }
         };
     }
 }

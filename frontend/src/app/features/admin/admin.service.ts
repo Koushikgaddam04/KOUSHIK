@@ -9,6 +9,7 @@ export interface AdminSummary {
     totalPayouts: number;
     unpaidCommissions: number;
     documentsToVerify: number;
+    totalActionLogs: number;
 }
 
 @Injectable({
@@ -56,5 +57,9 @@ export class AdminService {
 
     assignOfficer(policyId: string, claimsOfficerId: string): Observable<any> {
         return this.http.patch(`${this.apiBase}/Policy/assign-officer?policyId=${policyId}&claimsOfficerId=${claimsOfficerId}`, {}, { responseType: 'text' as 'json' });
+    }
+
+    getActionLogs(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiBase}/Staff/history/admin`);
     }
 }
