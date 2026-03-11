@@ -2,7 +2,7 @@ import { Component, inject, OnInit, OnDestroy, signal, ChangeDetectorRef } from 
 import { CommonModule } from '@angular/common';
 import { AgentService } from '../agent.service';
 import { ToastrService } from 'ngx-toastr';
-import { LucideAngularModule, CheckCircle, Search, ClipboardList, Eye, XCircle, ChevronDown, ChevronUp, FileText, ShieldCheck, AlertTriangle, Loader2 } from 'lucide-angular';
+import { LucideAngularModule, CheckCircle, Search, ClipboardList, Eye, XCircle, ChevronDown, ChevronUp, FileText, ShieldCheck, AlertTriangle, Loader2, Rocket, Mail, Check, X } from 'lucide-angular';
 import { DocumentService } from '../../../core/services/document.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
@@ -12,26 +12,25 @@ import { filter, Subscription } from 'rxjs';
   standalone: true,
   imports: [CommonModule, LucideAngularModule],
   template: `
-    <div class="mb-6">
-      <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Verification Queue</h1>
-      <p class="text-slate-500 dark:text-slate-400 mt-1">Review customer documents, then verify or reject each policy.</p>
+    <div class="mb-10">
+      <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Assigned Pipeline</h1>
+      <p class="text-slate-500 dark:text-slate-400 mt-2 font-medium">Authentication backlog for customer policy applications and supporting dossiers.</p>
     </div>
 
     <!-- Inline skeleton while list is loading -->
     @if (listLoading()) {
-      <div class="space-y-4">
+      <div class="space-y-6">
         @for (_ of [1,2,3]; track $index) {
-          <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 animate-pulse">
-            <div class="flex items-center gap-4">
-              <div class="h-9 w-9 bg-slate-200 dark:bg-slate-700 rounded-lg"></div>
-              <div class="flex-1 space-y-2">
-                <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/3"></div>
-                <div class="h-3 bg-slate-200 dark:bg-slate-700 rounded w-1/2"></div>
+          <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 animate-pulse">
+            <div class="flex items-center gap-6">
+              <div class="h-14 w-14 bg-slate-200 dark:bg-slate-800 rounded-2xl"></div>
+              <div class="flex-1 space-y-3">
+                <div class="h-5 bg-slate-200 dark:bg-slate-800 rounded-xl w-1/4"></div>
+                <div class="h-4 bg-slate-200 dark:bg-slate-800 rounded-lg w-1/3"></div>
               </div>
-              <div class="flex gap-2">
-                <div class="h-8 w-16 bg-slate-200 dark:bg-slate-700 rounded"></div>
-                <div class="h-8 w-16 bg-slate-200 dark:bg-slate-700 rounded"></div>
-                <div class="h-8 w-20 bg-slate-200 dark:bg-slate-700 rounded"></div>
+              <div class="flex gap-3">
+                <div class="h-10 w-24 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
+                <div class="h-10 w-32 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
               </div>
             </div>
           </div>
@@ -50,111 +49,132 @@ import { filter, Subscription } from 'rxjs';
       }
 
       @for (item of queue(); track item.id) {
-        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden group transition-all duration-300 hover:shadow-xl hover:shadow-blue-500/5">
           <!-- Policy row -->
-          <div class="p-5 flex items-center justify-between gap-4 flex-wrap">
-            <div class="flex items-center gap-4 min-w-0">
-              <div class="p-2 bg-blue-100 dark:bg-blue-900/20 rounded-lg">
-                <lucide-icon name="shield-check" class="h-5 w-5 text-blue-600 dark:text-blue-400"></lucide-icon>
+          <div class="p-6 md:p-8 flex items-center justify-between gap-6 flex-wrap">
+            <div class="flex items-center gap-5 min-w-0">
+              <div class="p-4 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-2xl shadow-sm border border-blue-100/50 dark:border-blue-800/50">
+                <lucide-icon name="shield-check" class="h-6 w-6"></lucide-icon>
               </div>
               <div class="min-w-0">
-                <p class="text-sm font-bold text-slate-900 dark:text-white">{{ item.customerName }} <span class="text-xs font-normal text-slate-400">({{ item.customerEmail }})</span></p>
-                <p class="text-xs text-slate-500 dark:text-slate-400">{{ item.planName }} · {{ item.tier }} Tier · Submitted {{ item.createdAt | date:'mediumDate' }}</p>
+                <div class="flex items-center gap-2 mb-1">
+                  <p class="text-lg font-black text-slate-900 dark:text-white truncate">{{ item.customerName }}</p>
+                  <span class="px-2 py-0.5 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] font-bold text-slate-500 uppercase tracking-widest">#{{ item.id }}</span>
+                </div>
+                <div class="flex items-center gap-3 text-xs font-medium text-slate-500 dark:text-slate-400">
+                   <div class="flex items-center gap-1">
+                      <lucide-icon name="mail" class="h-3 w-3"></lucide-icon>
+                      {{ item.customerEmail }}
+                   </div>
+                   <span>•</span>
+                   <div class="flex items-center gap-1 font-bold text-indigo-600 dark:text-indigo-400">
+                      {{ item.planName }} ({{ item.tier }})
+                   </div>
+                </div>
               </div>
             </div>
 
-            <div class="flex items-center gap-2 flex-shrink-0">
+            <div class="flex items-center gap-3 flex-shrink-0">
               <!-- Expand/collapse docs -->
               <button
                 (click)="toggleDocs(item.id)"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 dark:border-slate-700 text-xs font-medium rounded text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                class="inline-flex items-center gap-2 px-4 py-2.5 border border-slate-200 dark:border-slate-800 text-xs font-black rounded-2xl text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-950 hover:bg-slate-50 dark:hover:bg-slate-800 transition-all active:scale-95 shadow-sm"
               >
-                <lucide-icon name="file-text" class="h-3.5 w-3.5"></lucide-icon>
-                Docs ({{ docCount(item.id) }})
-                <lucide-icon [name]="expandedPolicy() === item.id ? 'chevron-up' : 'chevron-down'" class="h-3.5 w-3.5"></lucide-icon>
+                <lucide-icon name="file-text" class="h-4 w-4 text-blue-500"></lucide-icon>
+                View Assets ({{ docCount(item.id) }})
+                <lucide-icon [name]="expandedPolicy() === item.id ? 'chevron-up' : 'chevron-down'" class="h-4 w-4 opacity-50"></lucide-icon>
               </button>
 
               <button
                 (click)="verify(item.id, 'reject')"
                 [disabled]="actionLoading()"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 border border-red-300 dark:border-red-700 text-xs font-medium rounded text-red-700 dark:text-red-400 bg-white dark:bg-slate-800 hover:bg-red-50 transition-colors disabled:opacity-50"
+                class="inline-flex items-center gap-2 px-4 py-2.5 border border-rose-200 dark:border-rose-900/40 text-xs font-black rounded-2xl text-rose-600 dark:text-rose-400 bg-rose-50/50 dark:bg-rose-950/20 hover:bg-rose-100 transition-all active:scale-95 disabled:opacity-50"
               >
                 @if (actionLoading()) {
-                  <lucide-icon name="loader-2" class="h-3.5 w-3.5 animate-spin"></lucide-icon>
+                  <lucide-icon name="loader-2" class="h-4 w-4 animate-spin"></lucide-icon>
                 } @else {
-                  <lucide-icon name="x-circle" class="h-3.5 w-3.5"></lucide-icon>
+                  <lucide-icon name="x-circle" class="h-4 w-4"></lucide-icon>
                 }
-                Reject
+                Decline
               </button>
               <button
                 (click)="verify(item.id, 'approve')"
                 [disabled]="actionLoading()"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-blue-600 hover:bg-blue-700 transition-colors disabled:opacity-50"
+                class="inline-flex items-center gap-2 px-5 py-2.5 border border-transparent text-xs font-black rounded-2xl text-white bg-blue-600 hover:bg-blue-700 transition-all active:scale-95 disabled:opacity-50 shadow-lg shadow-blue-500/20"
               >
                 @if (actionLoading()) {
-                  <lucide-icon name="loader-2" class="h-3.5 w-3.5 animate-spin"></lucide-icon>
+                  <lucide-icon name="loader-2" class="h-4 w-4 animate-spin"></lucide-icon>
                 } @else {
-                  <lucide-icon name="check-circle" class="h-3.5 w-3.5"></lucide-icon>
+                  <lucide-icon name="check-circle" class="h-4 w-4"></lucide-icon>
                 }
-                Verify Policy
+                Issue Policy
               </button>
             </div>
           </div>
-
           <!-- Inline documents panel -->
           @if (expandedPolicy() === item.id) {
-            <div class="border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 p-5">
-              <h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">Supporting Documents</h3>
+            <div class="border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 p-8">
+              <div class="flex items-center justify-between mb-6">
+                 <div>
+                    <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Supporting Assets</h3>
+                    <p class="text-xs text-slate-500 font-medium">Verify each document to enable policy issuance.</p>
+                 </div>
+                 <div class="px-3 py-1 bg-white dark:bg-slate-800 rounded-lg border border-slate-100 dark:border-slate-700 text-[10px] font-bold text-slate-400">
+                    {{ entityDocs().length }} Files Found
+                 </div>
+              </div>
+
               @if (docsLoading()) {
-                <div class="flex items-center gap-2 text-xs text-slate-400 py-4">
-                  <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-blue-500"></div>
-                  Loading documents...
+                <div class="flex flex-col items-center justify-center py-12 text-slate-400 gap-3">
+                  <div class="animate-spin rounded-full h-8 w-8 border-t-2 border-b-2 border-blue-600"></div>
+                  <p class="text-xs font-bold tracking-widest uppercase">Fetching Remote Assets...</p>
                 </div>
               } @else if (entityDocs().length === 0) {
-                <div class="flex items-center gap-2 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800 text-xs text-amber-700 dark:text-amber-300">
-                  <lucide-icon name="alert-triangle" class="h-4 w-4 flex-shrink-0"></lucide-icon>
-                  No documents uploaded yet. Customer has not uploaded any supporting documents for this policy.
+                <div class="flex items-center gap-4 p-5 bg-amber-50 dark:bg-amber-900/20 rounded-2xl border border-amber-200/50 dark:border-amber-800/50 text-sm text-amber-700 dark:text-amber-400">
+                  <lucide-icon name="alert-triangle" class="h-5 w-5 flex-shrink-0"></lucide-icon>
+                  <p class="font-medium">The applicant has not attached any supporting documentation for this policy request.</p>
                 </div>
               } @else {
-                <div class="space-y-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   @for (doc of entityDocs(); track doc.id) {
-                    <div class="flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
-                      <div class="flex items-center gap-3 min-w-0">
-                        <lucide-icon name="file-text" class="h-5 w-5 text-blue-400 flex-shrink-0"></lucide-icon>
+                    <div class="group/doc flex items-center justify-between p-4 bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-blue-500/30 transition-all shadow-sm">
+                      <div class="flex items-center gap-4 min-w-0">
+                        <div class="p-2.5 bg-slate-50 dark:bg-slate-900 rounded-xl text-slate-400 group-hover/doc:text-blue-500 transition-colors">
+                           <lucide-icon name="file-text" class="h-5 w-5"></lucide-icon>
+                        </div>
                         <div class="min-w-0">
-                          <p class="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">{{ doc.fileName }}</p>
-                          <p class="text-xs text-slate-400">{{ doc.documentType }}</p>
+                          <p class="text-sm font-black text-slate-800 dark:text-slate-200 truncate">{{ doc.fileName }}</p>
+                          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ doc.documentType }}</p>
                         </div>
                       </div>
 
-                      <div class="flex items-center gap-2 flex-shrink-0">
-                        <!-- Status badge -->
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase"
+                      <div class="flex items-center gap-3 flex-shrink-0">
+                        <span class="px-2 py-0.5 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-sm border"
                           [ngClass]="{
-                            'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400': doc.status === 'Pending',
-                            'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400': doc.status === 'Verified',
-                            'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400': doc.status === 'Rejected'
+                            'bg-amber-50 text-amber-600 border-amber-100 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800': doc.status === 'Pending',
+                            'bg-emerald-50 text-emerald-600 border-emerald-100 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800': doc.status === 'Verified',
+                            'bg-rose-50 text-rose-600 border-rose-100 dark:bg-rose-900/20 dark:text-rose-400 dark:border-rose-800': doc.status === 'Rejected'
                           }">
                           {{ doc.status }}
                         </span>
 
-                        <!-- View inline -->
-                        <a [href]="getViewUrl(doc.filePath)" target="_blank"
-                          class="px-2 py-1 text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors flex items-center gap-1">
-                          <lucide-icon name="eye" class="h-3.5 w-3.5"></lucide-icon>
-                          View
+                        <a [href]="getViewUrl(doc.id)" target="_blank"
+                          class="p-2 bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-blue-500 hover:bg-blue-50 dark:hover:bg-blue-900/20 rounded-xl transition-all"
+                          title="View Document">
+                          <lucide-icon name="eye" class="h-4 w-4"></lucide-icon>
                         </a>
 
-                        <!-- Verify / Reject doc -->
                         @if (doc.status === 'Pending') {
-                          <button (click)="reviewDoc(doc.id, 'Verified')"
-                            class="px-2 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
-                            ✓ Verify
-                          </button>
-                          <button (click)="reviewDoc(doc.id, 'Rejected')"
-                            class="px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600 transition-colors">
-                            ✕ Reject
-                          </button>
+                          <div class="flex gap-1.5 ml-2 border-l border-slate-100 dark:border-slate-800 pl-3">
+                            <button (click)="reviewDoc(doc.id, 'Verified')"
+                              class="p-2 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-all active:scale-90 shadow-lg shadow-emerald-500/20">
+                              <lucide-icon name="check" class="h-4 w-4"></lucide-icon>
+                            </button>
+                            <button (click)="reviewDoc(doc.id, 'Rejected')"
+                              class="p-2 bg-rose-500 text-white rounded-xl hover:bg-rose-600 transition-all active:scale-90 shadow-lg shadow-rose-500/20">
+                              <lucide-icon name="x" class="h-4 w-4"></lucide-icon>
+                            </button>
+                          </div>
                         }
                       </div>
                     </div>
@@ -280,7 +300,7 @@ export class VerificationQueueComponent implements OnInit, OnDestroy {
     });
   }
 
-  getViewUrl(filePath: string): string {
-    return this.docService.getViewUrl(filePath);
+  getViewUrl(id: number): string {
+    return this.docService.getViewUrl(id);
   }
 }

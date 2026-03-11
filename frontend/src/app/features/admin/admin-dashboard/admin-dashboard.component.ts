@@ -26,56 +26,56 @@ Chart.register(...registerables);
     <div class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-4 gap-6 mb-8 pt-4">
       
       <!-- Total Customers Card -->
-      <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-center relative overflow-hidden group hover:shadow-md transition-all duration-200">
-        <div class="absolute right-0 top-0 h-full w-1 bg-indigo-500"></div>
-        <div class="flex items-center justify-between">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-center relative overflow-hidden group hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-indigo-400 to-indigo-600 opacity-80 group-hover:opacity-100 transition-opacity"></div>
+        <div class="flex items-center justify-between mt-2">
           <div>
-            <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Total Customers</p>
-            <p class="text-3xl font-bold text-slate-800 dark:text-slate-100">{{ stats().totalCustomers }}</p>
+            <p class="text-[10px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 mb-1">Total Customers</p>
+            <p class="text-4xl font-extrabold text-slate-800 dark:text-white">{{ stats().totalCustomers }}</p>
           </div>
-          <div class="p-3 bg-indigo-50 dark:bg-indigo-900/20 text-indigo-600 dark:text-indigo-400 rounded-lg">
+          <div class="p-3 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm border border-indigo-100 dark:border-indigo-800/50">
             <lucide-icon name="users" class="h-6 w-6"></lucide-icon>
           </div>
         </div>
       </div>
 
       <!-- Active Policies Card -->
-      <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-center relative overflow-hidden hover:shadow-md transition-all duration-200">
-        <div class="absolute right-0 top-0 h-full w-1 bg-blue-500"></div>
-        <div class="flex items-center justify-between">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-center relative overflow-hidden group hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-400 to-blue-600 opacity-80 group-hover:opacity-100 transition-opacity"></div>
+        <div class="flex items-center justify-between mt-2">
           <div>
-            <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Active Policies</p>
-            <p class="text-3xl font-bold text-slate-800 dark:text-slate-100">{{ stats().totalActivePolicies }}</p>
+            <p class="text-[10px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 mb-1">Active Policies</p>
+            <p class="text-4xl font-extrabold text-slate-800 dark:text-white">{{ stats().totalActivePolicies }}</p>
           </div>
-          <div class="p-3 bg-blue-50 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg">
+          <div class="p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 shadow-sm border border-blue-100 dark:border-blue-800/50">
             <lucide-icon name="shield-check" class="h-6 w-6"></lucide-icon>
           </div>
         </div>
       </div>
 
       <!-- Total Revenue Card -->
-      <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-center relative overflow-hidden group hover:shadow-md transition-all duration-200">
-        <div class="absolute right-0 top-0 h-full w-1 bg-emerald-500"></div>
-        <div class="flex items-center justify-between">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-center relative overflow-hidden group hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-600 opacity-80 group-hover:opacity-100 transition-opacity"></div>
+        <div class="flex items-center justify-between mt-2">
           <div>
-            <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Total Revenue</p>
-            <p class="text-3xl font-bold text-slate-800 dark:text-slate-100">{{ stats().totalRevenue | currency }}</p>
+            <p class="text-[10px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 mb-1">Total Revenue</p>
+            <p class="text-3xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-500 dark:from-emerald-400 dark:to-teal-400">{{ stats().totalRevenue | currency }}</p>
           </div>
-          <div class="p-3 bg-emerald-50 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg">
+          <div class="p-3 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm border border-emerald-100 dark:border-emerald-800/50">
             <lucide-icon name="dollar-sign" class="h-6 w-6"></lucide-icon>
           </div>
         </div>
       </div>
 
       <!-- Total Payouts Card -->
-      <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-center relative overflow-hidden hover:shadow-md transition-all duration-200">
-        <div class="absolute right-0 top-0 h-full w-1 bg-red-500"></div>
-        <div class="flex items-center justify-between">
+      <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 flex flex-col justify-center relative overflow-hidden group hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1">
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-rose-400 to-rose-600 opacity-80 group-hover:opacity-100 transition-opacity"></div>
+        <div class="flex items-center justify-between mt-2">
           <div>
-            <p class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-1">Total Claim Payouts</p>
-            <p class="text-3xl font-bold text-slate-800 dark:text-slate-100">{{ stats().totalPayouts | currency }}</p>
+            <p class="text-[10px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 mb-1">Total Claim Payouts</p>
+            <p class="text-3xl font-extrabold text-slate-800 dark:text-white">{{ stats().totalPayouts | currency }}</p>
           </div>
-          <div class="p-3 bg-red-50 dark:bg-red-900/20 text-red-600 dark:text-red-400 rounded-lg">
+          <div class="p-3 bg-rose-50 dark:bg-rose-900/30 text-rose-600 dark:text-rose-400 rounded-xl group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 shadow-sm border border-rose-100 dark:border-rose-800/50">
             <lucide-icon name="wallet" class="h-6 w-6"></lucide-icon>
           </div>
         </div>
@@ -87,10 +87,12 @@ Chart.register(...registerables);
     <div id="analytics" class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
       
       <!-- Policy vs Customer Bar Chart -->
-      <div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
+      <div class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
         <div class="flex items-center justify-between mb-6">
-          <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100">Customer vs Policy Adoption</h3>
-          <lucide-icon name="bar-chart-2" class="h-5 w-5 text-slate-400"></lucide-icon>
+          <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Customer vs Policy Adoption</h3>
+          <div class="p-2 bg-slate-50 dark:bg-slate-800 rounded-lg">
+             <lucide-icon name="bar-chart-2" class="h-4 w-4 text-slate-500"></lucide-icon>
+          </div>
         </div>
         <div class="flex-1 relative min-h-[300px]">
           <canvas #customerPolicyChart></canvas>
@@ -98,10 +100,12 @@ Chart.register(...registerables);
       </div>
 
       <!-- Agent Payouts Donut Chart -->
-      <div id="payouts" class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
+      <div id="payouts" class="bg-white dark:bg-slate-900 p-6 rounded-2xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
         <div class="flex items-center justify-between mb-6">
-          <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100">Payouts to Individual Agents</h3>
-          <lucide-icon name="pie-chart" class="h-5 w-5 text-slate-400"></lucide-icon>
+          <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100">Payouts to Individual Agents</h3>
+          <div class="p-2 bg-slate-50 dark:bg-slate-800 rounded-lg">
+             <lucide-icon name="pie-chart" class="h-4 w-4 text-slate-500"></lucide-icon>
+          </div>
         </div>
         <div class="flex-1 relative min-h-[300px] flex items-center justify-center">
           <div class="relative w-full h-[280px]">
@@ -113,34 +117,45 @@ Chart.register(...registerables);
     </div>
 
     <!-- Additional Action Cards -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
       <!-- Pending Claims Card -->
-      <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 p-6 flex flex-col items-center justify-center text-center">
-        <div class="p-4 bg-orange-100 dark:bg-orange-900/30 text-orange-600 dark:text-orange-400 rounded-full mb-4">
+      <div class="bg-gradient-to-br from-amber-50 to-orange-50 dark:from-amber-900/10 dark:to-orange-900/10 rounded-2xl border border-amber-200/60 dark:border-orange-800/50 p-6 flex flex-col items-center justify-center text-center shadow-sm">
+        <div class="p-4 bg-orange-100 dark:bg-orange-900/40 text-orange-600 dark:text-orange-400 rounded-2xl shadow-sm mb-4">
           <lucide-icon name="file-warning" class="h-6 w-6"></lucide-icon>
         </div>
-        <p class="text-3xl font-black text-slate-800 dark:text-white mb-1">{{ stats().pendingClaimsCount }}</p>
-        <p class="text-sm text-slate-500 font-medium">Pending Claims Processing</p>
+        <p class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-orange-600 to-amber-600 mb-2">{{ stats().pendingClaimsCount }}</p>
+        <p class="text-[10px] uppercase tracking-widest text-orange-700/80 dark:text-orange-400/80 font-bold">Pending Claims</p>
       </div>
 
       <!-- Unpaid Commissions Card -->
-      <div class="bg-slate-50 dark:bg-slate-800/50 rounded-xl border border-slate-200 dark:border-slate-700 p-6 flex flex-col items-center justify-center text-center">
-        <div class="p-4 bg-purple-100 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-full mb-4">
+      <div class="bg-gradient-to-br from-purple-50 to-fuchsia-50 dark:from-purple-900/10 dark:to-fuchsia-900/10 rounded-2xl border border-purple-200/60 dark:border-fuchsia-800/50 p-6 flex flex-col items-center justify-center text-center shadow-sm">
+        <div class="p-4 bg-purple-100 dark:bg-purple-900/40 text-purple-600 dark:text-purple-400 rounded-2xl shadow-sm mb-4">
           <lucide-icon name="banknote" class="h-6 w-6"></lucide-icon>
         </div>
-        <p class="text-3xl font-black text-slate-800 dark:text-white mb-1">{{ stats().unpaidCommissions | currency }}</p>
-        <p class="text-sm text-slate-500 font-medium">Unpaid Commissions Pool</p>
+        <p class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-fuchsia-600 mb-2">{{ stats().unpaidCommissions | currency }}</p>
+        <p class="text-[10px] uppercase tracking-widest text-purple-700/80 dark:text-purple-400/80 font-bold">Unpaid Commissions</p>
+      </div>
+
+      <div 
+        routerLink="/admin/verify-docs"
+        class="bg-gradient-to-br from-emerald-50 to-teal-50 dark:from-emerald-900/10 dark:to-teal-900/10 rounded-2xl border border-emerald-200/60 dark:border-teal-800/50 p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 shadow-sm group"
+      >
+        <div class="p-4 bg-emerald-100 dark:bg-emerald-900/40 text-emerald-600 dark:text-emerald-400 rounded-2xl shadow-sm mb-4 group-hover:scale-110 transition-transform duration-300">
+          <lucide-icon name="file-check" class="h-6 w-6"></lucide-icon>
+        </div>
+        <p class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-emerald-600 to-teal-600 mb-2">{{ stats().documentsToVerify }}</p>
+        <p class="text-[10px] uppercase tracking-widest text-emerald-700/80 dark:text-emerald-400/80 font-bold flex items-center gap-1">Verify Documents <lucide-icon name="arrow-right" class="h-3 w-3 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all duration-300"></lucide-icon></p>
       </div>
 
       <div 
         routerLink="/admin/logs"
-        class="bg-blue-50 dark:bg-blue-900/10 rounded-xl border border-blue-200 dark:border-blue-700/50 p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:bg-blue-100 dark:hover:bg-blue-900/40 transition-colors group"
+        class="bg-gradient-to-br from-blue-50 to-cyan-50 dark:from-blue-900/10 dark:to-cyan-900/10 rounded-2xl border border-blue-200/60 dark:border-cyan-800/50 p-6 flex flex-col items-center justify-center text-center cursor-pointer hover:shadow-lg transition-all duration-300 transform hover:-translate-y-1 shadow-sm group"
       >
-        <div class="p-4 bg-blue-200 dark:bg-blue-700/50 text-blue-700 dark:text-blue-300 rounded-full mb-4 group-hover:scale-110 transition-transform">
+        <div class="p-4 bg-blue-100 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-2xl shadow-sm mb-4 group-hover:scale-110 transition-transform duration-300">
           <lucide-icon name="list-checks" class="h-6 w-6"></lucide-icon>
         </div>
-        <p class="text-3xl font-black text-blue-800 dark:text-blue-400 mb-1">{{ stats().totalActionLogs }}</p>
-        <p class="text-sm text-blue-700 dark:text-blue-500 font-medium">System Action Logs</p>
+        <p class="text-4xl font-extrabold text-transparent bg-clip-text bg-gradient-to-r from-blue-600 to-cyan-600 mb-2">{{ stats().totalActionLogs }}</p>
+        <p class="text-[10px] uppercase tracking-widest text-blue-700/80 dark:text-blue-400/80 font-bold flex items-center gap-1">System Action Logs <lucide-icon name="arrow-right" class="h-3 w-3 opacity-0 group-hover:opacity-100 transform group-hover:translate-x-1 transition-all duration-300"></lucide-icon></p>
       </div>
     </div>
   `

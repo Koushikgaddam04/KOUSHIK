@@ -17,121 +17,136 @@ import { switchMap } from 'rxjs';
     <app-loading-spinner [show]="isLoading()" message="Submitting Claim..."></app-loading-spinner>
 
     <div class="max-w-2xl mx-auto">
-      <div class="mb-6">
-        <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Submit a New Claim</h1>
-        <p class="text-slate-500 dark:text-slate-400 mt-1">
-          Provide details of your incident and upload supporting documents.
+      <div class="mb-10">
+        <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Raise a Claim</h1>
+        <p class="text-slate-500 dark:text-slate-400 mt-2 font-medium">
+          Tell us about your claim and upload any supporting documents.
         </p>
       </div>
 
-      <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
-        <div class="p-6 border-b border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/50 flex items-center gap-3">
-          <div class="bg-orange-100 dark:bg-orange-900/20 p-2 rounded-lg text-orange-600 dark:text-orange-400">
-            <lucide-icon name="file-text" class="h-5 w-5"></lucide-icon>
+      <div class="bg-white dark:bg-slate-900 rounded-[32px] shadow-2xl shadow-slate-100/50 dark:shadow-none border border-slate-100 dark:border-slate-800 overflow-hidden">
+        <div class="p-8 border-b border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 flex items-center gap-4">
+          <div class="bg-indigo-50 dark:bg-indigo-900/40 p-3 rounded-2xl text-indigo-600 dark:text-indigo-400 border border-indigo-100 dark:border-indigo-800 shadow-sm">
+            <lucide-icon name="file-text" class="h-6 w-6"></lucide-icon>
           </div>
-          <h2 class="text-lg font-semibold text-slate-800 dark:text-slate-100">Claim Information</h2>
+          <div>
+            <h2 class="text-xl font-black text-slate-900 dark:text-white tracking-tight uppercase tracking-widest text-xs">Claim Details</h2>
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-[0.2em] mt-1">Basic information about the incident</p>
+          </div>
         </div>
 
-        <form class="p-6 space-y-5" [formGroup]="claimForm" (ngSubmit)="onSubmit()">
-          <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Policy ID</label>
-            <input
-              type="text"
-              formControlName="policyId"
-              required
-              class="mt-1 flex-1 block w-full rounded-md border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white border py-2 px-3 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm outline-none"
-              [readonly]="isPolicyIdPreFilled()"
-              [ngClass]="{ 'bg-slate-50 dark:bg-slate-700 cursor-not-allowed': isPolicyIdPreFilled() }"
-              [placeholder]="isPolicyIdPreFilled() ? 'Selecting policy...' : 'Enter Policy ID'"
-            />
+        <form class="p-8 space-y-8" [formGroup]="claimForm" (ngSubmit)="onSubmit()">
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+            <div class="space-y-2">
+              <label class="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">Policy Number</label>
+              <input
+                type="text"
+                formControlName="policyId"
+                required
+                class="block w-full bg-slate-50 dark:bg-slate-950 border-0 border-b-2 border-slate-100 dark:border-slate-800 py-4 px-4 text-slate-900 dark:text-white font-black text-lg focus:ring-0 focus:border-indigo-500 transition-all outline-none rounded-2xl shadow-inner-sm"
+                [readonly]="isPolicyIdPreFilled()"
+                [ngClass]="{ 'bg-slate-100/50 dark:bg-slate-800/20 cursor-not-allowed text-slate-400': isPolicyIdPreFilled() }"
+                [placeholder]="isPolicyIdPreFilled() ? 'Identifying...' : 'Enter Policy ID'"
+              />
+            </div>
+
+            <div class="space-y-2">
+              <label class="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">Claim Amount ($)</label>
+              <input
+                type="number"
+                formControlName="amount"
+                min="1"
+                required
+                class="block w-full bg-slate-50 dark:bg-slate-950 border-0 border-b-2 border-slate-100 dark:border-slate-800 py-4 px-4 text-slate-900 dark:text-white font-black text-lg focus:ring-0 focus:border-indigo-500 transition-all outline-none rounded-2xl shadow-inner-sm"
+                placeholder="1000.00"
+              />
+            </div>
           </div>
 
-          <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Claim Amount ($)</label>
-            <input
-              type="number"
-              formControlName="amount"
-              min="1"
-              required
-              class="mt-1 flex-1 block w-full rounded-md border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white border py-2 px-3 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm outline-none"
-              placeholder="e.g. 1500"
-            />
-          </div>
-
-          <div>
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300">Reason for Claim</label>
+          <div class="space-y-2">
+            <label class="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">Reason for Claim</label>
             <textarea
               formControlName="reason"
               rows="4"
               required
-              class="mt-1 flex-1 block w-full rounded-md border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white border py-2 px-3 shadow-sm focus:border-blue-500 focus:ring-blue-500 sm:text-sm outline-none"
-              placeholder="Detailed description of the incident..."
+              class="block w-full bg-slate-50 dark:bg-slate-950 border-0 border-b-2 border-slate-100 dark:border-slate-800 py-4 px-4 text-slate-900 dark:text-white font-medium focus:ring-0 focus:border-indigo-500 transition-all outline-none rounded-2xl shadow-inner-sm resize-none"
+              placeholder="Explain the incident briefly..."
             ></textarea>
           </div>
 
           <!-- Document Upload Section -->
-          <div class="pt-2 border-t border-slate-100 dark:border-slate-800">
-            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">
-              Supporting Documents <span class="text-red-500">*</span>
-            </label>
-            <p class="text-xs text-slate-500 dark:text-slate-400 mb-3">
-              Upload hospital bills, prescriptions, medical reports or any relevant documents.
-              <strong>The claims officer must verify all documents before your claim can be approved.</strong>
+          <div class="pt-8 border-t border-slate-50 dark:border-slate-800">
+            <div class="flex items-center gap-3 mb-6">
+               <div class="p-2 bg-emerald-50 dark:bg-emerald-900/30 rounded-lg text-emerald-600 dark:text-emerald-400">
+                  <lucide-icon name="upload-cloud" class="h-5 w-5"></lucide-icon>
+               </div>
+               <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Supporting Documents</h3>
+            </div>
+
+            <p class="text-xs text-slate-500 dark:text-slate-400 mb-6 font-medium leading-relaxed">
+              Please upload clinical documents like Medical Reports, Hospital Receipts, or Discharge Records. 
+              <strong class="text-slate-700 dark:text-slate-300">Providing clear documents helps us process your claim faster.</strong>
             </p>
 
             <!-- Info banner -->
-            <div class="flex items-start gap-2 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800 mb-3">
-              <lucide-icon name="alert-circle" class="h-4 w-4 text-amber-600 dark:text-amber-400 flex-shrink-0 mt-0.5"></lucide-icon>
-              <p class="text-xs text-amber-700 dark:text-amber-300">
-                If any uploaded document is rejected by the officer, your entire claim will be automatically rejected. Ensure all documents are clear and valid.
+            <div class="flex items-start gap-3 p-4 bg-amber-50 dark:bg-amber-900/20 rounded-2xl border border-amber-100 dark:border-amber-800/30 mb-8">
+              <lucide-icon name="alert-circle" class="h-5 w-5 text-amber-600 flex-shrink-0 mt-0.5"></lucide-icon>
+              <p class="text-xs text-amber-700 dark:text-amber-400 font-bold leading-relaxed">
+                Important: Make sure all documents are valid and clearly visible to avoid claim rejection.
               </p>
             </div>
 
             <!-- File picker -->
-            <div class="flex gap-2 mb-3">
-              <select #docTypeSelect class="rounded-md border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-white py-2 px-3 text-sm outline-none focus:border-blue-500">
-                <option value="HospitalBill">Hospital Bill</option>
-                <option value="Prescription">Prescription</option>
-                <option value="MedicalReport">Medical Report</option>
-                <option value="DischargeSummary">Discharge Summary</option>
-                <option value="Other">Other</option>
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+              <select #docTypeSelect class="w-full rounded-2xl border-2 border-slate-100 dark:border-slate-800 dark:bg-slate-950 dark:text-white py-4 px-4 text-xs font-black uppercase tracking-widest outline-none focus:border-indigo-500 transition-all appearance-none cursor-pointer">
+                <option value="HospitalBill">Hospital Ledger</option>
+                <option value="Prescription">Prescription Matrix</option>
+                <option value="MedicalReport">Medical Analysis</option>
+                <option value="DischargeSummary">Final Appraisal</option>
+                <option value="Other">Miscellaneous</option>
               </select>
-              <label class="flex-1 flex items-center justify-center gap-2 px-4 py-2 border-2 border-dashed border-slate-300 dark:border-slate-600 rounded-md cursor-pointer hover:border-blue-400 dark:hover:border-blue-500 transition-colors text-sm text-slate-500 dark:text-slate-400 hover:text-blue-500">
-                <lucide-icon name="paperclip" class="h-4 w-4"></lucide-icon>
-                Choose file
+              <label class="flex items-center justify-center gap-2 px-4 py-4 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/30 dark:hover:bg-indigo-900/20 transition-all group">
+                <lucide-icon name="paperclip" class="h-4 w-4 text-slate-400 group-hover:text-indigo-500"></lucide-icon>
+                <span class="text-[10px] font-black uppercase text-slate-400 group-hover:text-indigo-500 tracking-widest">Append Artifact</span>
                 <input type="file" class="hidden" accept=".pdf,.jpg,.jpeg,.png" (change)="addFile($event, docTypeSelect.value)">
               </label>
             </div>
 
             <!-- Attached files list -->
             @if (attachedFiles().length > 0) {
-              <ul class="space-y-2">
+              <ul class="space-y-3">
                 @for (f of attachedFiles(); track f.name) {
-                  <li class="flex items-center justify-between px-3 py-2 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-slate-200 dark:border-slate-700 text-sm">
-                    <div class="flex items-center gap-2 min-w-0">
-                      <lucide-icon name="file-text" class="h-4 w-4 text-blue-500 flex-shrink-0"></lucide-icon>
-                      <span class="truncate text-slate-700 dark:text-slate-300 font-medium">{{ f.file.name }}</span>
-                      <span class="text-[10px] bg-slate-200 dark:bg-slate-700 text-slate-500 dark:text-slate-400 px-1.5 py-0.5 rounded font-bold uppercase flex-shrink-0">{{ f.docType }}</span>
+                  <li class="flex items-center justify-between px-5 py-5 bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-50 dark:border-slate-800 transition-all group">
+                    <div class="flex items-center gap-4 overflow-hidden">
+                       <div class="p-2 bg-slate-50 dark:bg-slate-800 rounded-xl">
+                          <lucide-icon name="file-text" class="h-5 w-5 text-indigo-500 group-hover:scale-110 transition-transform"></lucide-icon>
+                       </div>
+                       <div class="flex flex-col min-w-0">
+                          <span class="truncate text-sm font-black text-slate-900 dark:text-white">{{ f.file.name }}</span>
+                          <span class="text-[10px] font-black text-indigo-500 uppercase tracking-[0.2em] mt-0.5">{{ f.docType }}</span>
+                       </div>
                     </div>
-                    <button type="button" (click)="removeFile(f.name)" class="text-red-400 hover:text-red-600 ml-2 flex-shrink-0">
-                      <lucide-icon name="x" class="h-4 w-4"></lucide-icon>
+                    <button type="button" (click)="removeFile(f.name)" class="p-2 text-slate-300 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 rounded-xl transition-all">
+                      <lucide-icon name="x" class="h-5 w-5"></lucide-icon>
                     </button>
                   </li>
                 }
               </ul>
             } @else {
-              <p class="text-xs text-slate-400 dark:text-slate-500 italic">No documents attached yet.</p>
+               <div class="py-10 text-center bg-slate-50/50 dark:bg-slate-800/10 rounded-2xl border-2 border-dashed border-slate-100 dark:border-slate-800">
+                  <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">Dossier Empty</p>
+               </div>
             }
           </div>
 
-          <div class="pt-4 flex justify-end">
+          <div class="pt-6 flex justify-end">
             <button
               type="submit"
               [disabled]="claimForm.invalid || isLoading() || attachedFiles().length === 0"
-              class="inline-flex justify-center items-center py-2 px-6 border border-transparent shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 rounded-md focus:outline-none disabled:opacity-50 transition-colors"
+              class="w-full inline-flex justify-center items-center py-5 px-10 border border-transparent shadow-xl shadow-indigo-500/20 text-xs font-black uppercase tracking-[0.2em] text-white bg-indigo-600 hover:bg-indigo-700 rounded-2xl focus:outline-none disabled:opacity-50 transition-all hover:scale-[1.02] active:scale-95"
             >
-              <lucide-icon name="upload-cloud" class="mr-2 h-4 w-4"></lucide-icon>
-              Submit Claim
+              <lucide-icon name="upload-cloud" class="mr-3 h-5 w-5"></lucide-icon>
+              {{ attachedFiles().length === 0 ? 'Evidence Missing' : 'Commit Settlement Request' }}
             </button>
           </div>
         </form>

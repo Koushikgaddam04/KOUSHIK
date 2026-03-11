@@ -1,0 +1,67 @@
+[33m❯[39m Building...
+[32m✔[39m Building...
+Application bundle generation failed. [4.023 seconds] - 2026-03-11T04:59:18.132Z
+
+[1m[33m[33m▲ [43;33m[[43;30mWARNING[43;33m][0m [1mNG8113: LoadingSpinnerComponent is not used within the template of CustomerPoliciesComponent[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/customer/customer-policies/customer-policies.component.ts:15:40:
+[37m      15 │ ...dule, RouterModule, [32mLoadingSpinnerComponent[37m, LucideAngularModule],
+         ╵                        [32m~~~~~~~~~~~~~~~~~~~~~~~[0m
+
+[39m[22m
+[1m[31m[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string' is not assignable to parameter of type 'number'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/admin/document-verification/document-verification.component.ts:144:38:
+[37m      144 │     return this.docService.getViewUrl([32mfileName[37m);
+          ╵                                       [32m~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string' is not assignable to parameter of type 'number'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/agent/verification-queue/verification-queue.component.ts:284:38:
+[37m      284 │     return this.docService.getViewUrl([32mfilePath[37m);
+          ╵                                       [32m~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string' is not assignable to parameter of type 'number'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/customer/customer-dashboard/document-upload.component.ts:116:38:
+[37m      116 │     return this.docService.getViewUrl([32mfilePath[37m);
+          ╵                                       [32m~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG5002: Unexpected closing tag "div". It may happen when the tag has already been closed by another tag. For more info see https://www.w3.org/TR/html5/syntax.html#closing-elements-that-have-implied-end-tags[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/customer/customer-policies/customer-policies.component.ts:71:8:
+[37m      71 │         [32m</div>[37m
+         ╵         [32m~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG5002: Unexpected closing block. The block may have been closed earlier. If you meant to write the `}` character, you should use the "&#125;" HTML entity instead.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/customer/customer-policies/customer-policies.component.ts:72:6:
+[37m      72 │       [32m}[37m @empty {
+         ╵       [32m^[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mNG5002: Unexpected closing tag "div". It may happen when the tag has already been closed by another tag. For more info see https://www.w3.org/TR/html5/syntax.html#closing-elements-that-have-implied-end-tags[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/customer/customer-policies/customer-policies.component.ts:78:4:
+[37m      78 │     [32m</div>[37m
+         ╵     [32m~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string' is not assignable to parameter of type 'number'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/features/officer/claims-queue/claims-queue.component.ts:326:38:
+[37m      326 │     return this.docService.getViewUrl([32mfilePath[37m);
+          ╵                                       [32m~~~~~~~~[0m
+
+
+[31mX [41;31m[[41;97mERROR[41;31m][0m [1mTS2345: Argument of type 'string' is not assignable to parameter of type 'number'.[0m [1m[35m[plugin angular-compiler][0m
+
+    src/app/shared/components/user-documents-modal/user-documents-modal.component.ts:130:38:
+[37m      130 │     return this.docService.getViewUrl([32mfilePath[37m);
+          ╵                                       [32m~~~~~~~~[0m
+
+[39m[22m

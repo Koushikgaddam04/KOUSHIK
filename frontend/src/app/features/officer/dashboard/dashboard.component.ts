@@ -12,122 +12,139 @@ Chart.register(...registerables);
   standalone: true,
   imports: [CommonModule, LucideAngularModule],
   template: `
-    <div class="mb-8 flex flex-col md:flex-row md:items-end justify-between gap-4">
+    <div class="mb-10 flex flex-col md:flex-row md:items-end justify-between gap-6">
       <div>
-        <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Officer Overview</h1>
-        <p class="text-slate-500 dark:text-slate-400 mt-1">Real-time statistics and analytics for health insurance claims.</p>
+        <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Intelligence Overview</h1>
+        <p class="text-slate-500 dark:text-slate-400 mt-2 font-medium">Global oversight of claim authentication and financial risk analytics.</p>
       </div>
     </div>
 
     <!-- Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-      <div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
-        <div class="absolute bottom-0 left-0 w-full h-1 bg-blue-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-        <div class="flex items-center justify-between mb-4">
-          <div class="p-2 bg-blue-50 dark:bg-blue-900/20 rounded-lg">
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-10">
+      <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-100/50 dark:shadow-none relative overflow-hidden group hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1">
+        <div class="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-blue-400 to-blue-600 opacity-60 group-hover:opacity-100 transition-opacity"></div>
+        <div class="flex items-center justify-between mb-6">
+          <div class="p-4 bg-blue-50 dark:bg-blue-900/30 rounded-2xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
             <lucide-icon name="activity" class="h-6 w-6 text-blue-600 dark:text-blue-400"></lucide-icon>
           </div>
-          <span class="text-xs font-medium text-slate-400">Total Claims</span>
+          <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Claims Lifetime</span>
         </div>
-        <div class="text-3xl font-bold text-slate-900 dark:text-slate-100">{{ stats().total }}</div>
-        <div class="mt-2 text-sm text-slate-500 dark:text-slate-400">Claims processed to date</div>
+        <div class="text-4xl font-black text-slate-900 dark:text-white mb-2">{{ stats().total }}</div>
+        <div class="text-xs text-slate-500 dark:text-slate-400 font-medium">Claims authenticated to date</div>
       </div>
 
-      <div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
-        <div class="absolute bottom-0 left-0 w-full h-1 bg-yellow-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-        <div class="flex items-center justify-between mb-4">
-          <div class="p-2 bg-yellow-50 dark:bg-yellow-900/20 rounded-lg">
-            <lucide-icon name="clock" class="h-6 w-6 text-yellow-600 dark:text-yellow-400"></lucide-icon>
+      <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-100/50 dark:shadow-none relative overflow-hidden group hover:shadow-2xl hover:shadow-amber-500/10 transition-all duration-300 transform hover:-translate-y-1">
+        <div class="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-amber-400 to-amber-600 opacity-60 group-hover:opacity-100 transition-opacity"></div>
+        <div class="flex items-center justify-between mb-6">
+          <div class="p-4 bg-amber-50 dark:bg-amber-900/30 rounded-2xl group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300">
+            <lucide-icon name="clock" class="h-6 w-6 text-amber-600 dark:text-amber-400"></lucide-icon>
           </div>
-          <span class="text-xs font-medium text-slate-400">Pending</span>
+          <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Current Queue</span>
         </div>
-        <div class="text-3xl font-bold text-slate-900 dark:text-slate-100">{{ stats().pending }}</div>
-        <div class="mt-2 text-sm text-yellow-600 dark:text-yellow-500 font-medium">Awaiting review in queue</div>
+        <div class="text-4xl font-black text-slate-900 dark:text-white mb-2">{{ stats().pending }}</div>
+        <div class="text-xs text-amber-600 dark:text-amber-500 font-bold uppercase tracking-widest">Awaiting Decision</div>
       </div>
 
-      <div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
-        <div class="absolute bottom-0 left-0 w-full h-1 bg-green-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-        <div class="flex items-center justify-between mb-4">
-          <div class="p-2 bg-green-50 dark:bg-green-900/20 rounded-lg">
-            <lucide-icon name="check-circle" class="h-6 w-6 text-green-600 dark:text-green-400"></lucide-icon>
+      <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-100/50 dark:shadow-none relative overflow-hidden group hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300 transform hover:-translate-y-1">
+        <div class="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-600 opacity-60 group-hover:opacity-100 transition-opacity"></div>
+        <div class="flex items-center justify-between mb-6">
+          <div class="p-4 bg-emerald-50 dark:bg-emerald-900/30 rounded-2xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300">
+            <lucide-icon name="check-circle" class="h-6 w-6 text-emerald-600 dark:text-emerald-400"></lucide-icon>
           </div>
-          <span class="text-xs font-medium text-slate-400">Approved</span>
+          <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Validated</span>
         </div>
-        <div class="text-3xl font-bold text-slate-900 dark:text-slate-100">{{ stats().approved }}</div>
-        <div class="mt-2 text-sm text-green-600 dark:text-green-500 font-medium">Successfully settled</div>
+        <div class="text-4xl font-black text-slate-900 dark:text-white mb-2">{{ stats().approved }}</div>
+        <div class="text-xs text-emerald-600 dark:text-emerald-500 font-bold uppercase tracking-widest">Payouts Authorized</div>
       </div>
 
-      <div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm relative overflow-hidden group">
-        <div class="absolute bottom-0 left-0 w-full h-1 bg-red-500 transform scale-x-0 group-hover:scale-x-100 transition-transform origin-left"></div>
-        <div class="flex items-center justify-between mb-4">
-          <div class="p-2 bg-red-50 dark:bg-red-900/20 rounded-lg">
-            <lucide-icon name="x-circle" class="h-6 w-6 text-red-600 dark:text-red-400"></lucide-icon>
+      <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-xl shadow-slate-100/50 dark:shadow-none relative overflow-hidden group hover:shadow-2xl hover:shadow-rose-500/10 transition-all duration-300 transform hover:-translate-y-1">
+        <div class="absolute inset-x-0 bottom-0 h-1 bg-gradient-to-r from-rose-400 to-rose-600 opacity-60 group-hover:opacity-100 transition-opacity"></div>
+        <div class="flex items-center justify-between mb-6">
+          <div class="p-4 bg-rose-50 dark:bg-rose-900/30 rounded-2xl group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300">
+            <lucide-icon name="x-circle" class="h-6 w-6 text-rose-600 dark:text-rose-400"></lucide-icon>
           </div>
-          <span class="text-xs font-medium text-slate-400">Rejected</span>
+          <span class="text-[10px] font-black uppercase tracking-widest text-slate-400">Total Declined</span>
         </div>
-        <div class="text-3xl font-bold text-slate-900 dark:text-slate-100">{{ stats().rejected }}</div>
-        <div class="mt-2 text-sm text-red-600 dark:text-red-500 font-medium">Policy violations/Fraud</div>
+        <div class="text-4xl font-black text-slate-900 dark:text-white mb-2">{{ stats().rejected }}</div>
+        <div class="text-xs text-rose-600 dark:text-rose-500 font-bold uppercase tracking-widest">Fraud / Risk Denied</div>
       </div>
     </div>
 
     <!-- Charts Section -->
-    <div id="charts" class="grid grid-cols-1 lg:grid-cols-3 gap-8 mb-8">
+    <div id="charts" class="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-10">
       
       <!-- Last 7 Days Activity Chart -->
-      <div class="lg:col-span-2 bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-        <div class="flex items-center justify-between mb-6">
-          <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100">Claims Processed (Last 7 Days)</h3>
-          <lucide-icon name="bar-chart-2" class="h-5 w-5 text-slate-400"></lucide-icon>
+      <div class="lg:col-span-3 bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h3 class="text-xl font-black text-slate-900 dark:text-white">Validation Trajectory</h3>
+            <p class="text-xs font-medium text-slate-500 uppercase tracking-widest mt-1">7-Day Authentication Volume</p>
+          </div>
+          <div class="p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl">
+            <lucide-icon name="bar-chart-2" class="h-5 w-5 text-indigo-600"></lucide-icon>
+          </div>
         </div>
-        <div class="flex-1 relative min-h-[300px]">
+        <div class="flex-1 relative min-h-[350px]">
           <canvas #trendChart></canvas>
         </div>
       </div>
 
       <!-- Integrity Info / Analytics Highlight -->
-      <div class="bg-indigo-600 p-6 rounded-xl text-white shadow-lg flex flex-col justify-between overflow-hidden relative">
+      <div class="lg:col-span-2 bg-indigo-600 p-8 rounded-3xl text-white shadow-2xl shadow-indigo-500/30 flex flex-col justify-between overflow-hidden relative group">
         <div class="relative z-10">
-          <lucide-icon name="shield-check" class="h-10 w-10 mb-4 opacity-80 text-indigo-200"></lucide-icon>
-          <h3 class="text-xl font-bold mb-2">Fraud Detection AI</h3>
-          <p class="text-indigo-100 text-sm mb-6">Our automated systems have flagged exactly {{ mockFraudCount }} claims for manual review this week.</p>
+          <div class="p-4 bg-white/10 rounded-2xl w-fit mb-6">
+            <lucide-icon name="shield-check" class="h-8 w-8 text-white"></lucide-icon>
+          </div>
+          <h3 class="text-2xl font-black mb-2 tracking-tight">Risk Sentinel AI</h3>
+          <p class="text-indigo-100 text-sm font-medium mb-8 leading-relaxed">Our automated heuristics have identified <span class="bg-indigo-400 px-2 py-0.5 rounded text-white font-black">{{ mockFraudCount }}</span> anomalies for specialized investigation this cycle.</p>
           
-          <ul class="space-y-4 text-sm mt-auto">
-            <li class="flex items-center justify-between bg-indigo-700/50 p-3 rounded-lg">
-               <span class="flex items-center"><lucide-icon name="alert-triangle" class="h-4 w-4 mr-2 text-yellow-300"></lucide-icon> High Risk Flags</span>
-               <span class="font-bold border border-indigo-400 px-2 py-0.5 rounded-full">{{ mockHighRisk }}</span>
-            </li>
-            <li class="flex items-center justify-between bg-indigo-700/50 p-3 rounded-lg">
-               <span class="flex items-center"><lucide-icon name="check" class="h-4 w-4 mr-2 text-green-300"></lucide-icon> Auto-Approved</span>
-               <span class="font-bold border border-indigo-400 px-2 py-0.5 rounded-full">{{ mockAutoApproved }}</span>
-            </li>
-          </ul>
+          <div class="space-y-3">
+             <div class="flex items-center justify-between bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/5 group-hover:bg-white/20 transition-all">
+                <div class="flex items-center gap-3">
+                   <lucide-icon name="alert-triangle" class="h-4 w-4 text-amber-300"></lucide-icon>
+                   <span class="text-xs font-black uppercase tracking-widest">High Probability Flags</span>
+                </div>
+                <span class="text-sm font-black border border-white/20 px-3 py-1 rounded-full">{{ mockHighRisk }}</span>
+             </div>
+             <div class="flex items-center justify-between bg-white/10 backdrop-blur-md p-4 rounded-2xl border border-white/5 group-hover:bg-white/20 transition-all">
+                <div class="flex items-center gap-3">
+                   <lucide-icon name="zap" class="h-4 w-4 text-emerald-300"></lucide-icon>
+                   <span class="text-xs font-black uppercase tracking-widest">Confidence Clearance</span>
+                </div>
+                <span class="text-sm font-black border border-white/20 px-3 py-1 rounded-full">{{ mockAutoApproved }}</span>
+             </div>
+          </div>
         </div>
-        <div class="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white/10 rounded-full blur-3xl"></div>
+        <div class="absolute -top-12 -right-12 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:scale-110 transition-transform duration-700"></div>
       </div>
 
     </div>
 
     <!-- Recent Activity Row -->
-    <div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm">
-      <div class="flex items-center justify-between mb-6">
-        <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100">Recent Claim Decisions</h3>
-        <a routerLink="/officer/logs" class="text-sm font-medium text-blue-600 dark:text-blue-400 hover:underline">View All Logs</a>
+    <div class="bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm transition-all duration-300">
+      <div class="flex items-center justify-between mb-8">
+        <div>
+           <h3 class="text-xl font-black text-slate-900 dark:text-white">Authentication Stream</h3>
+           <p class="text-xs text-slate-500 font-medium uppercase tracking-widest mt-1">Real-time decision velocity</p>
+        </div>
+        <a routerLink="/officer/logs" class="px-4 py-2 bg-slate-50 dark:bg-slate-800 text-xs font-black text-indigo-600 dark:text-indigo-400 rounded-xl hover:bg-slate-100 transition-all shadow-sm">Audit Full Registry</a>
       </div>
-      <div class="space-y-4">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-4">
         @for (item of recentActivity(); track item.id) {
-          <div class="flex items-center p-4 bg-slate-50 dark:bg-slate-800/50 rounded-lg hover:bg-slate-100 dark:hover:bg-slate-800 transition-colors">
-            <div class="w-3 h-3 rounded-full mr-4" [ngClass]="item.status === 'Approved' ? 'bg-green-500 shadow-[0_0_8px_rgba(34,197,94,0.6)]' : 'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]'"></div>
-            <div class="flex-1 flex justify-between items-center">
-              <div>
-                <p class="text-sm font-bold text-slate-900 dark:text-slate-100 mb-0.5">{{item.reference}}</p>
-                <p class="text-xs font-semibold" [ngClass]="item.status === 'Approved' ? 'text-green-600 dark:text-green-500' : 'text-red-600 dark:text-red-500'">{{item.status | uppercase}}</p>
-              </div>
-              <p class="text-xs font-medium text-slate-500 bg-white dark:bg-slate-900 px-2 py-1 rounded shadow-sm">{{item.date | date:'shortTime'}}</p>
+          <div class="flex flex-col p-5 bg-slate-50/50 dark:bg-slate-800/30 rounded-2xl border border-slate-100 dark:border-slate-800 group hover:shadow-md transition-all">
+            <div class="flex items-center justify-between mb-4">
+               <div class="text-[10px] font-black text-slate-400 uppercase tracking-widest">{{item.reference}}</div>
+               <div class="w-2.5 h-2.5 rounded-full" [ngClass]="item.status === 'Approved' ? 'bg-emerald-500 shadow-lg shadow-emerald-500/40' : 'bg-rose-500 shadow-lg shadow-rose-500/40'"></div>
+            </div>
+            <div class="mt-auto">
+               <div class="text-sm font-black" [ngClass]="item.status === 'Approved' ? 'text-emerald-600' : 'text-rose-600'">{{item.status}}</div>
+               <div class="text-[10px] font-bold text-slate-400 mt-1">{{item.date | date:'shortTime'}} · Authorized</div>
             </div>
           </div>
         } @empty {
-          <div class="text-center py-12 text-slate-400 italic">
-            No recent activity recorded.
+          <div class="col-span-full py-16 flex flex-col items-center justify-center text-slate-400 italic">
+            <lucide-icon name="clipboard-list" class="h-10 w-10 mb-2 opacity-20"></lucide-icon>
+            <p class="text-sm">Stationary: No recent stream activity found.</p>
           </div>
         }
       </div>

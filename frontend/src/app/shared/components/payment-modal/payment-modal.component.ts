@@ -98,11 +98,8 @@ import { ToastrService } from 'ngx-toastr';
 export class PaymentModalComponent {
     @Input() show = false;
     @Input() amount = 0;
-    // Quote details needed by the backend to create the PremiumQuote record during payment.
-    // (No DB record exists yet at this point — the Calculate step is purely transient.)
-    @Input() age: number = 30;
-    @Input() planName: string = '';
-    @Input() tier: string = '';
+    // ID of the approved quote/policy to pay for
+    @Input() quoteId: number = 0;
     @Output() close = new EventEmitter<void>();
     /** Emits the full server response including quoteId, quoteReference, and transactionRef */
     @Output() success = new EventEmitter<any>();
@@ -126,12 +123,10 @@ export class PaymentModalComponent {
     onSubmit() {
         if (this.paymentForm.valid) {
             this.isProcessing.set(true);
-            // Pass quote details so the backend can create the PremiumQuote + Payment in one shot
+            // Pass quote details so the backend can process payment against the approved quote
             const payload = {
                 ...this.paymentForm.value,
-                age: this.age,
-                planName: this.planName,
-                tier: this.tier
+                quoteId: this.quoteId
             };
 
             this.paymentService.processPayment(payload).subscribe({

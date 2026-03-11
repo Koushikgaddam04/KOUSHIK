@@ -34,7 +34,15 @@ export class CustomerService {
         return this.http.get<any[]>(`${this.apiBase}/Policy/recent`);
     }
 
+    getPolicyPlans(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiBase}/Policy/plans`);
+    }
+
     getMyClaims(): Observable<any[]> {
         return this.http.get<any[]>(`${this.apiBase}/Claim/my-claims`);
+    }
+
+    getPolicyInvoices(policyId: number): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiBase}/Document/for/Policy/${policyId}`);
     }
 }

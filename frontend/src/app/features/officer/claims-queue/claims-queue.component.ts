@@ -3,7 +3,7 @@ import { CommonModule } from '@angular/common';
 import { OfficerService } from '../officer.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
-import { LucideAngularModule, Check, X, FileText, Search, Eye, ChevronDown, ChevronUp, AlertTriangle, ShieldAlert, Loader2 } from 'lucide-angular';
+import { LucideAngularModule, Check, X, FileText, Search, Eye, ChevronDown, ChevronUp, AlertTriangle, ShieldAlert, Loader2, Zap, ShieldCheck } from 'lucide-angular';
 import { DocumentService } from '../../../core/services/document.service';
 import { Router, NavigationEnd } from '@angular/router';
 import { filter, Subscription } from 'rxjs';
@@ -14,9 +14,9 @@ import { filter, Subscription } from 'rxjs';
   imports: [CommonModule, ConfirmationModalComponent, LucideAngularModule],
   template: `
 
-    <div class="mb-6">
-      <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Claims Queue</h1>
-      <p class="text-slate-500 dark:text-slate-400 mt-1">Verify supporting documents, then approve or reject each claim.</p>
+    <div class="mb-10">
+      <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Authentication Pipeline</h1>
+      <p class="text-slate-500 dark:text-slate-400 mt-2 font-medium">Verify claim eligibility through dossiers and evidentiary supporting documents.</p>
     </div>
 
     <!-- Reject Confirmation Modal -->
@@ -31,19 +31,18 @@ import { filter, Subscription } from 'rxjs';
 
     <!-- Inline skeleton while list loads -->
     @if (listLoading()) {
-      <div class="space-y-4 mt-4">
+      <div class="space-y-6 mt-4">
         @for (_ of [1,2,3]; track $index) {
-          <div class="bg-white dark:bg-slate-900 rounded-xl border border-slate-200 dark:border-slate-800 p-5 animate-pulse">
-            <div class="flex items-center gap-4">
-              <div class="h-9 w-9 bg-slate-200 dark:bg-slate-700 rounded-lg"></div>
-              <div class="flex-1 space-y-2">
-                <div class="h-4 bg-slate-200 dark:bg-slate-700 rounded w-1/4"></div>
-                <div class="h-3 bg-slate-200 dark:bg-slate-700 rounded w-2/5"></div>
-                <div class="h-3 bg-slate-200 dark:bg-slate-700 rounded w-3/5"></div>
+          <div class="bg-white dark:bg-slate-900 rounded-3xl border border-slate-200 dark:border-slate-800 p-8 animate-pulse">
+            <div class="flex items-center gap-6">
+              <div class="h-14 w-14 bg-slate-200 dark:bg-slate-800 rounded-2xl"></div>
+              <div class="flex-1 space-y-3">
+                <div class="h-5 bg-slate-200 dark:bg-slate-800 rounded-xl w-1/4"></div>
+                <div class="h-4 bg-slate-200 dark:bg-slate-800 rounded-lg w-1/3"></div>
               </div>
-              <div class="flex gap-2">
-                <div class="h-8 w-20 bg-slate-200 dark:bg-slate-700 rounded"></div>
-                <div class="h-8 w-20 bg-slate-200 dark:bg-slate-700 rounded"></div>
+              <div class="flex gap-3">
+                <div class="h-10 w-24 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
+                <div class="h-10 w-24 bg-slate-200 dark:bg-slate-800 rounded-xl"></div>
               </div>
             </div>
           </div>
@@ -52,11 +51,11 @@ import { filter, Subscription } from 'rxjs';
     }
 
     @if (!listLoading()) {
-    <div class="mb-4">
-      <div class="relative w-72">
-        <lucide-icon name="search" class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400"></lucide-icon>
-        <input type="text" placeholder="Search claims..." (input)="onSearch($event)"
-          class="pl-9 pr-4 py-2 bg-white dark:bg-slate-900 border border-slate-300 dark:border-slate-700 rounded-md text-sm w-full focus:outline-none focus:ring-1 focus:ring-blue-500 text-slate-900 dark:text-white" />
+    <div class="mb-10">
+      <div class="relative w-full max-w-md group">
+        <lucide-icon name="search" class="absolute left-4 top-1/2 -translate-y-1/2 h-5 w-5 text-slate-400 group-focus-within:text-indigo-500 transition-colors"></lucide-icon>
+        <input type="text" placeholder="Filter by Claim ID, Policy, or Reason..." (input)="onSearch($event)"
+          class="pl-12 pr-5 py-3.5 bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-800 rounded-2xl text-sm w-full focus:ring-4 focus:ring-indigo-500/10 focus:border-indigo-500 outline-none transition-all shadow-sm placeholder:text-slate-400 dark:text-white" />
       </div>
     </div>
 
@@ -70,111 +69,124 @@ import { filter, Subscription } from 'rxjs';
       }
 
       @for (claim of filteredQueue(); track claim.id) {
-        <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden">
+        <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden group transition-all duration-300 hover:shadow-xl hover:shadow-indigo-500/5">
           <!-- Claim row -->
-          <div class="p-5 flex items-center justify-between gap-4 flex-wrap">
-            <div class="flex items-center gap-4 min-w-0">
-              <div class="p-2 bg-orange-100 dark:bg-orange-900/20 rounded-lg">
-                <lucide-icon name="shield-alert" class="h-5 w-5 text-orange-500"></lucide-icon>
+          <div class="p-6 md:p-8 flex items-center justify-between gap-8 flex-wrap">
+            <div class="flex items-center gap-6 min-w-0">
+              <div class="p-4 bg-orange-50 dark:bg-orange-900/30 rounded-2xl border border-orange-100 dark:border-orange-800/50">
+                <lucide-icon name="shield-alert" class="h-7 w-7 text-orange-600"></lucide-icon>
               </div>
               <div class="min-w-0">
-                <p class="text-sm font-bold text-slate-900 dark:text-white">
-                  Claim #{{ claim.id }}
-                  <span class="text-xs font-medium text-slate-400 ml-1">· Policy #{{ claim.policyId }}</span>
-                </p>
-                <p class="text-sm font-bold text-emerald-600 dark:text-emerald-400">{{ claim.amount | currency }}</p>
-                <p class="text-xs text-slate-500 dark:text-slate-400 truncate max-w-sm">{{ claim.reason }}</p>
+                <div class="flex items-center gap-3 mb-1">
+                   <p class="text-xl font-black text-slate-900 dark:text-white">Claim #{{ claim.id }}</p>
+                   <span class="px-2.5 py-1 rounded-lg bg-slate-100 dark:bg-slate-800 text-[10px] font-black text-slate-500 uppercase tracking-widest border border-slate-200 dark:border-slate-700">Policy #{{ claim.policyId }}</span>
+                </div>
+                <div class="flex items-center gap-3 mb-2">
+                   <p class="text-lg font-black text-emerald-600 dark:text-emerald-400">{{ claim.amount | currency }}</p>
+                   <span class="text-slate-300 dark:text-slate-700">|</span>
+                   <p class="text-xs font-bold text-slate-500 dark:text-slate-400 truncate max-w-sm">{{ claim.reason }}</p>
+                </div>
               </div>
             </div>
 
-            <div class="flex items-center gap-2 flex-shrink-0">
+            <div class="flex items-center gap-3 flex-shrink-0">
               <!-- Expand docs toggle -->
               <button
                 (click)="toggleDocs(claim.id)"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 border border-slate-300 dark:border-slate-700 text-xs font-medium rounded text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-800 hover:bg-slate-50 dark:hover:bg-slate-700 transition-colors"
+                class="inline-flex items-center gap-2 px-5 py-3 border border-slate-200 dark:border-slate-800 text-xs font-black rounded-2xl text-slate-700 dark:text-slate-300 bg-white dark:bg-slate-950 hover:bg-slate-50 transition-all active:scale-95 shadow-sm"
               >
-                <lucide-icon name="file-text" class="h-3.5 w-3.5"></lucide-icon>
-                Docs ({{ docCount(claim.id) }})
-                <lucide-icon [name]="expandedClaim() === claim.id ? 'chevron-up' : 'chevron-down'" class="h-3.5 w-3.5"></lucide-icon>
+                <lucide-icon name="file-text" class="h-4 w-4 text-indigo-500"></lucide-icon>
+                Evidence ({{ docCount(claim.id) }})
+                <lucide-icon [name]="expandedClaim() === claim.id ? 'chevron-up' : 'chevron-down'" class="h-4 w-4 opacity-40"></lucide-icon>
               </button>
 
               <button (click)="approve(claim.id)"
                 [disabled]="actionLoading()"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-green-600 hover:bg-green-700 transition-colors disabled:opacity-50">
+                class="inline-flex items-center gap-2 px-6 py-3 border border-transparent text-xs font-black rounded-2xl text-white bg-emerald-600 hover:bg-emerald-700 transition-all active:scale-95 disabled:opacity-50 shadow-lg shadow-emerald-500/20">
                 @if (actionLoading()) {
-                  <lucide-icon name="loader-2" class="h-3.5 w-3.5 animate-spin"></lucide-icon>
+                  <lucide-icon name="loader-2" class="h-4 w-4 animate-spin"></lucide-icon>
                 } @else {
-                  <lucide-icon name="check" class="h-3.5 w-3.5"></lucide-icon>
+                  <lucide-icon name="check" class="h-4 w-4"></lucide-icon>
                 }
-                Approve
+                Authorize
               </button>
               <button (click)="openRejectModal(claim.id)"
                 [disabled]="actionLoading()"
-                class="inline-flex items-center gap-1.5 px-3 py-1.5 border border-transparent text-xs font-medium rounded text-white bg-red-600 hover:bg-red-700 transition-colors disabled:opacity-50">
+                class="inline-flex items-center gap-2 px-6 py-3 border border-transparent text-xs font-black rounded-2xl text-white bg-rose-600 hover:bg-rose-700 transition-all active:scale-95 disabled:opacity-50 shadow-lg shadow-rose-500/20">
                 @if (actionLoading()) {
-                  <lucide-icon name="loader-2" class="h-3.5 w-3.5 animate-spin"></lucide-icon>
+                  <lucide-icon name="loader-2" class="h-4 w-4 animate-spin"></lucide-icon>
                 } @else {
-                  <lucide-icon name="x" class="h-3.5 w-3.5"></lucide-icon>
+                  <lucide-icon name="x" class="h-4 w-4"></lucide-icon>
                 }
-                Reject
+                Decline
               </button>
             </div>
           </div>
 
           <!-- Inline documents panel -->
           @if (expandedClaim() === claim.id) {
-            <div class="border-t border-slate-100 dark:border-slate-800 bg-slate-50 dark:bg-slate-800/40 p-5">
-              <h3 class="text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider mb-3">Supporting Documents</h3>
+            <div class="border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 p-8">
+              <div class="flex items-center justify-between mb-8">
+                 <div>
+                    <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Supporting Dossier</h3>
+                    <p class="text-xs text-slate-500 font-medium">Verify attached files to authorize financial disbursement.</p>
+                 </div>
+                 <div class="px-3 py-1 bg-white dark:bg-slate-800 rounded-lg border border-slate-100 dark:border-slate-700 text-[10px] font-bold text-slate-400">
+                    {{ entityDocs().length }} Assets Found
+                 </div>
+              </div>
+
               @if (docsLoading()) {
-                <div class="flex items-center gap-2 text-xs text-slate-400 py-4">
-                  <div class="animate-spin rounded-full h-4 w-4 border-b-2 border-green-500"></div>
-                  Loading documents...
+                <div class="flex flex-col items-center justify-center py-16 text-slate-400 gap-4">
+                  <div class="animate-spin rounded-full h-10 w-10 border-t-2 border-b-2 border-indigo-600"></div>
+                  <p class="text-xs font-bold tracking-widest uppercase">Decentralized Asset Retrieval...</p>
                 </div>
               } @else if (entityDocs().length === 0) {
-                <div class="flex items-center gap-2 p-3 bg-amber-50 dark:bg-amber-900/20 rounded-lg border border-amber-200 dark:border-amber-800 text-xs text-amber-700 dark:text-amber-300">
-                  <lucide-icon name="alert-triangle" class="h-4 w-4 flex-shrink-0"></lucide-icon>
-                  No documents uploaded for this claim. You cannot approve a claim without verified documents.
+                <div class="flex items-center gap-4 p-6 bg-amber-50 dark:bg-amber-900/20 rounded-2xl border border-amber-200/50 dark:border-amber-800/50 text-sm text-amber-700 dark:text-amber-400">
+                  <lucide-icon name="alert-triangle" class="h-6 w-6 flex-shrink-0"></lucide-icon>
+                  <p class="font-bold">Caution: No evidentiary documentation detected. Claim cannot be authorized without verified assets.</p>
                 </div>
               } @else {
-                <div class="space-y-2">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                   @for (doc of entityDocs(); track doc.id) {
-                    <div class="flex items-center justify-between p-3 bg-white dark:bg-slate-800 rounded-lg border border-slate-200 dark:border-slate-700">
-                      <div class="flex items-center gap-3 min-w-0">
-                        <lucide-icon name="file-text" class="h-5 w-5 text-orange-400 flex-shrink-0"></lucide-icon>
+                    <div class="group/doc flex items-center justify-between p-5 bg-white dark:bg-slate-950 rounded-2xl border border-slate-200 dark:border-slate-800 hover:border-indigo-500/30 transition-all shadow-sm">
+                      <div class="flex items-center gap-4 min-w-0">
+                        <div class="p-3 bg-slate-50 dark:bg-slate-900 rounded-xl text-slate-400 group-hover/doc:text-indigo-500 transition-colors shadow-inner">
+                           <lucide-icon name="file-text" class="h-5 w-5"></lucide-icon>
+                        </div>
                         <div class="min-w-0">
-                          <p class="text-sm font-medium text-slate-800 dark:text-slate-200 truncate">{{ doc.fileName }}</p>
-                          <p class="text-xs text-slate-400">{{ doc.documentType }}</p>
+                          <p class="text-sm font-black text-slate-800 dark:text-slate-200 truncate">{{ doc.fileName }}</p>
+                          <p class="text-[10px] font-bold text-slate-400 uppercase tracking-widest">{{ doc.documentType }}</p>
                         </div>
                       </div>
 
-                      <div class="flex items-center gap-2 flex-shrink-0">
-                        <!-- Status badge -->
-                        <span class="px-2 py-0.5 rounded text-[10px] font-bold uppercase"
+                      <div class="flex items-center gap-3 flex-shrink-0">
+                        <span class="px-2.5 py-1 rounded-lg text-[10px] font-black uppercase tracking-widest shadow-sm border"
                           [ngClass]="{
-                            'bg-yellow-100 text-yellow-700 dark:bg-yellow-900/20 dark:text-yellow-400': doc.status === 'Pending',
-                            'bg-green-100 text-green-700 dark:bg-green-900/20 dark:text-green-400': doc.status === 'Verified',
-                            'bg-red-100 text-red-700 dark:bg-red-900/20 dark:text-red-400': doc.status === 'Rejected'
+                            'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800': doc.status === 'Pending',
+                            'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800': doc.status === 'Verified',
+                            'bg-rose-50 text-rose-600 border-rose-200 dark:bg-rose-900/20 dark:text-rose-400 dark:border-rose-800': doc.status === 'Rejected'
                           }">
                           {{ doc.status }}
                         </span>
 
-                        <!-- View inline -->
-                        <a [href]="getViewUrl(doc.filePath)" target="_blank"
-                          class="px-2 py-1 text-xs bg-slate-100 dark:bg-slate-700 text-slate-600 dark:text-slate-300 rounded hover:bg-slate-200 dark:hover:bg-slate-600 transition-colors flex items-center gap-1">
-                          <lucide-icon name="eye" class="h-3.5 w-3.5"></lucide-icon>
-                          View
+                        <a [href]="getViewUrl(doc.id)" target="_blank"
+                          class="p-2 bg-slate-50 dark:bg-slate-800 text-slate-400 hover:text-indigo-600 hover:bg-indigo-50 rounded-xl transition-all shadow-sm border border-slate-100 dark:border-slate-700"
+                          title="View Evidence">
+                          <lucide-icon name="eye" class="h-4 w-4"></lucide-icon>
                         </a>
 
-                        <!-- Verify / Reject doc -->
                         @if (doc.status === 'Pending') {
-                          <button (click)="reviewDoc(doc.id, 'Verified')"
-                            class="px-2 py-1 text-xs bg-green-600 text-white rounded hover:bg-green-700 transition-colors">
-                            ✓ Verify
-                          </button>
-                          <button (click)="reviewDoc(doc.id, 'Rejected')"
-                            class="px-2 py-1 text-xs bg-red-500 text-white rounded hover:bg-red-600 transition-colors">
-                            ✕ Reject
-                          </button>
+                          <div class="flex gap-1.5 ml-2 border-l border-slate-100 dark:border-slate-800 pl-4">
+                            <button (click)="reviewDoc(doc.id, 'Verified')"
+                              class="p-2.5 bg-emerald-500 text-white rounded-xl hover:bg-emerald-600 transition-all active:scale-90 shadow-lg shadow-emerald-500/20">
+                              <lucide-icon name="check" class="h-4 w-4"></lucide-icon>
+                            </button>
+                            <button (click)="reviewDoc(doc.id, 'Rejected')"
+                              class="p-2.5 bg-rose-500 text-white rounded-xl hover:bg-rose-600 transition-all active:scale-90 shadow-lg shadow-rose-500/20">
+                              <lucide-icon name="x" class="h-4 w-4"></lucide-icon>
+                            </button>
+                          </div>
                         }
                       </div>
                     </div>
@@ -322,7 +334,12 @@ export class ClaimsQueueComponent implements OnInit, OnDestroy {
     }
   }
 
-  getViewUrl(filePath: string): string {
-    return this.docService.getViewUrl(filePath);
+  getViewUrl(id: number): string {
+    const url = this.docService.getViewUrl(id);
+    // If running on some specific base, ensure absolute path
+    if (url.startsWith('/')) {
+       return window.location.origin + url;
+    }
+    return url;
   }
 }

@@ -5,7 +5,7 @@ import { AdminService } from '../admin.service';
 import { ToastrService } from 'ngx-toastr';
 import { ConfirmationModalComponent } from '../../../shared/components/confirmation-modal/confirmation-modal.component';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
-import { LucideAngularModule, Trash2, Shield, Filter, Search } from 'lucide-angular';
+import { LucideAngularModule, Trash2, Shield, Filter, Search, Plus, X, User, Briefcase } from 'lucide-angular';
 
 @Component({
   selector: 'app-manage-policies',
@@ -21,17 +21,17 @@ import { LucideAngularModule, Trash2, Shield, Filter, Search } from 'lucide-angu
   template: `
     <app-loading-spinner [show]="isLoading()" message="Loading Policies..."></app-loading-spinner>
 
-    <div class="mb-6 flex justify-between items-end">
+    <div class="mb-8 flex flex-col md:flex-row md:justify-between md:items-center gap-4">
       <div>
-        <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Manage Policies</h1>
-        <p class="text-slate-500 dark:text-slate-400 mt-1">View recent policies and assign agents to them.</p>
+        <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Manage Policies</h1>
+        <p class="text-slate-500 dark:text-slate-400 mt-1 font-medium">Configure global insurance plans and assign administrative tasks.</p>
       </div>
       <button
         (click)="openCreateModal()"
-        class="inline-flex justify-center items-center py-2 px-4 border border-transparent shadow-sm text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-colors"
+        class="group inline-flex justify-center items-center py-2.5 px-6 border border-transparent shadow-lg shadow-blue-500/20 text-sm font-bold rounded-xl text-white bg-blue-600 hover:bg-blue-700 focus:outline-none transition-all duration-300 transform hover:-translate-y-0.5"
       >
-        <lucide-icon name="shield" class="mr-2 h-4 w-4"></lucide-icon>
-        Create Policy
+        <lucide-icon name="plus" class="mr-2 h-4 w-4 group-hover:rotate-90 transition-transform duration-300"></lucide-icon>
+        Create New Plan
       </button>
     </div>
 
@@ -54,10 +54,10 @@ import { LucideAngularModule, Trash2, Shield, Filter, Search } from 'lucide-angu
         aria-modal="true"
       >
         <div
-          class="flex items-end justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
+          class="flex items-center justify-center min-h-screen pt-4 px-4 pb-20 text-center sm:block sm:p-0"
         >
           <div
-            class="fixed inset-0 bg-gray-500 bg-opacity-75 dark:bg-slate-950 dark:bg-opacity-80 transition-opacity"
+            class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm transition-opacity"
             aria-hidden="true"
             (click)="closeCreateModal()"
           ></div>
@@ -65,114 +65,109 @@ import { LucideAngularModule, Trash2, Shield, Filter, Search } from 'lucide-angu
             >&#8203;</span
           >
           <div
-            class="relative inline-block align-bottom bg-white dark:bg-slate-900 rounded-lg text-left overflow-hidden shadow-xl transform transition-all sm:my-8 sm:align-middle sm:max-w-lg sm:w-full border border-transparent dark:border-slate-800"
+            class="relative inline-block align-bottom bg-white dark:bg-slate-900 rounded-2xl text-left overflow-hidden shadow-2xl transform transition-all sm:my-8 sm:align-middle sm:max-w-xl sm:w-full border border-slate-200 dark:border-slate-800"
           >
             <form [formGroup]="createForm" (ngSubmit)="submitCreate()">
-              <div class="bg-white dark:bg-slate-900 px-4 pt-5 pb-4 sm:p-6 sm:pb-4">
-                <div class="sm:flex sm:items-start">
-                  <div class="mt-3 text-center sm:mt-0 sm:ml-4 sm:text-left w-full">
-                    <h3 class="text-lg leading-6 font-medium text-gray-900 dark:text-slate-100" id="modal-title">
-                      Create New Policy
-                    </h3>
-                    <div class="mt-4 space-y-4">
-                      <!-- <div>
-                        <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">User ID</label>
+              <div class="bg-white dark:bg-slate-900 px-6 pt-6 pb-6">
+                <div class="mb-6 flex items-center justify-between">
+                   <div class="flex items-center gap-3">
+                      <div class="p-2.5 bg-blue-50 dark:bg-blue-900/40 text-blue-600 dark:text-blue-400 rounded-xl">
+                        <lucide-icon name="shield" class="h-6 w-6"></lucide-icon>
+                      </div>
+                      <div>
+                        <h3 class="text-xl font-bold text-slate-900 dark:text-white" id="modal-title">Define New Plan</h3>
+                        <p class="text-xs text-slate-500 font-medium">Create a template for customers to apply for.</p>
+                      </div>
+                   </div>
+                   <button type="button" (click)="closeCreateModal()" class="p-2 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition-colors">
+                      <lucide-icon name="x" class="h-5 w-5"></lucide-icon>
+                   </button>
+                </div>
+
+                <div class="space-y-5">
+                  <div class="grid grid-cols-1 gap-4">
+                    <div>
+                      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">Plan Name</label>
+                      <input
+                        type="text"
+                        formControlName="planName"
+                        placeholder="e.g. Platinum Plus Premium"
+                        class="block w-full border border-slate-200 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white rounded-xl shadow-sm py-2.5 px-4 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all sm:text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">Description & Benefits</label>
+                      <textarea
+                        formControlName="planDescription"
+                        rows="3"
+                        placeholder="Detail the plan benefits, copays, terms, etc."
+                        class="block w-full border border-slate-200 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white rounded-xl shadow-sm py-2.5 px-4 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all sm:text-sm"
+                      ></textarea>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">Monthly Premium</label>
+                      <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">$</span>
                         <input
                           type="number"
-                          formControlName="userId"
-                          class="mt-1 block w-full border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
+                          formControlName="monthlyPremium"
+                          min="0"
+                          class="block w-full border border-slate-200 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white rounded-xl shadow-sm py-2.5 pl-8 pr-4 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all sm:text-sm"
                         />
-                      </div> -->
-                      <div class="grid grid-cols-2 gap-4">
-                        <div class="col-span-2">
-                          <label class="block text-sm font-medium text-gray-700 dark:text-slate-300 mb-1">Plan Name</label>
-                          <input
-                            type="text"
-                            formControlName="planName"
-                            placeholder="e.g. Platinum Plus Premium"
-                            class="mt-1 block w-full border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                          />
-                        </div>
                       </div>
-                      <div class="grid grid-cols-2 gap-4">
-                        <div>
-                          <label class="block text-sm font-medium text-gray-700 dark:text-slate-300"
-                            >Monthly Premium</label
-                          >
-                          <input
-                            type="number"
-                            formControlName="monthlyPremium"
-                            min="0"
-                            class="mt-1 block w-full border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                          />
-                        </div>
-                        <div>
-                          <label class="block text-sm font-medium text-gray-700 dark:text-slate-300"
-                            >Coverage Amount</label
-                          >
-                          <input
-                            type="number"
-                            formControlName="coverageAmount"
-                            min="0"
-                            class="mt-1 block w-full border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                          />
-                        </div>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">Coverage Limit</label>
+                      <div class="relative">
+                        <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">$</span>
+                        <input
+                          type="number"
+                          formControlName="coverageAmount"
+                          min="0"
+                          class="block w-full border border-slate-200 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white rounded-xl shadow-sm py-2.5 pl-8 pr-4 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all sm:text-sm"
+                        />
                       </div>
-                      <div class="grid grid-cols-2 gap-4">
-                        <div>
-                          <label class="block text-sm font-medium text-gray-700 dark:text-slate-300">Expiry Date</label>
-                          <input
-                            type="date"
-                            formControlName="expiryDate"
-                            [min]="minDate"
-                            class="mt-1 block w-full border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm"
-                          />
-                        </div>
-                        <div>
-                          <label class="block text-sm font-medium text-gray-700 dark:text-slate-300"
-                            >Assign Agent (Optional)</label
-                          >
-                          <select
-                            formControlName="agentId"
-                            class="mt-1 block w-full border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-slate-800"
-                          >
-                            <option [ngValue]="null">Unassigned</option>
-                            @for (agent of agents(); track agent.id) {
-                              <option [value]="agent.id">{{ agent.name }}</option>
-                            }
-                          </select>
-                        </div>
-                        <div>
-                          <label class="block text-sm font-medium text-gray-700 dark:text-slate-300"
-                            >Assign Claims Officer (Optional)</label
-                          >
-                          <select
-                            formControlName="claimsOfficerId"
-                            class="mt-1 block w-full border border-gray-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md shadow-sm py-2 px-3 focus:outline-none focus:ring-blue-500 focus:border-blue-500 sm:text-sm bg-white dark:bg-slate-800"
-                          >
-                            <option [ngValue]="null">Unassigned</option>
-                            @for (officer of claimsOfficers(); track officer.id) {
-                              <option [value]="officer.id">{{ officer.name }}</option>
-                            }
-                          </select>
-                        </div>
-                      </div>
+                    </div>
+                  </div>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">Initial Expiry</label>
+                      <input
+                        type="date"
+                        formControlName="expiryDate"
+                        [min]="minDate"
+                        class="block w-full border border-slate-200 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white rounded-xl shadow-sm py-2.5 px-4 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all sm:text-sm"
+                      />
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">Assigned Agent</label>
+                      <select
+                        formControlName="agentId"
+                        class="block w-full border border-slate-200 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white rounded-xl shadow-sm py-2.5 px-4 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all sm:text-sm appearance-none cursor-pointer"
+                      >
+                        <option [ngValue]="null">Leave Unassigned</option>
+                        @for (agent of agents(); track agent.id) {
+                          <option [value]="agent.id">{{ agent.name }}</option>
+                        }
+                      </select>
                     </div>
                   </div>
                 </div>
               </div>
-              <div class="bg-gray-50 dark:bg-slate-800/50 px-4 py-3 sm:px-6 sm:flex sm:flex-row-reverse border-t dark:border-slate-800">
+              <div class="bg-slate-50 dark:bg-slate-800 px-6 py-4 flex flex-col sm:flex-row-reverse gap-3 border-t dark:border-slate-800">
                 <button
                   type="submit"
                   [disabled]="createForm.invalid || isLoading()"
-                  class="w-full inline-flex justify-center rounded-md border border-transparent shadow-sm px-4 py-2 bg-blue-600 text-base font-medium text-white hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:ml-3 sm:w-auto sm:text-sm disabled:opacity-50 transition-colors"
+                  class="flex-1 inline-flex justify-center items-center rounded-xl px-6 py-3 bg-blue-600 text-sm font-bold text-white hover:bg-blue-700 shadow-lg shadow-blue-500/20 focus:outline-none disabled:opacity-50 transition-all active:scale-95"
                 >
-                  Create
+                  Confirm & Create Plan
                 </button>
                 <button
                   type="button"
                   (click)="closeCreateModal()"
-                  class="mt-3 w-full inline-flex justify-center rounded-md border border-gray-300 dark:border-slate-600 shadow-sm px-4 py-2 bg-white dark:bg-slate-900 text-base font-medium text-gray-700 dark:text-slate-300 hover:bg-gray-50 dark:hover:bg-slate-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 sm:mt-0 sm:ml-3 sm:w-auto sm:text-sm transition-colors"
+                  class="flex-1 inline-flex justify-center items-center rounded-xl px-6 py-3 border border-slate-200 dark:border-slate-700 bg-white dark:bg-slate-900 text-sm font-bold text-slate-600 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-800 focus:outline-none transition-all"
                 >
                   Cancel
                 </button>
@@ -183,66 +178,39 @@ import { LucideAngularModule, Trash2, Shield, Filter, Search } from 'lucide-angu
       </div>
     }
 
-    <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden transition-colors duration-200">
-      <div class="p-4 border-b border-slate-100 dark:border-slate-800 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50">
-        <div class="relative w-64">
+    <div class="bg-white dark:bg-slate-900 rounded-2xl shadow-sm border border-slate-200 dark:border-slate-800 overflow-hidden transition-all duration-300">
+      <div class="p-5 border-b border-slate-100 dark:border-slate-800 flex flex-col md:flex-row justify-between items-start md:items-center gap-4 bg-slate-50/50 dark:bg-slate-800/30">
+        <div class="relative w-full md:w-80 group">
           <lucide-icon
             name="search"
-            class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500"
+            class="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-slate-400 dark:text-slate-500 group-focus-within:text-blue-500 transition-colors"
           ></lucide-icon>
           <input
             type="text"
-            placeholder="Search policies..."
+            placeholder="Search policies by ID or plan..."
             (input)="onSearch($event)"
-            class="pl-9 pr-4 py-2 border border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md text-sm w-full focus:outline-none focus:ring-1 focus:ring-blue-500 placeholder:text-slate-400 dark:placeholder:text-slate-500"
+            class="pl-10 pr-4 py-2.5 bg-white dark:bg-slate-950/50 border border-slate-200 dark:border-slate-700 dark:text-white rounded-xl text-sm w-full focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all placeholder:text-slate-400"
           />
+        </div>
+        <div class="flex items-center gap-2 text-xs font-bold text-slate-400 uppercase tracking-widest">
+           <lucide-icon name="filter" class="h-3 w-3"></lucide-icon>
+           Showing {{ filteredPolicies().length }} results
         </div>
       </div>
 
       <div class="overflow-x-auto">
-        <table class="min-w-full divide-y divide-slate-200 dark:divide-slate-800">
+        <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-800">
           <thead class="bg-slate-50 dark:bg-slate-800/50">
             <tr>
-              <th
-                scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-              >
-                Policy ID
-              </th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-              >
-                Plan Details
-              </th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-              >
-                Status
-              </th>
-              <th
-                scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-              >
-                Assigned Agent
-              </th>
-               <th
-                scope="col"
-                class="px-6 py-3 text-left text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-              >
-                Claims Officer
-              </th>
-              
-              <th
-                scope="col"
-                class="px-6 py-3 text-right text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider"
-              >
-                Actions
-              </th>
+              <th scope="col" class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Policy ID</th>
+              <th scope="col" class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Plan Details</th>
+              <th scope="col" class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Status</th>
+              <th scope="col" class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Responsible Agent</th>
+              <th scope="col" class="px-6 py-4 text-left text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Claims Specialist</th>
+              <th scope="col" class="px-6 py-4 text-right text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest">Actions</th>
             </tr>
           </thead>
-          <tbody class="bg-white dark:bg-slate-900 divide-y divide-slate-200 dark:divide-slate-800">
+          <tbody class="divide-y divide-slate-100 dark:divide-slate-800/60">
             @if (filteredPolicies().length === 0) {
               <tr>
                 <td colspan="5" class="px-6 py-10 text-center text-slate-500 dark:text-slate-400">
@@ -251,58 +219,70 @@ import { LucideAngularModule, Trash2, Shield, Filter, Search } from 'lucide-angu
               </tr>
             }
             @for (policy of filteredPolicies(); track policy) {
-              <tr class="hover:bg-slate-50 dark:hover:bg-slate-800/50 transition-colors">
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-slate-900 dark:text-slate-100">
+              <tr class="hover:bg-slate-50/80 dark:hover:bg-slate-800/30 transition-colors group">
+                <td class="px-6 py-5 whitespace-nowrap text-sm font-extrabold text-slate-900 dark:text-white">
                   #{{ policy.id }}
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                  <div class="font-medium text-slate-800 dark:text-slate-200">
+                <td class="px-6 py-5 whitespace-nowrap">
+                  <div class="font-bold text-slate-900 dark:text-white group-hover:text-blue-600 transition-colors">
                     {{ policy.planName || '' }}
                   </div>
+                  <div class="text-[10px] text-slate-400 font-medium uppercase tracking-tight mt-0.5" *ngIf="policy.isPlanTemplate">
+                    Plan Template
+                  </div>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap">
+                <td class="px-6 py-5 whitespace-nowrap">
                   <span
-                    class="px-2.5 py-1 inline-flex text-xs leading-5 font-semibold rounded-full"
+                    class="px-2.5 py-1 inline-flex items-center gap-1 text-[10px] font-bold uppercase tracking-widest border rounded-full shadow-sm"
                     [ngClass]="{
-                      'bg-green-100 text-green-800 dark:bg-green-900/30 dark:text-green-400': policy.status === 'Active',
-                      'bg-yellow-100 text-yellow-800 dark:bg-yellow-900/30 dark:text-yellow-400': policy.status === 'Pending',
-                      'bg-red-100 text-red-800 dark:bg-red-900/30 dark:text-red-400': policy.status === 'Inactive',
-                      'bg-slate-100 text-slate-800 dark:bg-slate-800 dark:text-slate-300':
-                        policy.status !== 'Active' && policy.status !== 'Pending' && policy.status !== 'Inactive',
+                      'bg-emerald-50 text-emerald-700 border-emerald-200 dark:bg-emerald-900/20 dark:text-emerald-400 dark:border-emerald-800': policy.status === 'Active',
+                      'bg-amber-50 text-amber-700 border-amber-200 dark:bg-amber-900/20 dark:text-amber-400 dark:border-amber-800': policy.status === 'Pending',
+                      'bg-rose-50 text-rose-700 border-rose-200 dark:bg-rose-900/20 dark:text-rose-400 dark:border-rose-800': policy.status === 'Inactive'
                     }"
                   >
+                    <span class="w-1.5 h-1.5 rounded-full" [ngClass]="{
+                      'bg-emerald-500': policy.status === 'Active',
+                      'bg-amber-500': policy.status === 'Pending',
+                      'bg-rose-500': policy.status === 'Inactive'
+                    }"></span>
                     {{ policy.status }}
                   </span>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                  <select
-                    class="block w-full text-sm border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md py-1.5 focus:border-blue-500 focus:ring-blue-500 outline-none p-1 border appearance-none"
-                    [ngModel]="policy.agentId"
-                    (ngModelChange)="onAssignAgent(policy.id, $event)"
-                  >
-                    <option [ngValue]="null">Unassigned</option>
-                    @for (agent of agents(); track agent) {
-                      <option [value]="agent.id">{{ agent.name }}</option>
-                    }
-                  </select>
+                <td class="px-6 py-5 whitespace-nowrap">
+                  <div class="relative max-w-[160px]">
+                    <select
+                      class="block w-full text-xs font-bold border-slate-200 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white rounded-xl py-2 px-3 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none appearance-none cursor-pointer border shadow-sm"
+                      [ngModel]="policy.agentId"
+                      (ngModelChange)="onAssignAgent(policy.id, $event)"
+                    >
+                      <option [ngValue]="null">Unassigned</option>
+                      @for (agent of agents(); track agent) {
+                        <option [value]="agent.id">{{ agent.name }}</option>
+                      }
+                    </select>
+                    <lucide-icon name="user" class="absolute right-3 top-1/2 -translate-y-1/2 h-3 w-3 text-slate-400 pointer-events-none"></lucide-icon>
+                  </div>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
-                  <select
-                    class="block w-full text-sm border-slate-300 dark:border-slate-700 dark:bg-slate-800 dark:text-slate-100 rounded-md py-1.5 focus:border-blue-500 focus:ring-blue-500 outline-none p-1 border appearance-none"
-                    [ngModel]="policy.claimsOfficerId"
-                    (ngModelChange)="onAssignOfficer(policy.id, $event)"
-                  >
-                    <option [ngValue]="null">Unassigned</option>
-                    @for (officer of claimsOfficers(); track officer.id) {
-                      <option [value]="officer.id">{{ officer.name }}</option>
-                    }
-                  </select>
+                <td class="px-6 py-5 whitespace-nowrap text-sm text-slate-500 dark:text-slate-400">
+                  <div class="relative max-w-[160px]">
+                    <select
+                      class="block w-full text-xs font-bold border-slate-200 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white rounded-xl py-2 px-3 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none appearance-none cursor-pointer border shadow-sm"
+                      [ngModel]="policy.claimsOfficerId"
+                      (ngModelChange)="onAssignOfficer(policy.id, $event)"
+                    >
+                      <option [ngValue]="null">Unassigned</option>
+                      @for (officer of claimsOfficers(); track officer.id) {
+                        <option [value]="officer.id">{{ officer.name }}</option>
+                      }
+                    </select>
+                    <lucide-icon name="briefcase" class="absolute right-3 top-1/2 -translate-y-1/2 h-3 w-3 text-slate-400 pointer-events-none"></lucide-icon>
+                  </div>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-right text-sm font-medium">
+                <td class="px-6 py-5 whitespace-nowrap text-right">
                   <button
                     (click)="openDeleteModal(policy.id)"
-                    class="text-red-600 hover:text-red-900 dark:hover:text-red-400 bg-red-50 dark:bg-red-900/10 p-1.5 rounded-md transition-colors"
-                    title="Soft Delete"
+                    class="text-rose-600 hover:text-white hover:bg-rose-600 dark:text-rose-400 dark:hover:bg-rose-500 p-2 rounded-xl transition-all duration-200 shadow-sm border border-rose-100 dark:border-rose-900/50 active:scale-90"
+                    title="Deactivate Plan"
                   >
                     <lucide-icon name="trash-2" class="h-4 w-4"></lucide-icon>
                   </button>
@@ -362,6 +342,7 @@ export class ManagePoliciesComponent implements OnInit {
     agentId: [null],
     claimsOfficerId: [null],
     planName: ['', Validators.required],
+    planDescription: ['', Validators.required],
     monthlyPremium: [0, [Validators.required, Validators.min(0)]],
     coverageAmount: [0, [Validators.required, Validators.min(0)]],
     expiryDate: ['', Validators.required],
@@ -464,6 +445,7 @@ export class ManagePoliciesComponent implements OnInit {
     this.createForm.reset({
       userId: 1,
       planName: '',
+      planDescription: '',
       status: 'Active',
       agentId: null,
       claimsOfficerId: null,

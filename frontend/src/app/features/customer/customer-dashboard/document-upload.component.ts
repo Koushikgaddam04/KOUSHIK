@@ -57,7 +57,7 @@ import { LucideAngularModule, UploadCloud, FileText, CheckCircle, Trash2, Downlo
               </div>
             </div>
             <div class="flex gap-2">
-                <a [href]="getViewUrl(doc.filePath)" target="_blank" class="p-2 text-slate-400 hover:text-emerald-600 transition-colors" title="View Document">
+                <a [href]="getViewUrl(doc.id)" target="_blank" class="p-2 text-slate-400 hover:text-emerald-600 transition-colors" title="View Document">
                   <lucide-icon name="eye" class="h-4 w-4"></lucide-icon>
                 </a>
             </div>
@@ -112,7 +112,7 @@ export class DocumentUploadComponent implements OnInit {
   }
 
 
-  getViewUrl(filePath: string) {
-    return this.docService.getViewUrl(filePath);
+  getViewUrl(id: number) {
+    return this.docService.getViewUrl(id);
   }
 }

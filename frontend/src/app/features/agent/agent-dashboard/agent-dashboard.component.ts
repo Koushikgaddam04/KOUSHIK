@@ -16,79 +16,111 @@ Chart.register(...registerables);
   template: `
     <app-loading-spinner [show]="isLoading()" message="Loading Dashboard..."></app-loading-spinner>
     
-    <div class="mb-8">
-      <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Agent Dashboard</h1>
-      <p class="text-slate-500 dark:text-slate-400 mt-1">Your performance, commissions, and customer analytics.</p>
+    <div class="mb-10">
+      <h1 class="text-3xl font-extrabold text-slate-900 dark:text-white tracking-tight">Agent Command Center</h1>
+      <p class="text-slate-500 dark:text-slate-400 mt-2 font-medium">Real-time oversight of customer acquisition and commission earnings.</p>
     </div>
 
     <!-- Agent Stats Grid -->
-    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8 pt-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-10 pt-4">
       
       <!-- Customers Card -->
-      <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 flex items-center relative overflow-hidden group hover:shadow-md transition-all duration-200">
-        <div class="absolute right-0 top-0 h-full w-2 bg-blue-500"></div>
-        <div class="p-3 bg-blue-100 dark:bg-blue-900/20 text-blue-600 dark:text-blue-400 rounded-lg mr-4">
-          <lucide-icon name="users" class="h-8 w-8"></lucide-icon>
-        </div>
-        <div>
-          <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Total Customers</p>
-          <p class="text-2xl font-bold text-slate-800 dark:text-slate-100">{{ stats().customers }}</p>
+      <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-slate-800 p-7 flex flex-col justify-center relative overflow-hidden group hover:shadow-2xl hover:shadow-blue-500/10 transition-all duration-300 transform hover:-translate-y-1">
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-blue-400 to-blue-600 opacity-80 group-hover:opacity-100 transition-opacity"></div>
+        <div class="flex items-center justify-between mt-2">
+          <div>
+            <p class="text-[10px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 mb-1">Managed Customers</p>
+            <p class="text-4xl font-black text-slate-900 dark:text-white">{{ stats().customers }}</p>
+          </div>
+          <div class="p-4 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-2xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm border border-blue-100 dark:border-blue-800/50">
+            <lucide-icon name="users" class="h-6 w-6"></lucide-icon>
+          </div>
         </div>
       </div>
 
       <!-- Policies Sold Card -->
-      <div class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 flex items-center relative overflow-hidden group hover:shadow-md transition-all duration-200">
-        <div class="absolute right-0 top-0 h-full w-2 bg-emerald-500"></div>
-        <div class="p-3 bg-emerald-100 dark:bg-emerald-900/20 text-emerald-600 dark:text-emerald-400 rounded-lg mr-4">
-          <lucide-icon name="shield-check" class="h-8 w-8"></lucide-icon>
-        </div>
-        <div>
-          <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Policies Sold</p>
-          <p class="text-2xl font-bold text-slate-800 dark:text-slate-100">{{ stats().policiesSold }}</p>
+      <div class="bg-white dark:bg-slate-900 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-slate-800 p-7 flex flex-col justify-center relative overflow-hidden group hover:shadow-2xl hover:shadow-emerald-500/10 transition-all duration-300 transform hover:-translate-y-1">
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-emerald-400 to-emerald-600 opacity-80 group-hover:opacity-100 transition-opacity"></div>
+        <div class="flex items-center justify-between mt-2">
+          <div>
+            <p class="text-[10px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 mb-1">Total Policies Sold</p>
+            <p class="text-4xl font-black text-slate-900 dark:text-white">{{ stats().policiesSold }}</p>
+          </div>
+          <div class="p-4 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-2xl group-hover:scale-110 group-hover:-rotate-3 transition-transform duration-300 shadow-sm border border-emerald-100 dark:border-emerald-800/50">
+            <lucide-icon name="shield-check" class="h-6 w-6"></lucide-icon>
+          </div>
         </div>
       </div>
 
       <!-- Commissions Card -->
-      <div id="commissions" class="bg-white dark:bg-slate-900 rounded-xl shadow-sm border border-slate-200 dark:border-slate-800 p-6 flex items-center relative overflow-hidden hover:shadow-md transition-all duration-200">
-        <div class="absolute right-0 top-0 h-full w-2 bg-purple-500"></div>
-        <div class="p-3 bg-purple-100 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 rounded-lg mr-4">
-          <lucide-icon name="banknote" class="h-8 w-8"></lucide-icon>
-        </div>
-        <div>
-          <p class="text-sm font-medium text-slate-500 dark:text-slate-400">Earned Commissions</p>
-          <p class="text-2xl font-bold text-slate-800 dark:text-slate-100">{{ stats().commissions | currency }}</p>
+      <div id="commissions" class="bg-white dark:bg-slate-900 rounded-3xl shadow-xl shadow-slate-200/50 dark:shadow-none border border-slate-200 dark:border-slate-800 p-7 flex flex-col justify-center relative overflow-hidden group hover:shadow-2xl hover:shadow-purple-500/10 transition-all duration-300 transform hover:-translate-y-1">
+        <div class="absolute inset-x-0 top-0 h-1 bg-gradient-to-r from-purple-400 to-purple-600 opacity-80 group-hover:opacity-100 transition-opacity"></div>
+        <div class="flex items-center justify-between mt-2">
+          <div>
+            <p class="text-[10px] font-bold tracking-widest uppercase text-slate-500 dark:text-slate-400 mb-1">Earned Commission</p>
+            <p class="text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-purple-600 to-indigo-600 dark:from-purple-400 dark:to-indigo-400">{{ stats().commissions | currency }}</p>
+          </div>
+          <div class="p-4 bg-purple-50 dark:bg-purple-900/30 text-purple-600 dark:text-purple-400 rounded-2xl group-hover:scale-110 group-hover:rotate-3 transition-transform duration-300 shadow-sm border border-purple-100 dark:border-purple-800/50">
+            <lucide-icon name="banknote" class="h-6 w-6"></lucide-icon>
+          </div>
         </div>
       </div>
 
     </div>
 
     <!-- Charts Section -->
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 mb-8">
+    <div class="grid grid-cols-1 lg:grid-cols-5 gap-8 mb-8">
       
       <!-- Performance Line Chart -->
-      <div class="bg-white dark:bg-slate-900 p-6 rounded-xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
-        <h3 class="text-lg font-semibold text-slate-800 dark:text-slate-100 mb-6">Sales Performance (Last 6 Months)</h3>
+      <div class="lg:col-span-3 bg-white dark:bg-slate-900 p-8 rounded-3xl border border-slate-200 dark:border-slate-800 shadow-sm flex flex-col">
+        <div class="flex items-center justify-between mb-8">
+          <div>
+            <h3 class="text-xl font-black text-slate-900 dark:text-white">Revenue Trajectory</h3>
+            <p class="text-xs text-slate-500 font-medium">Monthly sales performance overview</p>
+          </div>
+          <div class="p-3 bg-slate-50 dark:bg-slate-800 rounded-2xl">
+             <lucide-icon name="trending-up" class="h-5 w-5 text-blue-600"></lucide-icon>
+          </div>
+        </div>
         <div class="flex-1 min-h-[300px] relative">
           <canvas #performanceChart></canvas>
         </div>
       </div>
 
       <!-- Task/Queue Shortcut -->
-      <div class="bg-blue-600 p-6 rounded-xl text-white shadow-lg flex flex-col justify-between overflow-hidden relative">
-        <div class="relative z-10">
-          <lucide-icon name="trending-up" class="h-10 w-10 mb-4 text-blue-200"></lucide-icon>
-          <h3 class="text-xl font-bold mb-2">Agent Target Progress</h3>
-          <p class="text-blue-100 text-sm mb-6">You're doing great! You are 85% towards your quarterly goal.</p>
-          
-          <div class="w-full bg-blue-800/50 rounded-full h-3 mb-6">
-            <div class="bg-white rounded-full h-3" style="width: 85%"></div>
+      <div class="lg:col-span-2 bg-indigo-600 p-8 rounded-3xl text-white shadow-2xl shadow-indigo-500/30 flex flex-col justify-between overflow-hidden relative group">
+        <div class="relative z-10 flex flex-col h-full">
+          <div class="bg-white/10 p-4 rounded-2xl w-fit mb-6">
+            <lucide-icon name="rocket" class="h-8 w-8 text-white"></lucide-icon>
           </div>
+          
+          <h3 class="text-2xl font-black mb-2 tracking-tight">Quarterly Goal Status</h3>
+          <p class="text-indigo-100 text-sm font-medium mb-8 leading-relaxed">Impressive work! You've achieved <span class="text-white font-black">85%</span> of your current performance milestone.</p>
+          
+          <div class="mt-auto space-y-6">
+            <div class="space-y-2">
+               <div class="flex justify-between text-[10px] font-black uppercase tracking-widest text-indigo-200">
+                  <span>Progress</span>
+                  <span>85% Completetion</span>
+               </div>
+               <div class="w-full bg-indigo-900/30 rounded-full h-4 p-1">
+                 <div class="bg-white rounded-full h-full shadow-lg" style="width: 85%"></div>
+               </div>
+            </div>
 
-          <a routerLink="/agent/queue" class="inline-flex items-center px-4 py-2 bg-white text-blue-600 rounded-lg text-sm font-bold hover:bg-blue-50 transition-colors">
-            Go to Verification Queue
-          </a>
+            <button 
+              routerLink="/agent/queue" 
+              class="w-full py-4 bg-white text-indigo-600 rounded-2xl text-sm font-black hover:bg-indigo-50 transition-all active:scale-[0.98] shadow-lg flex items-center justify-center gap-2 group/btn"
+            >
+              Access Verification Queue
+              <lucide-icon name="arrow-right" class="h-4 w-4 transform group-hover/btn:translate-x-1 transition-transform"></lucide-icon>
+            </button>
+          </div>
         </div>
-        <div class="absolute -bottom-10 -right-10 w-48 h-48 bg-white/10 rounded-full blur-2xl"></div>
+        
+        <!-- Decorative blobs -->
+        <div class="absolute -bottom-12 -right-12 w-64 h-64 bg-white/10 rounded-full blur-3xl group-hover:scale-125 transition-transform duration-700"></div>
+        <div class="absolute top-10 right-10 w-24 h-24 bg-white/5 rounded-full blur-2xl group-hover:-translate-y-8 transition-transform duration-700"></div>
       </div>
 
     </div>

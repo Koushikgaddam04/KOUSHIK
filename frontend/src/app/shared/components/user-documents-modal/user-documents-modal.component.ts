@@ -63,7 +63,7 @@ import { ToastrService } from 'ngx-toastr';
                     </div>
                     <div class="flex items-center gap-2">
                       <a 
-                        [href]="getViewUrl(doc.filePath)" 
+                        [href]="getViewUrl(doc.id)" 
                         target="_blank"
                         class="px-4 py-2 text-emerald-600 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-900/20 rounded-lg font-bold text-xs flex items-center gap-2 hover:bg-emerald-100 transition-colors"
                       >
@@ -126,7 +126,7 @@ export class UserDocumentsModalComponent implements OnChanges {
   }
 
 
-  getViewUrl(filePath: string) {
-    return this.docService.getViewUrl(filePath);
+  getViewUrl(id: number) {
+    return this.docService.getViewUrl(id);
   }
 }

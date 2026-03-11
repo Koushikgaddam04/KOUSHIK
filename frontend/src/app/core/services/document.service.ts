@@ -40,8 +40,23 @@ export class DocumentService {
         return this.http.get<any[]>(`${this.apiBase}/for/${entityType}/${entityId}`);
     }
 
-    getViewUrl(fileName: string): string {
-        return `${this.apiBase}/view/${fileName}`;
+    getViewUrl(id: number): string {
+        return `${this.apiBase}/view/${id}`;
+    }
+
+    downloadDocument(id: number): Observable<Blob> {
+        return this.http.get(`${this.apiBase}/download/${id}`, { responseType: 'blob' });
+    }
+
+    saveFile(blob: Blob, fileName: string) {
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = fileName;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
     }
 
     reviewDocument(id: number, status: string, comments: string): Observable<any> {
