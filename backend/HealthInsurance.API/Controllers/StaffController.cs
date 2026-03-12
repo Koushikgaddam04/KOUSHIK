@@ -1,4 +1,4 @@
-﻿using HealthInsurance.Application.Interfaces;
+using HealthInsurance.Application.Interfaces;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using HealthInsurance.Domain.Entities;
@@ -109,7 +109,7 @@ namespace HealthInsurance.API.Controllers
             var allUsers = await _userRepo.GetAllAsync();
 
             var pendingQueue = allQuotes
-                .Where(q => q.IsConvertedToPolicy == 0 && q.IsPaid == true)
+                .Where(q => q.IsConvertedToPolicy == 0 && q.IsPaid == false)
                 .Where(q => q.AgentId == agentId || agentAssignedPlanNames.Contains(q.SelectedPlanName))
                 .Select(q => {
                     var user = allUsers.FirstOrDefault(u => u.Id == q.UserId);
@@ -175,9 +175,9 @@ namespace HealthInsurance.API.Controllers
             }
             else
             {
-                success = await _policyService.ActivatePolicyAsync(quote.QuoteReference, quote.UserId ?? 0);
-                if (!success) return BadRequest("Failed to verify and activate the policy.");
-                return Ok("Customer quote verified and policy activated successfully.");
+                success = await _policyService.ApprovePolicyAsync(quote.QuoteReference, quote.UserId ?? 0);
+                if (!success) return BadRequest("Failed to verify and approve the policy.");
+                return Ok("Customer quote verified and approved successfully. Customer can now make the payment.");
             }
         }
         // 10. Get Pending Claims (Claim Officer Queue)

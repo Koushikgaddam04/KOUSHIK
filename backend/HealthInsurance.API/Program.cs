@@ -89,6 +89,7 @@ namespace HealthInsurance.API
             builder.Services.AddScoped<IPolicyService, PolicyService>();
             builder.Services.AddScoped<IClaimService, ClaimService>();
             builder.Services.AddScoped<IDashboardService, DashboardService>();
+            builder.Services.AddScoped<IInvoiceService, InvoiceService>();
 
             builder.Services.AddCors(options =>
             {

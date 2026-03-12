@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -29,13 +29,11 @@ public class PolicyService : IPolicyService
         _auditRepo = auditRepo;
     }
 
-    public async Task<bool> ActivatePolicyAsync(string quoteReference, int customerId)
+    public async Task<bool> ApprovePolicyAsync(string quoteReference, int customerId)
     {
-        // 1. Find the Quote
         var quote = await _quoteRepo.GetByReferenceAsync(quoteReference);
         if (quote == null || quote.IsConvertedToPolicy != 0) return false;
 
-        // 2. Try to find the Plan Template by Name to inherit the assigned Agent/Officer
         var allPolicies = await _policyRepo.GetAllAsync();
         var template = allPolicies.FirstOrDefault(p => p.PlanName == quote.SelectedPlanName && p.IsPlanTemplate == true);
         
@@ -45,13 +43,33 @@ public class PolicyService : IPolicyService
             quote.ClaimsOfficerId = template.ClaimsOfficerId;
         }
 
-        // 3. Mark Quote as Active Policy
-        quote.IsConvertedToPolicy = 1; // Approved
-        quote.IsActive = true;
+        quote.IsConvertedToPolicy = 1; // Approved, awaiting payment
         
         _quoteRepo.Update(quote);
 
-        // 4. Generate Agent Commission (if an agent was inherited)
+        var log = new PolicyActionLog
+        {
+            EntityName = "PremiumQuote",
+            EntityRecordId = quote.Id, 
+            ActionType = "PolicyVerification",
+            NewValue = "Approved/AwaitingPayment",
+            PerformedByUserId = UserSession.CurrentUserId 
+        };
+        await _auditRepo.AddAsync(log);
+
+        return await _quoteRepo.SaveChangesAsync();
+    }
+
+    public async Task<bool> ActivatePolicyAsync(string quoteReference)
+    {
+        var quote = await _quoteRepo.GetByReferenceAsync(quoteReference);
+        if (quote == null || quote.IsConvertedToPolicy != 1) return false;
+
+        quote.IsActive = true;
+        quote.IsPaid = true;
+
+        _quoteRepo.Update(quote);
+
         if (quote.AgentId.HasValue)
         {
             var commission = new AgentCommissionLog
@@ -65,13 +83,12 @@ public class PolicyService : IPolicyService
             await _commissionRepo.AddAsync(commission);
         }
 
-        // 5. Audit the Action
         var log = new PolicyActionLog
         {
             EntityName = "PremiumQuote",
             EntityRecordId = quote.Id, 
-            ActionType = "PolicyVerification",
-            NewValue = "Approved/Active",
+            ActionType = "PolicyActivation",
+            NewValue = "Active/Paid",
             PerformedByUserId = UserSession.CurrentUserId 
         };
         await _auditRepo.AddAsync(log);

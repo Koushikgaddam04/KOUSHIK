@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -9,8 +9,9 @@ namespace HealthInsurance.Domain.Entities;
 public class DocumentVault : BaseEntity
 {
     public string FileName { get; set; } = string.Empty;
-    public string FilePath { get; set; } = string.Empty;
-    public string DocumentType { get; set; } = string.Empty; // e.g., "Aadhar", "HospitalBill"
+    public byte[]? FileData { get; set; } // Store files in SQL directly
+    public string ContentType { get; set; } = "application/octet-stream";
+    public string DocumentType { get; set; } = string.Empty; // e.g., "Aadhar", "HospitalBill", "Invoice"
 
     // Status for the Claims Officer to update
     public string Status { get; set; } = "Pending"; // Pending, Verified, Rejected

@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -14,7 +14,7 @@ public class Policy : BaseEntity
     public User? User { get; set; }
 
     public string PlanName { get; set; } = string.Empty;
-
+    public string PlanDescription { get; set; } = string.Empty;
 
     public decimal MonthlyPremium { get; set; }
     public decimal CoverageAmount { get; set; }

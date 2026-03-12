@@ -1,4 +1,4 @@
-﻿using HealthInsurance.Application.Interfaces;
+using HealthInsurance.Application.Interfaces;
 using HealthInsurance.Domain.Entities;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -30,20 +30,18 @@ public class DocumentController : BaseApiController
 
         var userId = UserSession.CurrentUserId;
         var fileName = $"{Guid.NewGuid()}_{request.File.FileName}";
-        var uploadsFolder = GetUploadsFolder();
-        if (!Directory.Exists(uploadsFolder)) Directory.CreateDirectory(uploadsFolder);
-
-        var filePath = Path.Combine(uploadsFolder, fileName);
-
-        using (var stream = new FileStream(filePath, FileMode.Create))
+        byte[] fileBytes;
+        using (var memoryStream = new MemoryStream())
         {
-            await request.File.CopyToAsync(stream);
+            await request.File.CopyToAsync(memoryStream);
+            fileBytes = memoryStream.ToArray();
         }
 
         var doc = new DocumentVault
         {
             FileName = request.File.FileName,
-            FilePath = fileName,
+            FileData = fileBytes,
+            ContentType = request.File.ContentType,
             DocumentType = request.DocType,
             // Link to a specific entity (Policy/Claim/User) based on what the caller provides
             RelatedEntityType = string.IsNullOrEmpty(request.EntityType) ? "User" : request.EntityType,
@@ -55,6 +53,7 @@ public class DocumentController : BaseApiController
         await _docRepo.AddAsync(doc);
         await _docRepo.SaveChangesAsync();
 
+        // Avoid returning the entire byte array in the response to save bandwidth
         return Ok(new { message = "Document uploaded successfully!", docId = doc.Id });
     }
 
@@ -64,7 +63,7 @@ public class DocumentController : BaseApiController
         var userId = UserSession.CurrentUserId;
         var allDocs = await _docRepo.GetAllAsync();
         var myDocs = allDocs.Where(d => d.UploadedByUserId == userId)
-            .Select(d => new { d.Id, d.FileName, d.FilePath, d.DocumentType, d.Status, d.RelatedEntityType, d.RelatedEntityId, d.CreatedAt })
+            .Select(d => new { d.Id, d.FileName, d.DocumentType, d.Status, d.RelatedEntityType, d.RelatedEntityId, d.CreatedAt })
             .ToList();
         return Ok(myDocs);
     }
@@ -74,7 +73,7 @@ public class DocumentController : BaseApiController
     {
         var allDocs = await _docRepo.GetAllAsync();
         var userDocs = allDocs.Where(d => d.UploadedByUserId == userId)
-            .Select(d => new { d.Id, d.FileName, d.FilePath, d.DocumentType, d.Status, d.RelatedEntityType, d.RelatedEntityId, d.CreatedAt })
+            .Select(d => new { d.Id, d.FileName, d.DocumentType, d.Status, d.RelatedEntityType, d.RelatedEntityId, d.CreatedAt })
             .ToList();
         return Ok(userDocs);
     }
@@ -87,62 +86,29 @@ public class DocumentController : BaseApiController
         var docs = allDocs
             .Where(d => d.RelatedEntityType.Equals(entityType, StringComparison.OrdinalIgnoreCase)
                      && d.RelatedEntityId == entityId)
-            .Select(d => new { d.Id, d.FileName, d.FilePath, d.DocumentType, d.Status, d.CreatedAt })
+            .Select(d => new { d.Id, d.FileName, d.DocumentType, d.Status, d.CreatedAt })
             .ToList();
         return Ok(docs);
     }
 
-    [HttpGet("download/{fileName}")]
+    [HttpGet("download/{id}")]
     [AllowAnonymous]
-    public IActionResult DownloadDocument([FromRoute] string fileName)
+    public async Task<IActionResult> DownloadDocument([FromRoute] int id)
     {
-        var filePath = GetFilePath(fileName);
-        if (!System.IO.File.Exists(filePath)) return NotFound();
+        var doc = await _docRepo.GetByIdAsync(id);
+        if (doc == null || doc.FileData == null) return NotFound("Document not found.");
 
-        var fileBytes = System.IO.File.ReadAllBytes(filePath);
-        return File(fileBytes, "application/octet-stream", fileName);
+        return File(doc.FileData, "application/octet-stream", doc.FileName);
     }
 
-    [HttpGet("view/{fileName}")]
+    [HttpGet("view/{id}")]
     [AllowAnonymous]
-    public IActionResult ViewDocument([FromRoute] string fileName)
+    public async Task<IActionResult> ViewDocument([FromRoute] int id)
     {
-        var filePath = GetFilePath(fileName);
-        if (!System.IO.File.Exists(filePath)) return NotFound();
+        var doc = await _docRepo.GetByIdAsync(id);
+        if (doc == null || doc.FileData == null) return NotFound("Document not found.");
 
-        var extension = Path.GetExtension(fileName).ToLowerInvariant();
-        string contentType = extension switch
-        {
-            ".pdf" => "application/pdf",
-            ".jpg" or ".jpeg" => "image/jpeg",
-            ".png" => "image/png",
-            ".txt" => "text/plain",
-            _ => "application/octet-stream"
-        };
-
-        var fileBytes = System.IO.File.ReadAllBytes(filePath);
-        return File(fileBytes, contentType);
-    }
-
-    private string GetUploadsFolder()
-    {
-        // Use ContentRootPath as primary (project root)
-        return Path.Combine(_environment.ContentRootPath, "Uploads");
-    }
-
-    private string GetFilePath(string fileName)
-    {
-        // 1. Check ContentRootPath (likely project root in dev)
-        var path = Path.Combine(_environment.ContentRootPath, "Uploads", fileName);
-        if (System.IO.File.Exists(path)) return path;
-
-        // 2. Fallback to AppContext.BaseDirectory (bin folder)
-        path = Path.Combine(AppContext.BaseDirectory, "Uploads", fileName);
-        if (System.IO.File.Exists(path)) return path;
-
-        // 3. Fallback to Current Directory
-        path = Path.Combine(Directory.GetCurrentDirectory(), "Uploads", fileName);
-        return path;
+        return File(doc.FileData, doc.ContentType ?? "application/octet-stream");
     }
 
     [HttpPatch("review/{id}")]

@@ -1,4 +1,4 @@
-﻿using HealthInsurance.Application.Interfaces;
+using HealthInsurance.Application.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 using HealthInsurance.Application.DTOs;
 using Microsoft.AspNetCore.Authorization;
@@ -36,32 +36,17 @@ public class QuoteController : BaseApiController
     }
 
     /// <summary>
-    /// Called after payment + document upload to confirm the policy request.
-    /// Looks up the existing paid quote (created during payment) — does NOT insert a new record.
+    /// Called to submit the application and save the quote to the database before verification.
     /// </summary>
     [HttpPost("request")]
-    public async Task<IActionResult> RequestPolicy([FromBody] FinalizeQuoteDto request)
+    public async Task<IActionResult> RequestPolicy([FromBody] QuoteRequestDto request)
     {
         var userId = UserSession.CurrentUserId;
 
-        // Find the existing paid quote — it was already created during payment
-        var quote = await _quoteRepo.GetByIdAsync(request.QuoteId);
-        if (quote == null || quote.UserId != userId)
-            return NotFound("Quote not found.");
+        // Calculate and save the quote to DB.
+        // It will have IsConvertedToPolicy = 0 (Pending Verification) and IsPaid = false.
+        var quote = await _premiumService.CalculateQuoteAsync(userId, request.Age, request.PlanName, request.Tier, saveToDb: true);
 
-        if (!quote.IsPaid)
-            return BadRequest("Payment has not been completed for this quote.");
-
-        // No new record — the quote already exists. Just return it so the frontend can proceed.
-        return Ok(quote);
+        return Ok(new { message = "Policy requested.", quoteId = quote.Id });
     }
-}
-
-/// <summary>
-/// DTO used by the final policy request step. Only needs the QuoteId since
-/// the record already exists in the DB (created during payment).
-/// </summary>
-public class FinalizeQuoteDto
-{
-    public int QuoteId { get; set; }
 }

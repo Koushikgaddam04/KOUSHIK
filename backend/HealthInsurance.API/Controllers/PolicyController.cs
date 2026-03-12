@@ -1,4 +1,4 @@
-﻿using HealthInsurance.Application.Interfaces;
+using HealthInsurance.Application.Interfaces;
 using HealthInsurance.Domain.Entities;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
@@ -74,15 +74,11 @@ public class PolicyController : BaseApiController
             // But usually we show them in different sections. 
             // For this consolidated list, we'll label them by status.
             
-            string status = q.IsConvertedToPolicy switch
-            {
-                1 => "Active",
-                2 => "Rejected",
-                _ => q.IsPaid ? "Pending" : "Quote"
-            };
-
-            // Don't show raw quotes that aren't paid yet in the policy dashboard
-            if (!q.IsPaid && q.IsConvertedToPolicy == 0) continue;
+            string status = "";
+            if (q.IsConvertedToPolicy == 1 && q.IsPaid) status = "Active";
+            else if (q.IsConvertedToPolicy == 1 && !q.IsPaid) status = "Payment Pending";
+            else if (q.IsConvertedToPolicy == 2) status = "Rejected";
+            else if (q.IsConvertedToPolicy == 0) status = "Pending Review";
 
             var agent = allUsers.FirstOrDefault(u => u.Id == q.AgentId);
             var officer = allUsers.FirstOrDefault(u => u.Id == q.ClaimsOfficerId);
@@ -109,10 +105,26 @@ public class PolicyController : BaseApiController
     [HttpPost("activate")]
     public async Task<IActionResult> Activate([FromQuery] string quoteRef, [FromQuery] int customerId)
     {
-        var result = await _policyService.ActivatePolicyAsync(quoteRef, customerId);
+        var result = await _policyService.ActivatePolicyAsync(quoteRef);
         if (!result) return BadRequest("Could not activate policy. Invalid quote or already converted.");
 
         return Ok("Policy activated successfully! Commission and Audit logs updated.");
+    }
+
+    [HttpGet("plans")]
+    [AllowAnonymous] // Assuming we want anyone to see these plans to get a quote
+    public async Task<IActionResult> GetPolicyPlans()
+    {
+        var policies = await _policyRepo.GetAllAsync();
+        var templates = policies.Where(p => p.IsPlanTemplate && p.Status == "Active")
+            .Select(p => new {
+                p.Id,
+                p.PlanName,
+                p.PlanDescription,
+                p.MonthlyPremium,
+                p.CoverageAmount
+            }).ToList();
+        return Ok(templates);
     }
 
     // 3. See recent policies (Admin) - Duplicate removed, kept this version
