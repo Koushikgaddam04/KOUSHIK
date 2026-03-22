@@ -360,11 +360,16 @@ namespace HealthInsurance.API.Controllers
             // 2. Filter based on the role and the ActionType
             if (role.ToLower() == "agent")
             {
+                int currentAgentId = UserSession.CurrentUserId;
+
                 // Agents look at Policy requests, assignments, and verifications
+                // Filter by the agent's ID to keep the dashboard personal
                 var agentHistory = allLogs.Where(l =>
-                    l.ActionType == "PolicyVerification" ||
+                    (l.ActionType == "PolicyVerification" ||
                     l.ActionType == "AgentAssignment" ||
-                    l.ActionType == "DocumentReview"
+                    l.ActionType == "DocumentReview") &&
+                    (l.PerformedByUserId == currentAgentId || 
+                     (l.NewValue != null && l.NewValue.Contains($"Agent ID: {currentAgentId}")))
                 ).OrderByDescending(l => l.CreatedAt)
                 .Select(l => new {
                     id = l.Id,
@@ -447,14 +452,36 @@ namespace HealthInsurance.API.Controllers
         [HttpGet("my-verification-queue/{agentId}")]
         public async Task<IActionResult> GetAgentQueue([FromRoute] int agentId)
         {
-            // 1. Get all policies
+            // 1. Get all customer policy instances assigned to this agent (legacy or direct)
             var allPolicies = await _policyRepo.GetAllAsync();
-            var myQueue = allPolicies.Where(p =>
+            var myPolicies = allPolicies.Where(p =>
                 p.AgentId == agentId &&
-                p.IsActive == true
-            ).ToList();
+                !p.IsPlanTemplate // EXCLUDE TEMPLATES - we only want individual customer policies here
+            ).Select(p => new {
+                id = p.Id,
+                userId = p.UserId,
+                isActive = p.IsActive,
+                status = p.Status
+            }).ToList();
 
-            return Ok(myQueue);
+            // 2. Get all PremiumQuotes (Modern Policy Flow) assigned to this agent
+            var allQuotes = await _quoteRepo.GetAllAsync();
+            var myQuotes = allQuotes.Where(q => 
+                q.AgentId == agentId
+            ).Select(q => new {
+                id = q.Id,
+                userId = q.UserId ?? 0,
+                isActive = q.IsActive,
+                isPaid = q.IsPaid,
+                isConverted = q.IsConvertedToPolicy
+            }).ToList();
+
+            // Merge both lists into a common result that represents everything this agent "manages"
+            var combined = new List<object>();
+            combined.AddRange(myPolicies);
+            combined.AddRange(myQuotes);
+
+            return Ok(combined);
         }
 
         [HttpGet("commissions/{agentId}")]

@@ -158,12 +158,23 @@ export class AgentDashboardComponent implements OnInit, AfterViewInit {
           const p = activePolicies || [];
           const c = commissions || [];
 
-          // Real uniquely assigned customers are those holding these active policies
+          // Real uniquely assigned customers are those holding these policies/quotes
+          // This now includes both active and pending customers assigned to the agent
           const uniqueCustomers = new Set(p.map((item: any) => item.userId)).size;
-          const policiesSold = p.length;
 
-          // Only count actual completed positive validations
-          const approvedVerifications = h.filter((item: any) => item.newValue === 'Approved' || item.actionDetails === 'PolicyVerified');
+          // Total policies sold counts completed sales (Active or Paid)
+          const policiesSold = p.filter((item: any) => 
+            item.isActive === true || 
+            item.isPaid === true || 
+            item.status === 'Active'
+          ).length;
+
+          // Only count actual completed positive validations for the chart
+          const approvedVerifications = h.filter((item: any) => 
+            item.newValue?.includes('Approved') || 
+            item.newValue?.includes('Active') || 
+            item.actionDetails === 'PolicyVerified'
+          );
 
           let realCommissions = 0;
           c.forEach((log: any) => realCommissions += log.earnedAmount || 0);
