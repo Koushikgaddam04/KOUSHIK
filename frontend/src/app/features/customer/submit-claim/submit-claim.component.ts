@@ -134,7 +134,7 @@ import { switchMap } from 'rxjs';
               </ul>
             } @else {
                <div class="py-10 text-center bg-slate-50/50 dark:bg-slate-800/10 rounded-2xl border-2 border-dashed border-slate-100 dark:border-slate-800">
-                  <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">Dossier Empty</p>
+                  <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">Submit atleast one document</p>
                </div>
             }
           </div>

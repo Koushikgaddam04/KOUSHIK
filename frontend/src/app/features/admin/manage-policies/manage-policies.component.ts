@@ -141,6 +141,9 @@ import { LucideAngularModule, Trash2, Shield, Filter, Search, Plus, X, User, Bri
                         class="block w-full border border-slate-200 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white rounded-xl shadow-sm py-2.5 px-4 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all sm:text-sm"
                       />
                     </div>
+                  </div>
+
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
                     <div>
                       <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">Assigned Agent</label>
                       <select
@@ -150,6 +153,18 @@ import { LucideAngularModule, Trash2, Shield, Filter, Search, Plus, X, User, Bri
                         <option [ngValue]="null">Leave Unassigned</option>
                         @for (agent of agents(); track agent.id) {
                           <option [value]="agent.id">{{ agent.name }}</option>
+                        }
+                      </select>
+                    </div>
+                    <div>
+                      <label class="block text-xs font-bold text-slate-500 dark:text-slate-400 uppercase tracking-widest mb-1.5">Assigned Officer</label>
+                      <select
+                        formControlName="claimsOfficerId"
+                        class="block w-full border border-slate-200 dark:border-slate-800 dark:bg-slate-950/50 dark:text-white rounded-xl shadow-sm py-2.5 px-4 focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all sm:text-sm appearance-none cursor-pointer"
+                      >
+                        <option [ngValue]="null">Leave Unassigned</option>
+                        @for (officer of claimsOfficers(); track officer.id) {
+                          <option [value]="officer.id">{{ officer.name }}</option>
                         }
                       </select>
                     </div>

@@ -14,104 +14,113 @@ import { LucideAngularModule, LogIn, Lock, Mail, ShieldCheck, Activity, Shield, 
   template: `
     <app-loading-spinner [show]="isLoading()" message="Authenticating..."></app-loading-spinner>
 
-    <div class="min-h-screen bg-white dark:bg-slate-950 flex overflow-hidden">
-      <!-- Left side: Hero Content (Hidden on mobile) -->
-      <div class="hidden lg:flex lg:w-3/5 bg-slate-50 dark:bg-slate-900 flex-col justify-center p-12 relative overflow-hidden">
-        <div class="absolute top-0 right-0 -mr-20 -mt-20 w-96 h-96 bg-blue-100 dark:bg-blue-900/10 rounded-full blur-3xl opacity-60"></div>
-        <div class="absolute bottom-0 left-0 -ml-20 -mb-20 w-96 h-96 bg-emerald-100 dark:bg-emerald-900/10 rounded-full blur-3xl opacity-60"></div>
+    <div class="min-h-screen bg-slate-50 dark:bg-slate-950 flex overflow-hidden font-sans selection:bg-blue-500/30">
+      
+      <!-- Animated Background Ornaments -->
+      <div class="absolute inset-0 -z-0 pointer-events-none overflow-hidden">
+        <div class="absolute top-[-10%] left-[-10%] w-[40%] h-[40%] bg-blue-400/10 dark:bg-blue-600/5 blur-[120px] rounded-full animate-pulse"></div>
+        <div class="absolute bottom-[10%] right-[-5%] w-[35%] h-[35%] bg-indigo-400/10 dark:bg-indigo-600/5 blur-[120px] rounded-full delay-700 animate-pulse"></div>
+      </div>
+
+      <!-- Left side: Visual Content (Hidden on mobile) -->
+      <div class="hidden lg:flex lg:w-[55%] bg-slate-950 flex-col justify-center p-20 relative overflow-hidden group">
+        <!-- Background Image with Overlay -->
+        <img src="https://images.unsplash.com/photo-1550751827-4bd374c3f58b?auto=format&fit=crop&q=80&w=2070" 
+             class="absolute inset-0 w-full h-full object-cover opacity-40 group-hover:scale-105 transition-transform duration-[3000ms]" 
+             alt="Security Background">
+        <div class="absolute inset-0 bg-gradient-to-tr from-slate-950 via-slate-950/80 to-blue-900/40"></div>
         
-        <div class="relative z-10 max-w-2xl mx-auto">
-          <div class="flex items-center gap-3 mb-8 cursor-pointer" routerLink="/">
-            <div class="p-2 bg-blue-600 rounded-xl shadow-lg shadow-blue-500/30">
+        <div class="relative z-10 space-y-12 animate-slide-up">
+          <div class="flex items-center gap-4 cursor-pointer" routerLink="/">
+            <div class="p-3 bg-blue-600 rounded-2xl shadow-2xl shadow-blue-500/40 transform hover:rotate-6 transition-transform">
               <lucide-icon name="shield-check" class="h-8 w-8 text-white"></lucide-icon>
             </div>
-            <span class="text-2xl font-bold text-slate-900 dark:text-white tracking-tight">HIMS Portal</span>
+            <span class="text-3xl font-black text-white tracking-tighter uppercase italic">HIMS</span>
           </div>
 
-          <h1 class="text-5xl font-extrabold text-slate-900 dark:text-white leading-tight mb-6">
-            Secure Access to your <br/>
-            <span class="text-blue-600">Health Ecosystem.</span>
-          </h1>
+          <div class="space-y-6">
+            <h1 class="text-6xl font-black text-white leading-[1.1] tracking-tight">
+              Gateway to <br/>
+              <span class="text-blue-500">Digital Health.</span>
+            </h1>
+            <p class="text-xl text-slate-300 max-w-lg leading-relaxed font-medium">
+              Access your personalized insurance ecosystem. Secure, intelligent, and always under your control.
+            </p>
+          </div>
 
-          <p class="text-xl text-slate-600 dark:text-slate-400 mb-10 leading-relaxed">
-            Manage your policies, track claims, and access your medical document vault with hospital-grade security and intelligent automation.
-          </p>
-
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-             <!-- Features same as hero -->
-             <div class="flex items-start gap-4 p-4 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700">
-              <div class="p-3 bg-blue-50 dark:bg-blue-900/30 text-blue-600 dark:text-blue-400 rounded-xl">
+          <div class="grid grid-cols-2 gap-8 pr-12">
+            <div class="p-6 bg-white/5 border border-white/10 rounded-3xl backdrop-blur-xl group/card hover:bg-white/10 transition-colors">
+              <div class="w-12 h-12 bg-blue-500/20 text-blue-400 rounded-xl flex items-center justify-center mb-4 group-hover/card:scale-110 transition-transform">
                 <lucide-icon name="activity" class="h-6 w-6"></lucide-icon>
               </div>
-              <div>
-                <h3 class="font-bold text-slate-900 dark:text-slate-100">Intelligent Stats</h3>
-                <p class="text-sm text-slate-500 dark:text-slate-400">Real-time tracking of your health journey.</p>
-              </div>
+              <h3 class="font-black text-white text-lg mb-2">Live Tracking</h3>
+              <p class="text-sm text-slate-400 font-medium">Real-time lifecycle management for all your policies.</p>
             </div>
-            <div class="flex items-start gap-4 p-4 rounded-2xl bg-white dark:bg-slate-800 shadow-sm border border-slate-100 dark:border-slate-700">
-              <div class="p-3 bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 dark:text-emerald-400 rounded-xl">
+            <div class="p-6 bg-white/5 border border-white/10 rounded-3xl backdrop-blur-xl group/card hover:bg-white/10 transition-colors">
+              <div class="w-12 h-12 bg-emerald-500/20 text-emerald-400 rounded-xl flex items-center justify-center mb-4 group-hover/card:scale-110 transition-transform">
                 <lucide-icon name="shield" class="h-6 w-6"></lucide-icon>
               </div>
-              <div>
-                <h3 class="font-bold text-slate-900 dark:text-slate-100">Total Security</h3>
-                <p class="text-sm text-slate-500 dark:text-slate-400">End-to-end encryption for all your data.</p>
-              </div>
+              <h3 class="font-black text-white text-lg mb-2">Advanced Security</h3>
+              <p class="text-sm text-slate-400 font-medium">E2E encryption for all sensitive medical data.</p>
             </div>
           </div>
+        </div>
+        <div>.</div>
+        <div>.</div>
+        <!-- Decorative stats pill -->
+        <div class="absolute bottom-20 left-20 animate-fade-in delay-500">
+           <div class="px-6 py-3 bg-blue-600 text-white rounded-full font-black uppercase tracking-widest text-[10px] shadow-2xl shadow-blue-500/50">
+             Trusted by 1.2M+ Users
+           </div>
         </div>
       </div>
 
       <!-- Right side: Login Section -->
-      <div class="w-full lg:w-2/5 flex flex-col justify-center p-8 sm:p-12 lg:p-16 bg-white dark:bg-slate-950">
-        <div class="max-w-md w-full mx-auto">
-          <!-- Back button for mobile -->
-          <div class="lg:hidden mb-8">
-            <div class="flex items-center gap-2 text-blue-600 font-bold" routerLink="/">
-               <lucide-icon name="shield-check" class="h-6 w-6"></lucide-icon>
-               <span>HIMS Portal</span>
+      <div class="w-full lg:w-[45%] flex flex-col justify-center p-8 sm:p-12 lg:p-24 bg-white dark:bg-slate-950 relative z-10 shadow-[-50px_0_100px_-20px_rgba(0,0,0,0.1)]">
+        <div class="max-w-md w-full mx-auto space-y-10">
+          
+          <div class="space-y-4">
+            <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-blue-500/10 text-blue-600 dark:text-blue-400 border border-blue-500/20 text-[10px] font-black uppercase tracking-widest">
+              Secure Authentication
             </div>
-          </div>
-
-          <div class="mb-10">
-            <h2 class="text-3xl font-bold text-slate-900 dark:text-white mb-2">Sign In</h2>
-            <p class="text-slate-500 dark:text-slate-400">Enter your credentials to access the portal.</p>
+            <h2 class="text-4xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">Welcome Back.</h2>
+            <p class="text-slate-500 dark:text-slate-400 font-medium">Enter your credentials to manage your health ecosystem.</p>
           </div>
 
           <form class="space-y-6" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
-            <div>
-              <label for="email" class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">
-                Email Address
+            <div class="space-y-2">
+              <label for="email" class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest ml-1">
+                Corporate Email
               </label>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <lucide-icon name="mail" class="h-5 w-5 text-slate-400 dark:text-slate-500"></lucide-icon>
+              <div class="relative group">
+                <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                  <lucide-icon name="mail" class="h-5 w-5 text-slate-400 dark:text-slate-500 group-focus-within:text-blue-500 transition-colors"></lucide-icon>
                 </div>
                 <input
                   id="email"
                   formControlName="email"
                   type="email"
-                  class="block w-full pl-11 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
-                  placeholder="name@company.com"
+                  class="block w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white rounded-[1.5rem] focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all font-semibold"
+                  placeholder="example@gmail.com"
                 />
               </div>
             </div>
 
-            <div>
-              <div class="flex items-center justify-between mb-2">
-                <label for="password" class="block text-sm font-medium text-slate-700 dark:text-slate-300">
-                  Password
+            <div class="space-y-2">
+              <div class="flex items-center justify-between ml-1">
+                <label for="password" class="text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest">
+                  Secure Password
                 </label>
-                <!-- <a href="#" class="text-sm font-medium text-blue-600 hover:text-blue-500">Forgot?</a> -->
               </div>
-              <div class="relative">
-                <div class="absolute inset-y-0 left-0 pl-4 flex items-center pointer-events-none">
-                  <lucide-icon name="lock" class="h-5 w-5 text-slate-400 dark:text-slate-500"></lucide-icon>
+              <div class="relative group">
+                <div class="absolute inset-y-0 left-0 pl-5 flex items-center pointer-events-none">
+                  <lucide-icon name="lock" class="h-5 w-5 text-slate-400 dark:text-slate-500 group-focus-within:text-blue-500 transition-colors"></lucide-icon>
                 </div>
                 <input
                   id="password"
                   formControlName="password"
                   type="password"
-                  class="block w-full pl-11 pr-4 py-3.5 bg-slate-50 dark:bg-slate-900 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white rounded-xl focus:ring-2 focus:ring-blue-500 focus:border-transparent outline-none transition-all"
+                  class="block w-full pl-14 pr-6 py-4 bg-slate-50 dark:bg-slate-900/50 border border-slate-200 dark:border-slate-800 text-slate-900 dark:text-white rounded-[1.5rem] focus:ring-2 focus:ring-blue-500/20 focus:border-blue-500 outline-none transition-all font-semibold"
                   placeholder="••••••••"
                 />
               </div>
@@ -120,28 +129,42 @@ import { LucideAngularModule, LogIn, Lock, Mail, ShieldCheck, Activity, Shield, 
             <button
               type="submit"
               [disabled]="isLoading()"
-              class="w-full flex justify-center py-4 px-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl shadow-lg shadow-blue-500/30 focus:outline-none transition-all transform active:scale-[0.98] items-center gap-2 disabled:opacity-70 disabled:grayscale"
+              class="group relative w-full flex justify-center py-5 px-6 bg-slate-950 dark:bg-white text-white dark:text-slate-950 font-black rounded-[1.5rem] shadow-2xl overflow-hidden transition-all transform active:scale-[0.98] disabled:opacity-70"
             >
-              @if (isLoading()) {
-                <lucide-icon name="loader-2" class="h-5 w-5 animate-spin"></lucide-icon>
-                Authenticating...
-              } @else {
-                <lucide-icon name="log-in" class="h-5 w-5"></lucide-icon>
-                Sign In
-              }
+              <div class="absolute inset-0 bg-gradient-to-r from-blue-600 to-indigo-600 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <div class="relative flex items-center gap-3">
+                @if (isLoading()) {
+                  <lucide-icon name="loader-2" class="h-5 w-5 animate-spin"></lucide-icon>
+                  <span>Verifying...</span>
+                } @else {
+                  <lucide-icon name="log-in" class="h-5 w-5 transform group-hover:translate-x-1 transition-transform"></lucide-icon>
+                  <span>Access Portal</span>
+                }
+              </div>
             </button>
           </form>
 
-          <p class="mt-8 text-center text-slate-600 dark:text-slate-400">
-            New here? 
-            <a routerLink="/register" class="font-bold text-blue-600 hover:text-blue-500">Create Profile</a>
-          </p>
+          <div class="pt-8 border-t border-slate-100 dark:border-slate-900 text-center">
+            <p class="text-slate-500 dark:text-slate-400 font-bold">
+              New to the platform? 
+              <a routerLink="/register" class="text-blue-600 hover:text-blue-500 ml-1 transition-colors">Start Application</a>
+            </p>
+          </div>
         </div>
       </div>
     </div>
   `,
   styles: [`
-    :host { display: block; height: 100vh; }
+    @keyframes slide-up {
+      from { opacity: 0; transform: translateY(40px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fade-in {
+      from { opacity: 0; }
+      to { opacity: 1; }
+    }
+    .animate-slide-up { animation: slide-up 1s cubic-bezier(0.16, 1, 0.3, 1) forwards; }
+    .animate-fade-in { animation: fade-in 1s ease-out forwards; }
   `]
 })
 export class LoginComponent {
