@@ -18,5 +18,9 @@ export const CUSTOMER_ROUTES: Routes = [
     {
         path: 'claims-tracking',
         loadComponent: () => import('./customer-claims-tracking/customer-claims-tracking.component').then(m => m.CustomerClaimsTrackingComponent)
+    },
+    {
+       path: 'family',
+       loadComponent: () => import('./family-management/family-management.component').then(m => m.FamilyManagementComponent)
     }
 ];

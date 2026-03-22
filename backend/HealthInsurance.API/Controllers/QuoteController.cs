@@ -31,7 +31,7 @@ public class QuoteController : BaseApiController
     {
         var userId = UserSession.CurrentUserId;
         // saveToDb = false: pure calculation, no DB write
-        var quote = await _premiumService.CalculateQuoteAsync(userId, request.Age, request.PlanName, request.Tier, false);
+        var quote = await _premiumService.CalculateQuoteAsync(userId, request.Age, request.PlanName, request.Tier, request.FamilySize, request.PreExistingConditions, request.IsPorting, request.PreviousPolicyNumber, request.PreviousInsurer, false);
         return Ok(quote);
     }
 
@@ -45,7 +45,7 @@ public class QuoteController : BaseApiController
 
         // Calculate and save the quote to DB.
         // It will have IsConvertedToPolicy = 0 (Pending Verification) and IsPaid = false.
-        var quote = await _premiumService.CalculateQuoteAsync(userId, request.Age, request.PlanName, request.Tier, saveToDb: true);
+        var quote = await _premiumService.CalculateQuoteAsync(userId, request.Age, request.PlanName, request.Tier, request.FamilySize, request.PreExistingConditions, request.IsPorting, request.PreviousPolicyNumber, request.PreviousInsurer, saveToDb: true);
 
         return Ok(new { message = "Policy requested.", quoteId = quote.Id });
     }

@@ -29,4 +29,11 @@ public class Policy : BaseEntity
 
     // Discriminator to distinguish between a "Product Plan Template" and a "Customer Policy Instance"
     public bool IsPlanTemplate { get; set; } = false;
+
+    public int FamilySize { get; set; } = 1;
+    public string PreExistingConditions { get; set; } = string.Empty;
+
+    public bool IsPorting { get; set; } = false;
+    public string PreviousPolicyNumber { get; set; } = string.Empty;
+    public string PreviousInsurer { get; set; } = string.Empty;
 }

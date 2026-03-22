@@ -58,9 +58,13 @@ public class PolicyController : BaseApiController
                 MonthlyPremium = p.MonthlyPremium,
                 CoverageAmount = p.CoverageAmount,
                 ExpiryDate = p.ExpiryDate,
+                CreatedAt = p.CreatedAt,
                 PolicyNumber = p.PolicyNumber,
                 AgentName = agent?.FullName ?? "Not Assigned",
-                ClaimsOfficerName = officer?.FullName ?? "Not Assigned"
+                ClaimsOfficerName = officer?.FullName ?? "Not Assigned",
+                FamilySize = p.FamilySize,
+                PreExistingConditions = p.PreExistingConditions,
+                IsPorting = p.IsPorting
             };
         }).ToList<dynamic>();
 
@@ -91,9 +95,13 @@ public class PolicyController : BaseApiController
                 MonthlyPremium = q.CalculatedMonthlyPremium,
                 CoverageAmount = q.CoverageAmount,
                 ExpiryDate = q.ExpiryDate,
+                CreatedAt = q.CreatedAt,
                 PolicyNumber = q.QuoteReference,
                 AgentName = agent?.FullName ?? (status == "Pending" ? "Processing" : "Not Assigned"),
-                ClaimsOfficerName = officer?.FullName ?? (status == "Pending" ? "Processing" : "Not Assigned")
+                ClaimsOfficerName = officer?.FullName ?? (status == "Pending" ? "Processing" : "Not Assigned"),
+                FamilySize = q.FamilySize,
+                PreExistingConditions = q.PreExistingConditions,
+                IsPorting = q.IsPorting
             });
         }
 

@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { CustomerService } from '../customer.service';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
-import { LucideAngularModule, Calculator, Activity, CheckCircle2, Check, Paperclip, X, AlertCircle, ShieldCheck, Shield, ArrowRight, ArrowLeft, Trash2, Upload } from 'lucide-angular';
+import { LucideAngularModule, Calculator, Activity, CheckCircle2, Check, Paperclip, X, AlertCircle, ShieldCheck, Shield, ArrowRight, ArrowLeft, Trash2, Upload, Users, Clipboard } from 'lucide-angular';
 import { DocumentService } from '../../../core/services/document.service';
 
 @Component({
@@ -94,7 +94,7 @@ import { DocumentService } from '../../../core/services/document.service';
             <form [formGroup]="quoteForm" (ngSubmit)="calculate()" class="space-y-8">
               <div class="grid grid-cols-1 gap-10 sm:grid-cols-2">
                 <div class="sm:col-span-1">
-                  <label class="block text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Biological Age</label>
+                  <label class="block text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Biological Age (Eldest Member)</label>
                   <input
                     type="number"
                     formControlName="age"
@@ -104,14 +104,21 @@ import { DocumentService } from '../../../core/services/document.service';
                   />
                 </div>
                 <div class="sm:col-span-1">
-                  <label class="block text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Plan Identifier</label>
-                  <input
-                    type="text"
-                    formControlName="planName"
-                    readonly
-                    class="block w-full bg-slate-100/50 dark:bg-slate-800/20 border-0 border-b-2 border-slate-100 dark:border-slate-800 py-4 px-4 text-slate-400 dark:text-slate-500 font-black text-lg cursor-not-allowed rounded-2xl outline-none"
-                  />
+                   <label class="block text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Family Size (Floater)</label>
+                   <div class="relative">
+                     <select formControlName="familySize" class="block w-full bg-slate-50 dark:bg-slate-950 border-0 border-b-2 border-slate-100 dark:border-slate-800 py-4 px-4 text-slate-900 dark:text-white font-black text-lg focus:ring-0 focus:border-blue-500 transition-all outline-none rounded-2xl shadow-inner-sm appearance-none cursor-pointer">
+                        <option [value]="1">Individual (Self Only)</option>
+                        <option [value]="2">Self + Spouse</option>
+                        <option [value]="3">Family (3 Members)</option>
+                        <option [value]="4">Family (4 Members)</option>
+                        <option [value]="5">Family (5+ Members)</option>
+                     </select>
+                     <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none">
+                        <lucide-icon name="users" class="h-5 w-5 text-slate-400"></lucide-icon>
+                     </div>
+                   </div>
                 </div>
+
                 <div class="sm:col-span-2">
                   <label class="block text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-6">Coverage Strategy</label>
                   <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
@@ -153,14 +160,47 @@ import { DocumentService } from '../../../core/services/document.service';
                     </label>
                   </div>
                 </div>
+
                 <div class="sm:col-span-2">
-                  <label class="block text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Medical History Disclosure</label>
+                   <div class="flex items-center gap-4 p-6 bg-slate-50 dark:bg-slate-800/30 rounded-3xl border border-slate-100 dark:border-slate-800">
+                      <input type="checkbox" formControlName="isPorting" id="portingCheck" class="w-5 h-5 rounded-lg border-2 border-slate-300 text-blue-600 focus:ring-blue-500 transition-all cursor-pointer">
+                      <div>
+                         <label for="portingCheck" class="block text-sm font-black text-slate-900 dark:text-white cursor-pointer uppercase tracking-widest">Policy Portability Request</label>
+                         <p class="text-xs text-slate-500 font-medium">Transfer your existing insurance from another company to retain your waiting period benefits.</p>
+                      </div>
+                   </div>
+                </div>
+
+                @if (quoteForm.get('isPorting')?.value) {
+                  <div class="sm:col-span-1 animate-in fade-in slide-in-from-top-4 duration-500">
+                    <label class="block text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Previous Insurer</label>
+                    <input
+                      type="text"
+                      formControlName="previousInsurer"
+                      class="block w-full bg-white dark:bg-slate-950 border-0 border-b-2 border-slate-200 dark:border-slate-800 py-4 px-4 text-slate-900 dark:text-white font-bold text-sm focus:ring-0 focus:border-blue-500 transition-all outline-none rounded-2xl"
+                      placeholder="e.g. Star Health, LIC, Aetna"
+                    />
+                  </div>
+                  <div class="sm:col-span-1 animate-in fade-in slide-in-from-top-4 duration-500 delay-75">
+                    <label class="block text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Previous Policy #</label>
+                    <input
+                      type="text"
+                      formControlName="previousPolicyNumber"
+                      class="block w-full bg-white dark:bg-slate-950 border-0 border-b-2 border-slate-200 dark:border-slate-800 py-4 px-4 text-slate-900 dark:text-white font-bold text-sm focus:ring-0 focus:border-blue-500 transition-all outline-none rounded-2xl"
+                      placeholder="Enter exactly as per your old policy"
+                    />
+                  </div>
+                }
+
+                <div class="sm:col-span-2">
+                  <label class="block text-xs font-black text-slate-400 dark:text-slate-500 uppercase tracking-widest mb-3">Medical History Disclosure (Pre-existing diseases)</label>
                   <textarea
                     formControlName="preExistingConditions"
                     rows="4"
                     class="block w-full bg-slate-50 dark:bg-slate-950 border-0 border-b-2 border-slate-100 dark:border-slate-800 py-4 px-4 text-slate-900 dark:text-white font-medium focus:ring-0 focus:border-blue-500 transition-all outline-none rounded-2xl shadow-inner-sm resize-none"
-                    placeholder="Specify pre-existing conditions or enter 'None'..."
+                    placeholder="Specify pre-existing conditions (e.g., Surgery, Maternity, Diabetes) separated by commas..."
                   ></textarea>
+                  <p class="text-[10px] text-slate-400 mt-2 font-bold italic uppercase tracking-widest">Note: Specific waiting periods apply for the conditions mentioned above.</p>
                 </div>
               </div>
               <div class="pt-10 border-t border-slate-50 dark:border-slate-800 flex justify-end">
@@ -309,6 +349,10 @@ export class QuoteEngineComponent implements OnInit {
     planName: ['', Validators.required],
     tier: ['Gold', Validators.required],
     preExistingConditions: [''],
+    familySize: [1, [Validators.required, Validators.min(1)]],
+    isPorting: [false],
+    previousPolicyNumber: [''],
+    previousInsurer: ['']
   });
 
   ngOnInit() {
@@ -327,7 +371,7 @@ export class QuoteEngineComponent implements OnInit {
   backToPlans() {
     this.selectedPlanForQuote.set(null);
     this.quoteResult.set(null);
-    this.quoteForm.reset({ age: 30, tier: 'Gold', preExistingConditions: '', planName: '' });
+    this.quoteForm.reset({ age: 30, tier: 'Gold', preExistingConditions: '', planName: '', familySize: 1, isPorting: false, previousPolicyNumber: '', previousInsurer: '' });
   }
 
   calculate() {

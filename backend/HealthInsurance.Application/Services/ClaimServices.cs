@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -38,6 +38,9 @@ public class ClaimService : IClaimService
         int userId = 0;
         decimal coverageLimit = 0;
         string policyRef = "";
+        DateTime policyCreatedAt = DateTime.MinValue;
+        string peds = "";
+        bool isPorted = false;
 
         if (legacyPolicy != null && legacyPolicy.IsActive && legacyPolicy.Status == "Active")
         {
@@ -45,6 +48,9 @@ public class ClaimService : IClaimService
             userId = legacyPolicy.UserId;
             coverageLimit = legacyPolicy.CoverageAmount;
             policyRef = legacyPolicy.PolicyNumber;
+            policyCreatedAt = legacyPolicy.CreatedAt;
+            peds = legacyPolicy.PreExistingConditions;
+            isPorted = legacyPolicy.IsPorting;
         }
         else
         {
@@ -56,11 +62,40 @@ public class ClaimService : IClaimService
                 userId = quotePolicy.UserId ?? 0;
                 coverageLimit = quotePolicy.CoverageAmount;
                 policyRef = quotePolicy.QuoteReference;
+                policyCreatedAt = quotePolicy.CreatedAt;
+                peds = quotePolicy.PreExistingConditions;
+                isPorted = quotePolicy.IsPorting;
             }
         }
 
         if (realPolicyId == null && realQuoteId == null)
             return ("Rejected: No active policy found with that ID.", 0);
+
+        // 3a. Waiting Period Rules (Core Health Logic)
+        // If the policy is PORTED, we waive waiting periods (benefit retention)
+        if (!isPorted)
+        {
+            var tenureDays = (DateTime.UtcNow - policyCreatedAt).TotalDays;
+
+            // Rule 1: Surgery (30 days)
+            if (reason.Contains("Surgery", StringComparison.OrdinalIgnoreCase) && tenureDays < 30)
+                return ($"Rejected: Surgery claims have a 30-day waiting period. Your policy is only {Math.Round(tenureDays)} days old.", 0);
+
+            // Rule 2: Maternity (15 days)
+            if (reason.Contains("Maternity", StringComparison.OrdinalIgnoreCase) && tenureDays < 15)
+                return ($"Rejected: Maternity claims have a 15-day waiting period. Your policy is only {Math.Round(tenureDays)} days old.", 0);
+
+            // Rule 3: Declared Pre-Existing Conditions (30 days)
+            if (!string.IsNullOrEmpty(peds))
+            {
+                var declaredPeds = peds.Split(',', StringSplitOptions.RemoveEmptyEntries).Select(p => p.Trim());
+                foreach (var ped in declaredPeds)
+                {
+                    if (reason.Contains(ped, StringComparison.OrdinalIgnoreCase) && tenureDays < 30)
+                        return ($"Rejected: Claims related to your declared condition '{ped}' have a 30-day waiting period. Your policy is only {Math.Round(tenureDays)} days old.", 0);
+                }
+            }
+        }
 
         // 3. Calculation
         decimal calculatedPayout = requestedAmount; // Simple 100% coverage for now

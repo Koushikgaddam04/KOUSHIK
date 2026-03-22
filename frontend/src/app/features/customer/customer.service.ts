@@ -45,4 +45,16 @@ export class CustomerService {
     getPolicyInvoices(policyId: number): Observable<any[]> {
         return this.http.get<any[]>(`${this.apiBase}/Document/for/Policy/${policyId}`);
     }
+
+    getMyDependents(): Observable<any[]> {
+        return this.http.get<any[]>(`${this.apiBase}/Dependent/my-dependents`);
+    }
+
+    addDependent(data: any): Observable<any> {
+        return this.http.post(`${this.apiBase}/Dependent`, data);
+    }
+
+    deleteDependent(id: number): Observable<any> {
+        return this.http.delete(`${this.apiBase}/Dependent/${id}`);
+    }
 }

@@ -4,7 +4,7 @@ import { RouterModule } from '@angular/router';
 import { CustomerService } from '../customer.service';
 import { ToastrService } from 'ngx-toastr';
 import { LoadingSpinnerComponent } from '../../../shared/components/loading-spinner/loading-spinner.component';
-import { LucideAngularModule, ShieldCheck, DollarSign, User, ArrowRight, Eye, Download, Shield } from 'lucide-angular';
+import { LucideAngularModule, ShieldCheck, DollarSign, User, ArrowRight, Eye, Download, Shield, Users } from 'lucide-angular';
 import { forkJoin } from 'rxjs';
 
 import { DocumentService } from '../../../core/services/document.service';
@@ -80,7 +80,7 @@ import { PaymentModalComponent } from '../../../shared/components/payment-modal/
               </div>
 
               <!-- Secondary Details -->
-              <div class="space-y-5 mb-10 flex-1">
+              <div class="space-y-4 mb-8 flex-1">
                 <div class="flex items-center justify-between">
                   <div class="flex items-center gap-3">
                     <lucide-icon name="user" class="h-4 w-4 text-slate-300"></lucide-icon>
@@ -88,10 +88,72 @@ import { PaymentModalComponent } from '../../../shared/components/payment-modal/
                   </div>
                   <span class="text-xs font-black text-slate-900 dark:text-white">{{ policy.agentName || 'TBA' }}</span>
                 </div>
+
+                <div class="flex items-center justify-between">
+                  <div class="flex items-center gap-3">
+                    <lucide-icon name="users" class="h-4 w-4 text-slate-300"></lucide-icon>
+                    <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Family Size</span>
+                  </div>
+                  <span class="text-xs font-black text-slate-900 dark:text-white">{{ policy.familySize || 1 }} Members</span>
+                </div>
                 
+                <!-- Waiting Period Tracker (Visible for Active Policies) -->
+                @if (policy.status?.toUpperCase() === 'ACTIVE') {
+                   <div class="mt-6 pt-6 border-t border-slate-50 dark:border-slate-800">
+                      <div class="flex items-center justify-between mb-4">
+                        <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Waiting Periods</span>
+                        <span *ngIf="policy.isPorting" class="text-[8px] font-black bg-emerald-50 text-emerald-600 px-2 py-1 rounded-lg uppercase tracking-widest">Ported Benefit</span>
+                      </div>
+                      
+                      <div class="space-y-4">
+                        <!-- Surgery Tracker -->
+                        <div>
+                          <div class="flex justify-between text-[9px] font-black uppercase tracking-widest mb-1.5">
+                            <span class="text-slate-400">Surgery (30 Days)</span>
+                            <span [class.text-emerald-500]="getRemainingDays(policy.createdAt, 30, policy.isPorting) === 0" [class.text-blue-500]="getRemainingDays(policy.createdAt, 30, policy.isPorting) > 0">
+                              {{ getRemainingDays(policy.createdAt, 30, policy.isPorting) }} days left
+                            </span>
+                          </div>
+                          <div class="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-blue-500 rounded-full transition-all duration-1000" [style.width.%]="getWaitingPeriodProgress(policy.createdAt, 30, policy.isPorting)"></div>
+                          </div>
+                        </div>
+
+                        <!-- Maternity Tracker -->
+                        <div>
+                          <div class="flex justify-between text-[9px] font-black uppercase tracking-widest mb-1.5">
+                            <span class="text-slate-400">Maternity (15 Days)</span>
+                            <span [class.text-emerald-500]="getRemainingDays(policy.createdAt, 15, policy.isPorting) === 0" [class.text-blue-500]="getRemainingDays(policy.createdAt, 15, policy.isPorting) > 0">
+                              {{ getRemainingDays(policy.createdAt, 15, policy.isPorting) }} days left
+                            </span>
+                          </div>
+                          <div class="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                            <div class="h-full bg-indigo-500 rounded-full transition-all duration-1000" [style.width.%]="getWaitingPeriodProgress(policy.createdAt, 15, policy.isPorting)"></div>
+                          </div>
+                        </div>
+
+                        <!-- Pre-existing diseases if any -->
+                        @if (policy.preExistingConditions) {
+                          <div>
+                            <div class="flex justify-between text-[9px] font-black uppercase tracking-widest mb-1.5">
+                              <span class="text-slate-400">PED (30 Days)</span>
+                              <span [class.text-emerald-500]="getRemainingDays(policy.createdAt, 30, policy.isPorting) === 0" [class.text-amber-500]="getRemainingDays(policy.createdAt, 30, policy.isPorting) > 0">
+                                {{ getRemainingDays(policy.createdAt, 30, policy.isPorting) }} days left
+                              </span>
+                            </div>
+                            <div class="h-1.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden">
+                              <div class="h-full bg-amber-500 rounded-full transition-all duration-1000" [style.width.%]="getWaitingPeriodProgress(policy.createdAt, 30, policy.isPorting)"></div>
+                            </div>
+                            <p class="text-[8px] font-bold text-slate-400 mt-1 truncate">Conditions: {{ policy.preExistingConditions }}</p>
+                          </div>
+                        }
+                      </div>
+                   </div>
+                }
+
                 <!-- Invoice Section (Only shown if payment is done) -->
                 @if (invoices()[policy.id.toString()] && (policy.status?.toUpperCase() === 'ACTIVE' || policy.status?.toUpperCase() === 'INACTIVE')) {
-                  <div class="flex items-center justify-between pt-4 border-t border-slate-50 dark:border-slate-800">
+                  <div class="flex items-center justify-between pt-6 border-t border-slate-50 dark:border-slate-800">
                     <span class="text-[10px] font-black text-slate-400 uppercase tracking-widest">Premium Invoice</span>
                     <div class="flex gap-4">
                        <a [href]="getInvoiceViewUrl(invoices()[policy.id.toString()].id)" target="_blank" class="p-2 bg-indigo-50 dark:bg-indigo-900/30 text-indigo-600 dark:text-indigo-400 rounded-xl hover:scale-110 transition-all border border-indigo-100 dark:border-indigo-800">
@@ -233,8 +295,24 @@ export class CustomerPoliciesComponent implements OnInit {
   }
 
   onPaymentSuccess(event: any) {
-    this.showPaymentModal.set(false);
-    this.selectedPolicy.set(null);
     this.loadPolicies();
+  }
+
+  getWaitingPeriodProgress(createdAt: string, targetDays: number, isPorted: boolean = false): number {
+    if (isPorted) return 100;
+    const start = new Date(createdAt);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - start.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+    return Math.min(Math.round((diffDays / targetDays) * 100), 100);
+  }
+
+  getRemainingDays(createdAt: string, targetDays: number, isPorted: boolean = false): number {
+    if (isPorted) return 0;
+    const start = new Date(createdAt);
+    const now = new Date();
+    const diffTime = Math.abs(now.getTime() - start.getTime());
+    const diffDays = Math.ceil(diffTime / (1000 * 60 * 60 * 24)); 
+    return Math.max(targetDays - diffDays, 0);
   }
 }

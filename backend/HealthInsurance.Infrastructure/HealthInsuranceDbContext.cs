@@ -1,4 +1,4 @@
-﻿using HealthInsurance.Domain.Entities;
+using HealthInsurance.Domain.Entities;
 using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
@@ -22,6 +22,7 @@ public class HealthInsuranceDbContext : DbContext
     public DbSet<AgentCommissionLog> CommissionLogs { get; set; }
     public DbSet<PremiumQuote> PremiumQuotes { get; set; }
     public DbSet<Payment> Payments { get; set; }
+    public DbSet<Dependent> Dependents { get; set; }
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

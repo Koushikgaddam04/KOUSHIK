@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -36,4 +36,11 @@ public class PremiumQuote : BaseEntity
     public int? ClaimsOfficerId { get; set; }
 
     public string QuoteReference { get; set; } = string.Empty;
+    public int FamilySize { get; set; } = 1;
+    public string PreExistingConditions { get; set; } = string.Empty;
+
+    // Portability fields
+    public bool IsPorting { get; set; } = false;
+    public string PreviousPolicyNumber { get; set; } = string.Empty;
+    public string PreviousInsurer { get; set; } = string.Empty;
 }
