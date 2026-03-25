@@ -7,7 +7,7 @@
   },
   "newProjectRoot": "projects",
   "projects": {
-    "hims-frontend": {
+    "nexuscare-frontend": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -60,10 +60,10 @@
           },
           "configurations": {
             "production": {
-              "buildTarget": "hims-frontend:build:production"
+              "buildTarget": "nexuscare-frontend:build:production"
             },
             "development": {
-              "buildTarget": "hims-frontend:build:development"
+              "buildTarget": "nexuscare-frontend:build:development"
             }
           },
           "defaultConfiguration": "development"

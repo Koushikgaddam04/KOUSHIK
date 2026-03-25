@@ -1,4 +1,4 @@
-# HIMS - Detailed Class Diagram Code
+# NexusCare - Detailed Class Diagram Code
 
 This diagram defines the domain entities, their specific variables, and the structural relationships within the Clean Architecture.
 

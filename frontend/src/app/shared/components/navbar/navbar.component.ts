@@ -17,7 +17,7 @@ import { LucideAngularModule, LogOut, UserCircle, Sun, Moon } from 'lucide-angul
           class="flex items-center gap-2 text-enterprise-blue-800 dark:text-slate-100 font-bold text-xl tracking-tight"
         >
           <lucide-icon name="shield-check" class="h-7 w-7 text-blue-600"></lucide-icon>
-          <span>HIMS <span class="text-blue-600">Portal</span></span>
+          <span>NexusCare <span class="text-blue-600">Portal</span></span>
         </div>
       </div>
 

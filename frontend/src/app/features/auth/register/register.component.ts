@@ -30,7 +30,7 @@ import { LucideAngularModule, User, Mail, Lock, UserPlus, ShieldCheck } from 'lu
             <div class="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-emerald-500/10 text-emerald-600 dark:text-emerald-400 border border-emerald-500/20 text-[10px] font-black uppercase tracking-widest">
               New Account Registration
             </div>
-            <h2 class="text-4xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">Join HIMS.</h2>
+            <h2 class="text-4xl font-black text-slate-900 dark:text-white tracking-tight leading-tight">Join NexusCare.</h2>
             <p class="text-slate-500 dark:text-slate-400 font-medium">Create your profile to start managing your health journey today.</p>
           </div>
 
@@ -129,7 +129,7 @@ import { LucideAngularModule, User, Mail, Lock, UserPlus, ShieldCheck } from 'lu
             <div class="p-3 bg-emerald-600 rounded-2xl shadow-2xl shadow-emerald-500/40 transform hover:-rotate-6 transition-transform">
               <lucide-icon name="shield-check" class="h-8 w-8 text-white"></lucide-icon>
             </div>
-            <span class="text-3xl font-black text-white tracking-tighter uppercase italic">HIMS</span>
+            <span class="text-3xl font-black text-white tracking-tighter uppercase italic">NexusCare</span>
           </div>
 
           <div class="space-y-6">
@@ -218,7 +218,7 @@ export class RegisterComponent {
       this.authService.register(payload).subscribe({
         next: () => {
           this.isLoading.set(false);
-          this.toastr.success('Registration successful. Please login.', 'Welcome to HIMS');
+          this.toastr.success('Registration successful. Please login.', 'Welcome to NexusCare');
           this.router.navigate(['/login']);
         },
         error: (err) => {

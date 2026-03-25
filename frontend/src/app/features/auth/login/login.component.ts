@@ -35,7 +35,7 @@ import { LucideAngularModule, LogIn, Lock, Mail, ShieldCheck, Activity, Shield, 
             <div class="p-3 bg-blue-600 rounded-2xl shadow-2xl shadow-blue-500/40 transform hover:rotate-6 transition-transform">
               <lucide-icon name="shield-check" class="h-8 w-8 text-white"></lucide-icon>
             </div>
-            <span class="text-3xl font-black text-white tracking-tighter uppercase italic">HIMS</span>
+            <span class="text-3xl font-black text-white tracking-tighter uppercase italic">NexusCare</span>
           </div>
 
           <div class="space-y-6">
@@ -190,7 +190,7 @@ export class LoginComponent {
     this.authService.login(this.loginForm.value).subscribe({
       next: (res) => {
         this.isLoading.set(false);
-        this.toastr.success('Welcome back to HIMS!', 'Login Successful');
+        this.toastr.success('Welcome back to NexusCare!', 'Login Successful');
 
         const role = res.UserRole || res.userRole;
         switch (role?.toLowerCase()) {

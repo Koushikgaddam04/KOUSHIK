@@ -19,7 +19,7 @@ Chart.register(...registerables);
     
     <div class="mb-8">
       <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-100">Admin Overview</h1>
-      <p class="text-slate-500 dark:text-slate-400 mt-1">Key metrics and summary for HIMS operations.</p>
+      <p class="text-slate-500 dark:text-slate-400 mt-1">Key metrics and summary for NexusCare operations.</p>
     </div>
 
     <!-- Quick Stats Grid -->

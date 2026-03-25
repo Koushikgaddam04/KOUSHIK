@@ -57,7 +57,7 @@ import {
                   <lucide-icon name="shield-check" class="h-6 w-6 text-white"></lucide-icon>
                 </div>
               </div>
-              <span class="text-2xl font-black tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-400 bg-clip-text text-transparent">HIMS</span>
+              <span class="text-2xl font-black tracking-tight bg-gradient-to-r from-slate-900 to-slate-700 dark:from-white dark:to-slate-400 bg-clip-text text-transparent">NexusCare</span>
             </div>
 
             <!-- Nav Links (Desktop) -->
@@ -84,7 +84,7 @@ import {
                   routerLink="/register"
                   class="flex items-center gap-2 px-7 py-3 bg-blue-600 hover:bg-blue-700 text-white font-extrabold rounded-2xl transition-all shadow-xl shadow-blue-500/30 hover:shadow-blue-500/50 active:scale-95"
                 >
-                  Join HIMS
+                  Join NexusCare
                   <lucide-icon name="arrow-right" class="h-4 w-4"></lucide-icon>
                 </button>
               </div>
@@ -122,7 +122,7 @@ import {
             </h1>
 
             <p class="text-xl md:text-2xl text-slate-600 dark:text-slate-400 max-w-3xl mx-auto leading-relaxed mb-12 animate-fade-in opacity-0 [animation-delay:200ms]">
-              HIMS is the heartbeat of modern health insurance management. A unified platform engineered for speed, security, and absolute transparency.
+              NexusCare is the heartbeat of modern health insurance management. A unified platform engineered for speed, security, and absolute transparency.
             </p>
 
             <div class="flex flex-col sm:flex-row items-center justify-center gap-6 animate-fade-in opacity-0 [animation-delay:400ms]">
@@ -399,7 +399,7 @@ import {
               </div>
               <h2 class="text-5xl font-black leading-tight">Scale without <br/><span class="text-blue-500">Limits.</span></h2>
               <p class="text-slate-400 text-lg leading-relaxed">
-                HIMS is designed for extreme scale. Our distributed architecture ensures that performance never degrades, even during peak claim periods. Monitor your system health in real-time.
+                NexusCare is designed for extreme scale. Our distributed architecture ensures that performance never degrades, even during peak claim periods. Monitor your system health in real-time.
               </p>
               
               <div class="grid grid-cols-2 gap-6">
@@ -558,7 +558,7 @@ import {
               <h2 class="text-sm font-black text-blue-600 uppercase tracking-[0.4em]">Our Story</h2>
               <h3 class="text-4xl md:text-5xl font-black leading-tight">Human-Centric <br/><span class="text-blue-600">Health Innovation.</span></h3>
               <p class="text-slate-500 dark:text-slate-400 text-lg leading-relaxed font-medium">
-                HIMS was founded on a simple premise: Health insurance should be a support system, not a bureaucratic nightmare. We've spent the last decade perfecting the blend of artificial intelligence and human compassion.
+                NexusCare was founded on a simple premise: Health insurance should be a support system, not a bureaucratic nightmare. We've spent the last decade perfecting the blend of artificial intelligence and human compassion.
               </p>
               
               <div class="space-y-6">
@@ -622,7 +622,7 @@ import {
                 <div class="p-2 bg-blue-600 rounded-lg shadow-lg shadow-blue-500/20">
                   <lucide-icon name="shield-check" class="h-6 w-6 text-white"></lucide-icon>
                 </div>
-                <span class="text-2xl font-black tracking-tight text-white">HIMS</span>
+                <span class="text-2xl font-black tracking-tight text-white">NexusCare</span>
               </div>
               <p class="text-slate-400 leading-relaxed font-medium">
                 Pioneering the future of health insurance management with AI-driven processing and military-grade security.
@@ -660,11 +660,11 @@ import {
               <ul class="space-y-6 font-medium">
                 <li class="flex gap-4">
                   <lucide-icon name="mail" class="h-5 w-5 text-blue-500"></lucide-icon>
-                  <span>solutions&#64;hims-portal.com</span>
+                  <span>solutions&#64;nexuscare-portal.com</span>
                 </li>
                 <li class="flex gap-4">
                   <lucide-icon name="phone" class="h-5 w-5 text-blue-500"></lucide-icon>
-                  <span>+1 (800) HIMS-01</span>
+                  <span>+1 (800) NEXUS-01</span>
                 </li>
                 <li class="flex gap-4">
                   <lucide-icon name="map-pin" class="h-5 w-5 text-blue-500"></lucide-icon>
@@ -675,7 +675,7 @@ import {
           </div>
 
           <div class="pt-12 border-t border-slate-900 flex flex-col md:flex-row justify-between items-center gap-8">
-            <p class="text-slate-500 text-sm font-bold uppercase tracking-widest">© 2026 HIMS Global. All rights reserved.</p>
+            <p class="text-slate-500 text-sm font-bold uppercase tracking-widest">© 2026 NexusCare Global. All rights reserved.</p>
             <div class="flex gap-8 text-xs font-black uppercase tracking-widest text-slate-500">
               <a href="#" class="hover:text-white transition-colors">Terms of Service</a>
               <a href="#" class="hover:text-white transition-colors">Compliance</a>
