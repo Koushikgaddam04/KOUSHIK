@@ -10,11 +10,14 @@ import { Chart, registerables } from 'chart.js';
 
 Chart.register(...registerables);
 
+import { ChatbotSupportComponent } from '../chatbot-support/chatbot-support.component';
+
 @Component({
   selector: 'app-customer-dashboard',
   standalone: true,
-  imports: [CommonModule, RouterModule, LoadingSpinnerComponent, LucideAngularModule],
+  imports: [CommonModule, RouterModule, LoadingSpinnerComponent, LucideAngularModule, ChatbotSupportComponent],
   template: `
+    <app-chatbot-support></app-chatbot-support>
     <app-loading-spinner
       [show]="isLoading()"
       message="Loading your data..."

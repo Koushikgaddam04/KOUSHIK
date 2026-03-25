@@ -57,4 +57,8 @@ export class CustomerService {
     deleteDependent(id: number): Observable<any> {
         return this.http.delete(`${this.apiBase}/Dependent/${id}`);
     }
+
+    askChatbot(message: string): Observable<any> {
+        return this.http.post(`${this.apiBase}/Chatbot/ask`, { message });
+    }
 }

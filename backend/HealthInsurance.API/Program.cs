@@ -90,6 +90,8 @@ namespace HealthInsurance.API
             builder.Services.AddScoped<IClaimService, ClaimService>();
             builder.Services.AddScoped<IDashboardService, DashboardService>();
             builder.Services.AddScoped<IInvoiceService, InvoiceService>();
+            builder.Services.AddScoped<IChatbotService, ChatbotService>();
+            builder.Services.AddHttpClient();
 
             builder.Services.AddCors(options =>
             {
