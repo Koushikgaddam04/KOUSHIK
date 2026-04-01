@@ -35,7 +35,6 @@ public class AuthService : IAuthService
 
         // 2. Add "Claims" (The data inside the token)
         // We use the full namespace "System.Security.Claims.Claim" to avoid 
-        // confusion with your "HealthInsurance.Domain.Entities.Claim" table.
         var authClaims = new[]
         {
             new System.Security.Claims.Claim(ClaimTypes.NameIdentifier, user.Id.ToString()),

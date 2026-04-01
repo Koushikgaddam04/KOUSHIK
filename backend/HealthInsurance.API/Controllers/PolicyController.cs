@@ -64,12 +64,15 @@ public class PolicyController : BaseApiController
                 ClaimsOfficerName = officer?.FullName ?? "Not Assigned",
                 FamilySize = p.FamilySize,
                 PreExistingConditions = p.PreExistingConditions,
-                IsPorting = p.IsPorting
+                IsPorting = p.IsPorting,
+                SourceType = "Policy"
             };
         }).ToList<dynamic>();
 
         // 2. Get PremiumQuotes that are now acting as policies or are in progress
         var quotes = await _quoteRepo.GetAllAsync();
+        // Updated filter: Only show quotes that are NOT yet fully converted policies, 
+        // to prevent duplicate cards in the dashboard.
         var myQuotes = quotes.Where(q => q.UserId == userId).ToList();
 
         foreach (var q in myQuotes)
@@ -101,7 +104,8 @@ public class PolicyController : BaseApiController
                 ClaimsOfficerName = officer?.FullName ?? (status == "Pending" ? "Processing" : "Not Assigned"),
                 FamilySize = q.FamilySize,
                 PreExistingConditions = q.PreExistingConditions,
-                IsPorting = q.IsPorting
+                IsPorting = q.IsPorting,
+                SourceType = "Quote"
             });
         }
 

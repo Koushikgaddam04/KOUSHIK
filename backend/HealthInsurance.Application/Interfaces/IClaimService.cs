@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Text;
@@ -10,6 +10,6 @@ namespace HealthInsurance.Application.Interfaces;
 
 public interface IClaimService
 {
-    Task<(string Message, int ClaimId)> ProcessClaimAsync(int policyId, decimal requestedAmount, string reason, int callerUserId);
+    Task<(string Message, int ClaimId)> ProcessClaimAsync(int policyId, decimal requestedAmount, string reason, int callerUserId, string sourceType = "Policy");
     Task<IEnumerable<Claim>> GetClaimsByUserIdAsync(int userId);
 }

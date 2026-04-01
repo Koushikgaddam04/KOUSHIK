@@ -21,9 +21,18 @@ server_log_v2.txt
 server_log_v3.txt
 server_log_v4.txt
 
+# Temporary
+tmp/
+
 # Documents (Keep if intended, but ignore if temporary)
 # Documentation_Report.html
 
 # System
 .DS_Store
 Thumbs.db
+
+# Secrets
+**/gcp-key.json
+**/.env
+**/appsettings.json
+**/appsettings.Development.json

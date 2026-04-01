@@ -73,8 +73,8 @@ import { LucideAngularModule, Search, Shield, Clock, Filter } from 'lucide-angul
                   </span>
                 </td>
                 <td class="px-6 py-5 whitespace-nowrap text-right">
-                   <div class="text-xs font-black text-slate-700 dark:text-slate-300">{{ (item.date | date: 'MMM d, y') }}</div>
-                   <div class="text-[10px] font-bold text-slate-400 mt-0.5">{{ (item.date | date: 'h:mm a') }}</div>
+                   <div class="text-xs font-black text-slate-700 dark:text-slate-300">{{ (item.date | date: 'MMM d, y':'+0530') }}</div>
+                   <div class="text-[10px] font-bold text-slate-400 mt-0.5">{{ (item.date | date: 'h:mm a':'+0530') }}</div>
                 </td>
               </tr>
             }

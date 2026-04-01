@@ -14,7 +14,7 @@ import { switchMap } from 'rxjs';
   standalone: true,
   imports: [CommonModule, ReactiveFormsModule, LoadingSpinnerComponent, LucideAngularModule],
   template: `
-    <app-loading-spinner [show]="isLoading()" message="Submitting Claim..."></app-loading-spinner>
+    <app-loading-spinner [show]="isLoading()" message="Processing..."></app-loading-spinner>
 
     <div class="max-w-2xl mx-auto">
       <div class="mb-10">
@@ -51,7 +51,9 @@ import { switchMap } from 'rxjs';
             </div>
 
             <div class="space-y-2">
-              <label class="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">Claim Amount ($)</label>
+              <label class="block text-[10px] font-black text-slate-400 dark:text-slate-500 uppercase tracking-[0.2em]">
+                Claim Amount ($)
+              </label>
               <input
                 type="number"
                 formControlName="amount"
@@ -107,7 +109,7 @@ import { switchMap } from 'rxjs';
               </select>
               <label class="flex items-center justify-center gap-2 px-4 py-4 border-2 border-dashed border-slate-200 dark:border-slate-800 rounded-2xl cursor-pointer hover:border-indigo-500 hover:bg-indigo-50/30 dark:hover:bg-indigo-900/20 transition-all group">
                 <lucide-icon name="paperclip" class="h-4 w-4 text-slate-400 group-hover:text-indigo-500"></lucide-icon>
-                <span class="text-[10px] font-black uppercase text-slate-400 group-hover:text-indigo-500 tracking-widest">Append Artifact</span>
+                <span class="text-[10px] font-black uppercase text-slate-400 group-hover:text-indigo-500 tracking-widest">Append Document</span>
                 <input type="file" class="hidden" accept=".pdf,.jpg,.jpeg,.png" (change)="addFile($event, docTypeSelect.value)">
               </label>
             </div>
@@ -165,13 +167,14 @@ export class SubmitClaimComponent implements OnInit {
   isLoading = signal(false);
   isPolicyIdPreFilled = signal(false);
 
-  // { name: string (for dedup), file: File, docType: string }
+  // { name: string, file: File, docType: string }
   attachedFiles = signal<{ name: string; file: File; docType: string }[]>([]);
 
   claimForm = this.fb.group({
     policyId: [null as number | null, Validators.required],
     amount: [null as number | null, [Validators.required, Validators.min(1)]],
     reason: ['', Validators.required],
+    sourceType: ['Policy']
   });
 
   ngOnInit() {
@@ -180,6 +183,9 @@ export class SubmitClaimComponent implements OnInit {
         this.claimForm.patchValue({ policyId: +params['policyId'] });
         this.isPolicyIdPreFilled.set(true);
       }
+      if (params['sourceType']) {
+        this.claimForm.patchValue({ sourceType: params['sourceType'] });
+      }
     });
   }
 
@@ -187,13 +193,27 @@ export class SubmitClaimComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
+
     const key = `${file.name}_${docType}`;
     if (this.attachedFiles().some(f => f.name === key)) {
       this.toastr.warning('This file is already attached.');
       return;
     }
-    this.attachedFiles.update(list => [...list, { name: key, file, docType }]);
-    input.value = ''; // reset so same file can be added with different type
+
+    // Immediately upload to get AI analysis as per user request
+    this.isLoading.set(true);
+    this.docService.upload(file, docType).subscribe({
+      next: (res) => {
+        this.attachedFiles.update(list => [...list, { name: key, file, docType }]);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.toastr.error('File processing failed');
+        this.isLoading.set(false);
+      }
+    });
+
+    input.value = '';
   }
 
   removeFile(name: string) {

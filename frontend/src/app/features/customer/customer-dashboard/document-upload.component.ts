@@ -2,7 +2,7 @@ import { Component, inject, signal, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { DocumentService } from '../../../core/services/document.service';
 import { ToastrService } from 'ngx-toastr';
-import { LucideAngularModule, UploadCloud, FileText, CheckCircle, Trash2, Download, Eye } from 'lucide-angular';
+import { LucideAngularModule, UploadCloud, FileText, CheckCircle, Trash2, Download, Eye, Sparkles } from 'lucide-angular';
 
 @Component({
   selector: 'app-document-upload',
@@ -29,6 +29,20 @@ import { LucideAngularModule, UploadCloud, FileText, CheckCircle, Trash2, Downlo
           <input type="file" class="hidden" (change)="onFileSelected($event)" accept=".pdf,.png,.jpg,.jpeg" />
         </label>
       </div>
+
+      <!-- AI Insight Section -->
+      @if (lastAnalysis()) {
+        <div class="mb-8 p-6 bg-indigo-50 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-800 rounded-2xl animate-in fade-in slide-in-from-bottom-2 duration-500">
+           <div class="flex items-center gap-2 mb-3">
+              <lucide-icon name="sparkles" class="h-4 w-4 text-indigo-500"></lucide-icon>
+              <h3 class="text-xs font-black uppercase tracking-widest text-indigo-600 dark:text-indigo-400">AI Intelligence</h3>
+           </div>
+           <textarea readonly 
+             class="w-full bg-transparent border-0 text-sm font-medium text-slate-600 dark:text-slate-300 focus:ring-0 resize-none h-32 leading-relaxed"
+             [value]="lastAnalysis()"></textarea>
+           <p class="text-[10px] text-slate-400 mt-2 font-bold italic">Powered by Policy Intelligence</p>
+        </div>
+      }
 
       <!-- Documents List -->
       <div class="space-y-3">
@@ -73,6 +87,7 @@ export class DocumentUploadComponent implements OnInit {
 
   documents = signal<any[]>([]);
   isLoading = signal(false);
+  lastAnalysis = signal<string | null>(null);
 
   ngOnInit() {
     this.loadDocuments();
@@ -98,8 +113,11 @@ export class DocumentUploadComponent implements OnInit {
       const docType = prompt('Enter document type (e.g. Aadhar, Pan, Health Statement):') || 'Other';
 
       this.docService.upload(file, docType).subscribe({
-        next: () => {
+        next: (res) => {
           this.toastr.success('Document uploaded successfully');
+          if (res.aiAnalysis) {
+            this.lastAnalysis.set(res.aiAnalysis);
+          }
           this.loadDocuments();
           this.isLoading.set(false);
         },

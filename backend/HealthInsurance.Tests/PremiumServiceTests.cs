@@ -33,7 +33,7 @@ namespace HealthInsurance.Tests
             string tierName = "Unknown";
 
             // Act
-            var result = await _premiumService.CalculateQuoteAsync(userId, age, planName, tierName, false);
+            var result = await _premiumService.CalculateQuoteAsync(userId, age, planName, tierName, saveToDb: false);
 
             // Assert
             // Base 500 + AgeLoad ((25/10)*0.1*500 = 2*0.1*500 = 100) = 600
@@ -54,7 +54,7 @@ namespace HealthInsurance.Tests
             string planName = "Comprehensive";
 
             // Act
-            var result = await _premiumService.CalculateQuoteAsync(userId, age, planName, tier, false);
+            var result = await _premiumService.CalculateQuoteAsync(userId, age, planName, tier, saveToDb: false);
 
             // Assert
             Assert.Equal(expectedPremium, result.CalculatedMonthlyPremium);
@@ -70,7 +70,7 @@ namespace HealthInsurance.Tests
             string tierName = "Silver"; // Multiplier 1.0
 
             // Act
-            var result = await _premiumService.CalculateQuoteAsync(userId, age, planName, tierName, false);
+            var result = await _premiumService.CalculateQuoteAsync(userId, age, planName, tierName, saveToDb: false);
 
             // Assert
             // 500 + 200 = 700
@@ -87,7 +87,7 @@ namespace HealthInsurance.Tests
             string tierName = "Silver";
 
             // Act
-            await _premiumService.CalculateQuoteAsync(userId, age, planName, tierName, true);
+            await _premiumService.CalculateQuoteAsync(userId, age, planName, tierName, saveToDb: true);
 
             // Assert
             _quoteRepoMock.Verify(r => r.AddAsync(It.IsAny<PremiumQuote>()), Times.Once);

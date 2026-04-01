@@ -22,11 +22,6 @@ public class PremiumService : IPremiumService
 
     public async Task<PremiumQuote> CalculateQuoteAsync(int userId, int age, string planName, string tierName, int familySize = 1, string preExistingConditions = "", bool isPorting = false, string prevPolNum = "", string prevInsurer = "", bool saveToDb = false)
     {
-        // Real-world creative logic: 
-        // 1. Fetch the original template for this plan to get the Dynamic BasePremium
-        // 2. Add 10% for every 10 years of age (Age Adjustment for eldest member)
-        // 3. Multiply by Tier (Silver=1.0, Gold=1.2, Platinum=1.5)
-        // 4. Multiply by Family Size (1 member = 1.0, each additional member adds 20%)
 
         var allPolicies = await _policyRepository.GetAllAsync();
         var template = allPolicies.FirstOrDefault(p => p.IsPlanTemplate && p.PlanName.Equals(planName, StringComparison.OrdinalIgnoreCase));

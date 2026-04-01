@@ -125,24 +125,45 @@ import { ChatbotSupportComponent } from '../chatbot-support/chatbot-support.comp
                 {{ policy.planName || 'Standard Package' }}
               </h3>
               
-              <div class="space-y-4 mb-8 flex-1">
-                <div class="flex justify-between items-center text-sm">
-                  <span class="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-[10px] flex items-center gap-3">
-                     <lucide-icon name="shield-check" class="h-4 w-4 text-indigo-500"></lucide-icon> 
-                     Coverage
-                  </span>
-                  <span class="font-black text-slate-900 dark:text-white text-base">{{ policy.coverageAmount | currency }}</span>
-                </div>
-                <div class="flex justify-between items-center text-sm">
+              <div class="space-y-6 mb-8 flex-1">
+                <div class="flex justify-between items-center text-sm border-b border-slate-50 dark:border-slate-800 pb-4">
                   <span class="text-slate-500 dark:text-slate-400 font-bold uppercase tracking-widest text-[10px] flex items-center gap-3">
                      <lucide-icon name="credit-card" class="h-4 w-4 text-purple-500"></lucide-icon> 
-                     Premium
+                     Monthly Premium
                   </span>
-                  <span class="font-black text-slate-900 dark:text-white text-base">{{ policy.premium | currency }}</span>
+                  <span class="font-black text-slate-900 dark:text-white text-base">{{ (policy.premium || policy.monthlyPremium) | currency }}</span>
+                </div>
+
+                <!-- Coverage Usage Matrix -->
+                <div class="space-y-4">
+                   <div class="flex justify-between items-end">
+                      <div class="flex flex-col">
+                         <span class="text-slate-400 font-black uppercase tracking-[0.2em] text-[8px] mb-1">Coverage Utilization</span>
+                         <span class="text-sm font-black text-slate-900 dark:text-white">Remaining: {{ policy.remainingAmount | currency }}</span>
+                      </div>
+                      <div class="text-right">
+                         <span class="text-[9px] font-black text-slate-400 uppercase tracking-widest">Used:</span>
+                         <span class="text-[10px] font-black text-rose-500 block leading-none">{{ policy.usedAmount | currency }}</span>
+                      </div>
+                   </div>
+
+                   <!-- Dual-Track Progress Bar -->
+                   <div class="h-2.5 w-full bg-slate-100 dark:bg-slate-800 rounded-full overflow-hidden flex shadow-inner">
+                      <!-- Used Portion (Red) -->
+                      <div class="h-full bg-gradient-to-r from-rose-500 to-red-600 transition-all duration-1000" [style.width.%]="policy.usagePercent"></div>
+                      <!-- Remaining Portion (Navy/Blue) -->
+                      <div class="h-full bg-slate-900 dark:bg-blue-600 transition-all duration-1000" [style.width.%]="100 - policy.usagePercent"></div>
+                   </div>
+
+                   <div class="flex justify-between items-center px-1">
+                      <span class="text-[8px] font-black text-slate-400 uppercase tracking-tighter">0%</span>
+                      <span class="text-[8px] font-black text-slate-400 uppercase tracking-tighter italic">Total Limit: {{ policy.originalTotal | currency }}</span>
+                      <span class="text-[8px] font-black text-slate-400 uppercase tracking-tighter">Usage: {{ policy.usagePercent | number:'1.0-0' }}%</span>
+                   </div>
                 </div>
               </div>
 
-              <a routerLink="/customer/claim" [queryParams]="{ policyId: policy.id }" class="group/btn w-full inline-flex justify-center items-center px-6 py-4 bg-slate-900 dark:bg-slate-800 text-white hover:bg-blue-600 dark:hover:bg-blue-600 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-lg hover:shadow-blue-500/40">
+              <a routerLink="/customer/claim" [queryParams]="{ policyId: policy.id, sourceType: policy.sourceType }" class="group/btn w-full inline-flex justify-center items-center px-6 py-4 bg-slate-900 dark:bg-slate-800 text-white hover:bg-blue-600 dark:hover:bg-blue-600 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-lg hover:shadow-blue-500/40">
                 Raise a Claim
                 <lucide-icon name="arrow-right" class="ml-2 h-4 w-4 transform group-hover/btn:translate-x-1.5 transition-transform"></lucide-icon>
               </a>
@@ -166,9 +187,22 @@ import { ChatbotSupportComponent } from '../chatbot-support/chatbot-support.comp
                 <div class="p-4 bg-white/20 rounded-2xl w-fit mb-6 text-white group-hover:scale-110 transition-transform">
                    <lucide-icon name="clock" class="h-8 w-8"></lucide-icon>
                 </div>
-                <span class="text-[10px] font-black text-amber-100 uppercase tracking-[0.2em] mb-3 block">Under Verification</span>
+                <span class="text-[10px] font-black text-amber-100 uppercase tracking-[0.2em] mb-3 block">
+                  {{ policy.status === 'Payment Pending' ? 'Action Required' : 'Under Verification' }}
+                </span>
                 <h3 class="font-black text-white text-2xl mb-4 tracking-tight">{{ policy.planName }}</h3>
-                <p class="text-sm text-amber-50 font-medium leading-relaxed">Our agents are meticulously validating your dossiers. Approval pending.</p>
+                <p class="text-sm text-amber-50 font-medium leading-relaxed mb-6">
+                  {{ policy.status === 'Payment Pending' 
+                     ? 'Strategic milestone achieved! Your policy is approved. Complete the premium payment to initiate immediate coverage.' 
+                     : 'Our agents are meticulously validating your documents. Approval pending.' }}
+                </p>
+
+                @if (policy.status === 'Payment Pending') {
+                  <a routerLink="/customer/policies" [queryParams]="{ quoteId: policy.id }" class="inline-flex justify-center items-center px-6 py-3 bg-white text-orange-600 hover:bg-orange-50 rounded-2xl text-xs font-black uppercase tracking-widest transition-all shadow-lg active:scale-95">
+                     Complete Payment
+                     <lucide-icon name="arrow-right" class="ml-2 h-4 w-4"></lucide-icon>
+                  </a>
+                }
             </div>
             <!-- Glow effect -->
             <div class="absolute -top-12 -right-12 w-48 h-48 bg-white/10 rounded-full blur-3xl group-hover:scale-150 transition-transform duration-700"></div>
@@ -206,7 +240,7 @@ import { ChatbotSupportComponent } from '../chatbot-support/chatbot-support.comp
                        <span class="text-sm font-black text-slate-900 dark:text-white block truncate max-w-[240px] group-hover:text-blue-600 transition-colors">{{ claim.reason }}</span>
                     </td>
                     <td class="px-8 py-6 text-base font-black text-slate-900 dark:text-white">{{ claim.claimAmount | currency }}</td>
-                    <td class="px-8 py-6 text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">{{ claim.createdAt | date:'MMM d, y' }}</td>
+                    <td class="px-8 py-6 text-xs text-slate-500 dark:text-slate-400 font-bold uppercase tracking-wider">{{ claim.createdAt | date:'MMM d, y':'+0530' }}</td>
                     <td class="px-8 py-6 text-right">
                        <span 
                         [ngClass]="{
@@ -252,9 +286,38 @@ export class CustomerDashboardComponent implements OnInit, AfterViewInit {
   claims = signal<any[]>([]);
   isLoading = signal(false);
 
-  activePolicies = computed(() => this.policies().filter(p => p.status === 'Active' || p.status === 'Inactive'));
-  pendingPolicies = computed(() => this.policies().filter(p => p.status === 'Pending'));
-  rejectedPolicies = computed(() => this.policies().filter(p => p.status === 'Rejected'));
+  enrichedPolicies = computed(() => {
+    const policies = this.policies();
+    const claims = this.claims();
+
+    return policies.map(p => {
+      // Correctly link claims based on whether this is a legacy Policy or a converted Quote
+      const policyClaims = claims.filter(c =>
+        (p.sourceType === 'Policy' && c.policyId === p.id) ||
+        (p.sourceType === 'Quote' && c.premiumQuoteId === p.id)
+      );
+
+      const approvedClaims = policyClaims.filter(c => c.status === 'Approved');
+      const usedAmount = approvedClaims.reduce((sum, c) => sum + (c.claimAmount || 0), 0);
+
+      // Original Total = Current Coverage + What we used so far
+      const originalTotal = (p.coverageAmount || 0) + usedAmount;
+      const usagePercent = originalTotal > 0 ? Math.min((usedAmount / originalTotal) * 100, 100) : 0;
+      const remainingAmount = p.coverageAmount || 0;
+
+      return {
+        ...p,
+        usedAmount,
+        originalTotal,
+        usagePercent,
+        remainingAmount
+      };
+    });
+  });
+
+  activePolicies = computed(() => this.enrichedPolicies().filter(p => p.status === 'Active' || p.status === 'Inactive' || p.status === 'Locked'));
+  pendingPolicies = computed(() => this.enrichedPolicies().filter(p => p.status === 'Pending' || p.status === 'Pending Review' || p.status === 'Payment Pending'));
+  rejectedPolicies = computed(() => this.enrichedPolicies().filter(p => p.status === 'Rejected'));
 
   claimStats = computed(() => {
     const all = this.claims();
@@ -317,26 +380,30 @@ export class CustomerDashboardComponent implements OnInit, AfterViewInit {
           }
         }
       });
+      this.updateChart();
     }
   }
 
   updateChart() {
     if (this.donutChartInstance) {
       const active = this.activePolicies();
-      let totalCoverage = 0;
-      active.forEach(p => totalCoverage += (p.coverageAmount || 0));
+      let totalBalance = 0;
+      active.forEach(p => totalBalance += (p.coverageAmount || 0));
 
       const allClaims = this.claims();
-      let totalClaimed = 0;
+      let totalUsed = 0;
       allClaims.forEach(c => {
-        if (c.status === 'Approved') totalClaimed += (c.claimAmount || 0);
+        if (c.status === 'Approved') totalUsed += (c.claimAmount || 0);
       });
 
-      if (totalCoverage === 0) {
+      const totalPie = totalBalance + totalUsed;
+
+      if (totalPie === 0) {
         this.donutChartInstance.data.datasets[0].data = [0, 100];
       } else {
-        const remaining = Math.max(0, totalCoverage - totalClaimed);
-        this.donutChartInstance.data.datasets[0].data = [totalClaimed, remaining];
+        // Red = totalUsed (Approved claims)
+        // Green = totalBalance (Remaining in the policy)
+        this.donutChartInstance.data.datasets[0].data = [totalUsed, totalBalance];
       }
       this.donutChartInstance.update();
     }

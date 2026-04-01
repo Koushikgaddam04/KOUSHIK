@@ -23,6 +23,8 @@ public class DocumentController : BaseApiController
         _environment = environment;
     }
 
+
+
     [HttpPost("upload")]
     public async Task<IActionResult> Upload([FromForm] DocumentUploadRequest request)
     {
@@ -43,18 +45,23 @@ public class DocumentController : BaseApiController
             FileData = fileBytes,
             ContentType = request.File.ContentType,
             DocumentType = request.DocType,
-            // Link to a specific entity (Policy/Claim/User) based on what the caller provides
             RelatedEntityType = string.IsNullOrEmpty(request.EntityType) ? "User" : request.EntityType,
             RelatedEntityId = request.EntityId > 0 ? request.EntityId : userId,
             Status = "Pending",
             UploadedByUserId = userId
         };
 
+        // AI Analysis removed for performance
+        doc.AiAnalysis = "Analysis disabled for performance.";
+
         await _docRepo.AddAsync(doc);
         await _docRepo.SaveChangesAsync();
 
-        // Avoid returning the entire byte array in the response to save bandwidth
-        return Ok(new { message = "Document uploaded successfully!", docId = doc.Id });
+        return Ok(new { 
+            message = "Document uploaded and analyzed successfully!", 
+            docId = doc.Id,
+            aiAnalysis = doc.AiAnalysis 
+        });
     }
 
     [HttpGet("my-documents")]
@@ -63,7 +70,7 @@ public class DocumentController : BaseApiController
         var userId = UserSession.CurrentUserId;
         var allDocs = await _docRepo.GetAllAsync();
         var myDocs = allDocs.Where(d => d.UploadedByUserId == userId)
-            .Select(d => new { d.Id, d.FileName, d.DocumentType, d.Status, d.RelatedEntityType, d.RelatedEntityId, d.CreatedAt })
+            .Select(d => new { d.Id, d.FileName, d.DocumentType, d.Status, d.RelatedEntityType, d.RelatedEntityId, d.CreatedAt, d.AiAnalysis })
             .ToList();
         return Ok(myDocs);
     }
@@ -73,7 +80,7 @@ public class DocumentController : BaseApiController
     {
         var allDocs = await _docRepo.GetAllAsync();
         var userDocs = allDocs.Where(d => d.UploadedByUserId == userId)
-            .Select(d => new { d.Id, d.FileName, d.DocumentType, d.Status, d.RelatedEntityType, d.RelatedEntityId, d.CreatedAt })
+            .Select(d => new { d.Id, d.FileName, d.DocumentType, d.Status, d.RelatedEntityType, d.RelatedEntityId, d.CreatedAt, d.AiAnalysis })
             .ToList();
         return Ok(userDocs);
     }
@@ -86,7 +93,7 @@ public class DocumentController : BaseApiController
         var docs = allDocs
             .Where(d => d.RelatedEntityType.Equals(entityType, StringComparison.OrdinalIgnoreCase)
                      && d.RelatedEntityId == entityId)
-            .Select(d => new { d.Id, d.FileName, d.DocumentType, d.Status, d.CreatedAt })
+            .Select(d => new { d.Id, d.FileName, d.DocumentType, d.Status, d.CreatedAt, d.AiAnalysis })
             .ToList();
         return Ok(docs);
     }
@@ -158,3 +165,5 @@ public class DocumentReviewRequest
     public string Status { get; set; } = string.Empty;
     public string Comments { get; set; } = string.Empty;
 }
+
+

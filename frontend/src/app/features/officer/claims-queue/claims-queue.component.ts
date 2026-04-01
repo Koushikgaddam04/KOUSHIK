@@ -125,16 +125,41 @@ import { filter, Subscription } from 'rxjs';
 
           <!-- Inline documents panel -->
           @if (expandedClaim() === claim.id) {
-            <div class="border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 p-8">
-              <div class="flex items-center justify-between mb-8">
-                 <div>
-                    <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Supporting Dossier</h3>
-                    <p class="text-xs text-slate-500 font-medium">Verify attached files to authorize financial disbursement.</p>
-                 </div>
-                 <div class="px-3 py-1 bg-white dark:bg-slate-800 rounded-lg border border-slate-100 dark:border-slate-700 text-[10px] font-bold text-slate-400">
-                    {{ entityDocs().length }} Assets Found
-                 </div>
-              </div>
+              <div class="border-t border-slate-100 dark:border-slate-800 bg-slate-50/50 dark:bg-slate-800/30 p-8">
+                <div class="flex items-center justify-between mb-8">
+                   <div>
+                      <h3 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Supporting Dossier</h3>
+                      <p class="text-xs text-slate-500 font-medium">Verify attached files to authorize financial disbursement.</p>
+                   </div>
+                   <div class="flex items-center gap-4">
+                      <button
+                        (click)="onAudit(claim)"
+                        [disabled]="docsLoading()"
+                        class="inline-flex items-center gap-2 px-5 py-3 border-0 text-xs font-black rounded-2xl text-white bg-indigo-600 hover:bg-indigo-700 transition-all active:scale-95 shadow-lg shadow-indigo-500/20"
+                      >
+                         <lucide-icon name="sparkles" class="h-4 w-4"></lucide-icon>
+                         Check Compliance
+                      </button>
+                      <div class="px-3 py-1 bg-white dark:bg-slate-800 rounded-lg border border-slate-100 dark:border-slate-700 text-[10px] font-bold text-slate-400">
+                         {{ entityDocs().length }} Assets Found
+                      </div>
+                   </div>
+                </div>
+
+                @if (currentAnalysis() && expandedClaim() === claim.id) {
+                  <div class="mb-8 p-6 bg-indigo-50 dark:bg-indigo-900/10 border border-indigo-100 dark:border-indigo-800 rounded-2xl animate-in fade-in slide-in-from-top-2">
+                     <div class="flex items-center gap-3 mb-4">
+                        <div class="p-2 bg-indigo-100 dark:bg-indigo-900/40 rounded-xl">
+                           <lucide-icon name="sparkles" class="h-5 w-5 text-indigo-600 dark:text-indigo-400"></lucide-icon>
+                        </div>
+                        <div>
+                           <h4 class="text-sm font-black text-slate-900 dark:text-white uppercase tracking-widest">Vertex AI Insight</h4>
+                           <p class="text-[10px] text-indigo-500 font-bold uppercase tracking-widest">Automated Compliance Review</p>
+                        </div>
+                     </div>
+                     <p class="text-sm font-medium text-slate-600 dark:text-slate-300 whitespace-pre-wrap leading-relaxed">{{ currentAnalysis() }}</p>
+                  </div>
+               }
 
               @if (docsLoading()) {
                 <div class="flex flex-col items-center justify-center py-16 text-slate-400 gap-4">
@@ -217,6 +242,7 @@ export class ClaimsQueueComponent implements OnInit, OnDestroy {
   expandedClaim = signal<number | null>(null);
   entityDocs = signal<any[]>([]);
   docsLoading = signal(false);
+  currentAnalysis = signal<string | null>(null);
 
   // Alias so template references to isLoading() still work (reject modal spinner)
   get isLoading() { return this.actionLoading; }
@@ -270,8 +296,13 @@ export class ClaimsQueueComponent implements OnInit, OnDestroy {
   }
 
   toggleDocs(claimId: number) {
-    if (this.expandedClaim() === claimId) { this.expandedClaim.set(null); return; }
+    if (this.expandedClaim() === claimId) { 
+      this.expandedClaim.set(null); 
+      this.currentAnalysis.set(null);
+      return; 
+    }
     this.expandedClaim.set(claimId);
+    this.currentAnalysis.set(null);
     this.docsLoading.set(true);
     this.entityDocs.set([]);
     this.docService.getForEntity('Claim', claimId).subscribe({
@@ -299,6 +330,26 @@ export class ClaimsQueueComponent implements OnInit, OnDestroy {
         }
       },
       error: () => this.toastr.error('Failed to update document status.')
+    });
+  }
+
+  onAudit(claim: any) {
+    this.docsLoading.set(true);
+    this.currentAnalysis.set(null);
+    this.officerService.checkCompliance({
+      policyId: claim.policyId,
+      amount: claim.amount,
+      reason: claim.reason
+    }).subscribe({
+      next: (res) => {
+        this.currentAnalysis.set(res.analysis);
+        this.toastr.success('AI Forensic analysis complete.');
+        this.docsLoading.set(false);
+      },
+      error: () => {
+        this.toastr.error('AI analysis failed.');
+        this.docsLoading.set(false);
+      }
     });
   }
 

@@ -28,11 +28,8 @@ public class ClaimService : IClaimService
         _auditRepo = auditRepo;
     }
 
-    public async Task<(string Message, int ClaimId)> ProcessClaimAsync(int policyId, decimal requestedAmount, string reason, int callerUserId)
+    public async Task<(string Message, int ClaimId)> ProcessClaimAsync(int policyId, decimal requestedAmount, string reason, int callerUserId, string sourceType = "Policy")
     {
-        // 1. Try to find in Legacy Policies first
-        var legacyPolicy = await _policyRepo.GetByIdAsync(policyId);
-        
         int? realPolicyId = null;
         int? realQuoteId = null;
         int userId = 0;
@@ -42,21 +39,13 @@ public class ClaimService : IClaimService
         string peds = "";
         bool isPorted = false;
 
-        if (legacyPolicy != null && legacyPolicy.IsActive && legacyPolicy.Status == "Active")
+        bool foundAndOwned = false;
+
+        // 1. First Attempt: Use the specified SourceType
+        if (sourceType.Equals("Quote", StringComparison.OrdinalIgnoreCase))
         {
-            realPolicyId = legacyPolicy.Id;
-            userId = legacyPolicy.UserId;
-            coverageLimit = legacyPolicy.CoverageAmount;
-            policyRef = legacyPolicy.PolicyNumber;
-            policyCreatedAt = legacyPolicy.CreatedAt;
-            peds = legacyPolicy.PreExistingConditions;
-            isPorted = legacyPolicy.IsPorting;
-        }
-        else
-        {
-            // 2. Try to find in PremiumQuotes (The new Policy source)
             var quotePolicy = await _quoteRepo.GetByIdAsync(policyId);
-            if (quotePolicy != null && quotePolicy.IsActive && quotePolicy.IsConvertedToPolicy == 1)
+            if (quotePolicy != null && quotePolicy.IsConvertedToPolicy == 1 && (callerUserId <= 0 || quotePolicy.UserId == callerUserId))
             {
                 realQuoteId = quotePolicy.Id;
                 userId = quotePolicy.UserId ?? 0;
@@ -65,7 +54,65 @@ public class ClaimService : IClaimService
                 policyCreatedAt = quotePolicy.CreatedAt;
                 peds = quotePolicy.PreExistingConditions;
                 isPorted = quotePolicy.IsPorting;
+                foundAndOwned = true;
             }
+        }
+        else
+        {
+            var legacyPolicy = await _policyRepo.GetByIdAsync(policyId);
+            if (legacyPolicy != null && legacyPolicy.Status == "Active" && (callerUserId <= 0 || legacyPolicy.UserId == callerUserId))
+            {
+                realPolicyId = legacyPolicy.Id;
+                userId = legacyPolicy.UserId;
+                coverageLimit = legacyPolicy.CoverageAmount;
+                policyRef = legacyPolicy.PolicyNumber;
+                policyCreatedAt = legacyPolicy.CreatedAt;
+                peds = legacyPolicy.PreExistingConditions;
+                isPorted = legacyPolicy.IsPorting;
+                foundAndOwned = true;
+            }
+        }
+
+        // 2. Smart Fallback: If not found or ownership failed, try the OTHER table
+        if (!foundAndOwned)
+        {
+            if (!sourceType.Equals("Quote", StringComparison.OrdinalIgnoreCase))
+            {
+                // Try Quote table as fallback
+                var quotePolicy = await _quoteRepo.GetByIdAsync(policyId);
+                if (quotePolicy != null && quotePolicy.IsConvertedToPolicy == 1 && (callerUserId <= 0 || quotePolicy.UserId == callerUserId))
+                {
+                    realQuoteId = quotePolicy.Id;
+                    userId = quotePolicy.UserId ?? 0;
+                    coverageLimit = quotePolicy.CoverageAmount;
+                    policyRef = quotePolicy.QuoteReference;
+                    policyCreatedAt = quotePolicy.CreatedAt;
+                    peds = quotePolicy.PreExistingConditions;
+                    isPorted = quotePolicy.IsPorting;
+                    foundAndOwned = true;
+                }
+            }
+            else
+            {
+                // Try Legacy table as fallback
+                var legacyPolicy = await _policyRepo.GetByIdAsync(policyId);
+                if (legacyPolicy != null && legacyPolicy.Status == "Active" && (callerUserId <= 0 || legacyPolicy.UserId == callerUserId))
+                {
+                    realPolicyId = legacyPolicy.Id;
+                    userId = legacyPolicy.UserId;
+                    coverageLimit = legacyPolicy.CoverageAmount;
+                    policyRef = legacyPolicy.PolicyNumber;
+                    policyCreatedAt = legacyPolicy.CreatedAt;
+                    peds = legacyPolicy.PreExistingConditions;
+                    isPorted = legacyPolicy.IsPorting;
+                    foundAndOwned = true;
+                }
+            }
+        }
+
+        if (!foundAndOwned)
+        {
+             return ("Rejected: No active policy found with that ID that belongs to you.", 0);
         }
 
         if (realPolicyId == null && realQuoteId == null)

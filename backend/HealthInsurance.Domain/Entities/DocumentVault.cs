@@ -23,4 +23,7 @@ public class DocumentVault : BaseEntity
     // Generic linking (can belong to a Policy or a Claim)
     public string RelatedEntityType { get; set; } = string.Empty; // "Policy" or "Claim"
     public int RelatedEntityId { get; set; }
+
+    // AI Analysis result summary
+    public string? AiAnalysis { get; set; }
 }

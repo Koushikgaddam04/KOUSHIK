@@ -138,7 +138,7 @@ Chart.register(...registerables);
             </div>
             <div class="mt-auto">
                <div class="text-sm font-black" [ngClass]="item.status === 'Approved' ? 'text-emerald-600' : 'text-rose-600'">{{item.status}}</div>
-               <div class="text-[10px] font-bold text-slate-400 mt-1">{{item.date | date:'shortTime'}} · Authorized</div>
+               <div class="text-[10px] font-bold text-slate-400 mt-1">{{item.date | date:'shortTime':'+0530'}} · Authorized</div>
             </div>
           </div>
         } @empty {

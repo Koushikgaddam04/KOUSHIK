@@ -293,26 +293,28 @@ export class AdminDashboardComponent implements OnInit, AfterViewInit {
         plugins: [{
           id: 'centerText',
           beforeDraw: (chart: any) => {
-            const width = chart.width;
-            const height = chart.height;
-            const ctx = chart.ctx;
+            const { ctx, chartArea: { left, right, top, bottom } } = chart;
+            const width = right - left;
+            const height = bottom - top;
 
-            ctx.restore();
-            const fontSize = (height / 150).toFixed(2);
+            ctx.save();
+            // Scaling font size based on chart height
+            const fontSize = (height / 120).toFixed(2);
             ctx.font = `bold ${fontSize}em sans-serif`;
-            ctx.textBaseline = "middle";
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
             ctx.fillStyle = "#475569"; // slate-600
 
-            // The data total
+            // Calculate total
             const total = chart.data.datasets[0].data.reduce((a: number, b: number) => a + b, 0);
-            // Assuming this represents total Agent commissions, we format it as currency
             const text = "$" + Number(total).toLocaleString();
 
-            const textX = Math.round((width - ctx.measureText(text).width) / 2);
-            const textY = height / 2;
+            // Use the center of the chart area
+            const centerX = (left + right) / 2;
+            const centerY = (top + bottom) / 2;
 
-            ctx.fillText(text, textX, textY);
-            ctx.save();
+            ctx.fillText(text, centerX, centerY);
+            ctx.restore();
           }
         }]
       });

@@ -96,7 +96,7 @@ import {
               class="flex items-center px-3 py-2.5 text-sm font-medium rounded-lg hover:bg-enterprise-blue-800 dark:hover:bg-slate-800 transition-all duration-200 group"
             >
               <lucide-icon name="file-search" class="mr-3 h-5 w-5 text-enterprise-blue-300 group-hover:text-white transition-colors"></lucide-icon>
-              Quotes
+              Get Quotes
             </a>
             <a
               routerLink="/customer/claim"

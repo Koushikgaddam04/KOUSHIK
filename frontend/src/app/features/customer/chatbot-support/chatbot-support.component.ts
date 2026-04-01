@@ -74,7 +74,7 @@ interface ChatMessage {
                 {{ msg.content }}
               </div>
               <span class="text-[9px] font-bold text-slate-400 mt-2 px-1 uppercase tracking-tighter">
-                {{ msg.timestamp | date:'shortTime' }}
+                {{ msg.timestamp | date:'shortTime':'+0530' }}
               </span>
             </div>
           }

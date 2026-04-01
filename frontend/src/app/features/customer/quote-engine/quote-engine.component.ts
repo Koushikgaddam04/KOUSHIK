@@ -14,6 +14,7 @@ import { DocumentService } from '../../../core/services/document.service';
   imports: [CommonModule, ReactiveFormsModule, LoadingSpinnerComponent, LucideAngularModule],
   template: `
     <app-loading-spinner [show]="isLoading()" message="Processing..."></app-loading-spinner>
+    <app-loading-spinner [show]="isLoading()" message="Processing..."></app-loading-spinner>
 
     <div class="max-w-4xl mx-auto">
       <div class="mb-12 text-center">
@@ -300,24 +301,25 @@ import { DocumentService } from '../../../core/services/document.service';
                        <p class="text-[10px] font-black text-slate-300 uppercase tracking-[0.2em]">Registry Vacant</p>
                     </div>
                   }
-                </div>
-            </div>
-            <div class="flex flex-col sm:flex-row justify-center gap-6">
-              <button
-                (click)="resetForm()"
-                class="px-10 py-4 border-2 border-slate-100 dark:border-slate-800 shadow-sm text-[10px] font-black uppercase tracking-widest rounded-2xl text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-900 hover:bg-slate-50 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white transition-all active:scale-95"
-              >
-                Actuarial Reset
-              </button>
-              
-              <button
-                  (click)="buyPolicy()"
-                  [disabled]="attachedFiles().length === 0 || isLoading()"
-                  class="px-10 py-4 border border-transparent shadow-xl shadow-blue-500/25 text-[10px] font-black uppercase tracking-widest rounded-2xl text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition-all hover:scale-105 active:scale-95"
+
+                  </div>
+              </div>
+              <div class="flex flex-col sm:flex-row justify-center gap-6">
+                <button
+                  (click)="resetForm()"
+                  class="px-10 py-4 border-2 border-slate-100 dark:border-slate-800 shadow-sm text-[10px] font-black uppercase tracking-widest rounded-2xl text-slate-400 dark:text-slate-500 bg-white dark:bg-slate-900 hover:bg-slate-50 hover:text-slate-900 dark:hover:bg-slate-800 dark:hover:text-white transition-all active:scale-95"
                 >
-                  {{ attachedFiles().length === 0 ? 'Verification Required' : 'Authorize Activation' }}
-              </button>
-            </div>
+                  Back to Quotation
+                </button>
+                
+                <button
+                    (click)="buyPolicy()"
+                    [disabled]="attachedFiles().length === 0 || isLoading()"
+                    class="px-10 py-4 border border-transparent shadow-xl shadow-blue-500/25 text-[10px] font-black uppercase tracking-widest rounded-2xl text-white bg-blue-600 hover:bg-blue-700 disabled:opacity-50 transition-all hover:scale-105 active:scale-95"
+                  >
+                    {{ attachedFiles().length === 0 ? 'Verification Required' : 'Authorize Activation' }}
+                </button>
+              </div>
           </div>
         }
         }
@@ -414,8 +416,25 @@ export class QuoteEngineComponent implements OnInit {
     const input = event.target as HTMLInputElement;
     const file = input.files?.[0];
     if (!file) return;
+
     const key = `${file.name}_${docType}`;
-    this.attachedFiles.update(list => [...list, { name: key, file, docType }]);
+    if (this.attachedFiles().some(f => f.name === key)) {
+      this.toastr.warning('Dossier already appended.');
+      return;
+    }
+
+    this.isLoading.set(true);
+    this.docService.upload(file, docType).subscribe({
+      next: (res) => {
+        this.attachedFiles.update(list => [...list, { name: key, file, docType }]);
+        this.isLoading.set(false);
+      },
+      error: () => {
+        this.toastr.error('Dossier processing failed');
+        this.isLoading.set(false);
+      }
+    });
+
     input.value = '';
   }
 

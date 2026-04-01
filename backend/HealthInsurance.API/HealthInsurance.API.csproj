@@ -22,4 +22,10 @@
     <ProjectReference Include="..\HealthInsurance.Infrastructure\HealthInsurance.Infrastructure.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <None Update="gcp-key.json">
+      <CopyToOutputDirectory>Always</CopyToOutputDirectory>
+    </None>
+  </ItemGroup>
+
 </Project>

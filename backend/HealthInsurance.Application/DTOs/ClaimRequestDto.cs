@@ -12,4 +12,6 @@ public class ClaimRequestDto
 
     [Required]
     public string Reason { get; set; } = string.Empty;
+
+    public string SourceType { get; set; } = "Policy"; // "Policy" or "Quote"
 }

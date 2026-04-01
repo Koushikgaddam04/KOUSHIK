@@ -195,19 +195,19 @@ namespace HealthInsurance.API.Controllers
                     if (c.PremiumQuoteId.HasValue && c.PremiumQuoteId.Value > 0)
                     {
                         var quote = allQuotes.FirstOrDefault(q => q.Id == c.PremiumQuoteId.Value);
-                        if (quote != null) return quote.ClaimsOfficerId == officerId;
+                        if (quote != null) return quote.ClaimsOfficerId == officerId || quote.ClaimsOfficerId == null || quote.ClaimsOfficerId == 0;
                     }
                     else if (c.PolicyId.HasValue && c.PolicyId.Value > 0)
                     {
                         var policy = allPolicies.FirstOrDefault(p => p.Id == c.PolicyId.Value);
-                        if (policy != null) return policy.ClaimsOfficerId == officerId;
+                        if (policy != null) return policy.ClaimsOfficerId == officerId || policy.ClaimsOfficerId == null || policy.ClaimsOfficerId == 0;
                     }
                     return false;
                 })
                 .Select(c => new
                 {
                     id = c.Id,
-                    policyId = c.PolicyId,
+                    policyId = c.PolicyId ?? c.PremiumQuoteId ?? 0,
                     userId = c.UserId,
                     amount = c.ClaimAmount,
                     reason = c.Reason
@@ -307,6 +307,8 @@ namespace HealthInsurance.API.Controllers
                 {
                     policy.CoverageAmount -= claim.ClaimAmount;
                     _policyRepo.Update(policy);
+                    await _policyRepo.SaveChangesAsync(); // FORCE IMMEDIATE SAVE
+                    
                     await _auditRepo.AddAsync(new PolicyActionLog
                     {
                         EntityName = "Policy",
@@ -321,6 +323,8 @@ namespace HealthInsurance.API.Controllers
                 {
                     quote.CoverageAmount -= claim.ClaimAmount;
                     _quoteRepo.Update(quote);
+                    await _quoteRepo.SaveChangesAsync(); // FORCE IMMEDIATE SAVE
+
                     await _auditRepo.AddAsync(new PolicyActionLog
                     {
                         EntityName = "PremiumQuote",

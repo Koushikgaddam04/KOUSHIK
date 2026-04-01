@@ -22,4 +22,8 @@ export class OfficerService {
         const officerId = localStorage.getItem('userId') || '0';
         return this.http.get<any[]>(`${this.apiBase}/Staff/history/claimofficer?officerId=${officerId}`);
     }
+
+    checkCompliance(data: any): Observable<any> {
+        return this.http.post(`${this.apiBase}/Claim/check-compliance`, data);
+    }
 }
