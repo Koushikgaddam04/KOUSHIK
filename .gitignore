@@ -32,7 +32,8 @@ tmp/
 Thumbs.db
 
 # Secrets
-**/gcp-key.json
 **/.env
-**/appsettings.json
-**/appsettings.Development.json
+
+# Secrets
+**/gcp-key.json
+
