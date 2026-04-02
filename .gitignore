@@ -33,7 +33,5 @@ Thumbs.db
 
 # Secrets
 **/.env
-
-# Secrets
 **/gcp-key.json
 
